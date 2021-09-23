@@ -1,0 +1,42 @@
+.loader {
+  height: 100vh;
+  width: 100vw;
+  display: block;
+  position: absolute;
+  z-index: 1;
+  background: rgba(94, 176, 48, 0.9);
+  &:before,
+  &:after {
+    position: absolute;
+    content: "";
+    left: 50%;
+    top: 50%;
+    display: block;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border-width: 4px;
+    border-style: solid;
+    transform: translate(-50%, -50%);
+  }
+
+  &:before {
+    border-color: #FFFFFF;
+  }
+
+  &:after {
+    transform: translate(-50%, -50%) rotate(-20deg);
+    border-color: #FFEB3B transparent transparent transparent;
+    animation: preloader 1.2s linear infinite;
+  }
+
+  @keyframes preloader {
+    0% {
+      transform: translate(-50%, -50%) rotate(-20deg);
+    }
+
+    100% {
+      transform: translate(-50%, -50%) rotate(340deg);
+    }
+  }
+}

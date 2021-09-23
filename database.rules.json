@@ -1,0 +1,27 @@
+{
+  /* Visit https://firebase.google.com/docs/database/security to learn more about security rules. */
+  "rules": {
+    "widget": {
+      ".read": true,
+      ".write": "auth.uid === 'jLFsXBCNaoMtEHd2NykWbW5u7e93'"
+    },
+    "points": {
+      ".read": true,
+      ".write": "auth.uid === 'jLFsXBCNaoMtEHd2NykWbW5u7e93'"
+    },
+    "users": {
+      ".read": true,
+      "$uid": {
+        ".write": "auth.uid === $uid"
+      }
+    },
+    "followers": {
+      "$followedUid": {
+        "$followerUid": {
+          ".read": "auth.uid === $followerUid",
+          ".write": "auth.uid === $followerUid"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,96 @@
+.search-form {
+  margin-top: 108px;
+  @media only screen and (max-width: 480px) {
+    margin-top: 0px;
+  }
+  p {
+    text-align: center;
+    font-size: 22px;
+    line-height: 28px;
+    color: #ffffff;
+    width: 524px;
+    max-width: 100%;
+    margin: 0 auto;
+    @media only screen and (max-width: 320px) {
+      font-size: 16px;
+      line-height: 20px;
+    }
+    @media only screen and (max-width: 480px) {
+      font-size: 18px;
+      line-height: 24px;
+    }
+  }
+}
+
+.form {
+  width: 800px;
+  max-width: 100%;
+  margin: 24px 0 96px;
+  display: grid;
+  grid-template-columns: 4fr 1fr;
+  grid-gap: 16px;
+  @media only screen and (max-width: 480px) {
+    grid-template-columns: auto;
+    grid-template-rows: 1fr 1fr;
+    margin-bottom: 32px;
+  }
+  button {
+    width: 100%;
+  }
+}
+
+.input {
+  position: relative;
+  &__icon {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 22px;
+    width: 22px;
+    margin: 18px;
+    color: rgba(255,255,255, 0.8);
+    @media only screen and (max-width: 320px) {
+      height: 20px;
+      width: 20px;
+      margin: 12px;
+    }
+    @media only screen and (max-width: 480px) {
+      height: 20px;
+      width: 20px;
+      margin: 14px;
+    }
+  }
+  &__element {
+    outline: none;
+    background: transparent;
+    width: 100%;
+    line-height: 56px;
+    font-size: 18px;
+    font-family: 'Proxima Nova', sans-serif;
+    font-weight: 400;
+    padding: 0 24px 0 56px;
+    color: #FFFFFF;
+    box-sizing: border-box;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-radius: 8px;
+    transition: border-color 375ms ease-in-out,background-color 375ms ease-in-out,color 375ms ease-in-out;
+    @media only screen and (max-width: 320px) {
+      font-size: 14px;
+      line-height: 40px;
+      padding: 0 16px 0 40px;
+      border-radius: 6px;
+    }
+    @media only screen and (max-width: 480px) {
+      font-size: 16px;
+      line-height: 44px;
+      padding: 0 16px 0 44px;
+    }
+    &:focus,
+    &:hover {
+      border-color: #FFEB3B;
+    }
+    &::placeholder {
+      color: #ffffff;
+    }
+  }
+}

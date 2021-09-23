@@ -1,0 +1,132 @@
+.block {
+  box-sizing: border-box;
+  &--overlay {
+    height: 100vh;
+    width: 100vw;
+    display: block;
+    position: absolute;
+    z-index: 1;
+    background: rgba(94, 176, 48, 0.9);
+  }
+
+  &--overlay &__content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 800px;
+    max-height: 100%;
+    max-width: 100%;
+    padding: 72px 24px;
+    box-sizing: border-box;
+    @media only screen and (max-width: 320px) {
+      padding: 56px 16px 16px 16px;
+    }
+  }
+}
+
+.modal {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  background: #ffffff;
+  padding: 48px;
+  box-sizing: border-box;
+  outline: none;
+  &#modalAuth {
+    background: #efefef;
+  }
+  @media only screen and (max-width: 480px) {
+    padding: 56px 24px;
+    left: 0;
+    top: 0;
+    transform: none;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+  }
+  &__close {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 48px;
+    width: 48px;
+    display: block;
+    padding: 0;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    &:before,
+    &:after {
+      position: absolute;
+      content: "";
+      left: 14px;
+      display: block;
+      width: 24px;
+      height: 2px;
+      margin: 2px;
+      background: #000;
+      transition: all .35s;
+    }
+    &:before {
+      transform: translateX(0) translateY(1px) rotate(45deg);
+      top: 12px;
+      transform-origin: 0 50%;
+    }
+    &:after {
+      top: 28px;
+      transform-origin: 0 50%;
+      transform: translateX(0) translateY(2px) rotate(-45deg);
+    }
+    &:hover:before,
+    &:hover:after {
+      background: rgba(94, 176, 48, 0.9);
+    }
+  }
+  &__overlay {
+    background: rgba(0, 0, 0, 0.6);
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 9998;
+  }
+  &--auth {
+    background: #efefef;
+  }
+}
+
+.step1 .block--overlay {
+  height: 100%;
+  width: 340px;
+  @media only screen and (max-width: 480px) {
+    height: 100%;
+    width: 100%;
+  }
+}
+
+.step1 .block--overlay.block--hidden {
+  height: 72px;
+  @media only screen and (max-width: 320px) {
+    height: 56px;
+  }
+}
+
+.step1 .block--overlay .block__content {
+  position: relative;
+  top: auto;
+  left: auto;
+  width: inherit;
+  transform: inherit;
+  height: 100%;
+  padding: 72px 24px 24px;
+  @media only screen and (max-width: 320px) {
+    padding: 56px 16px 16px;
+  }
+}

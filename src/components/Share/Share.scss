@@ -1,0 +1,62 @@
+.share {
+  width: 360px;
+  max-width: 100%;
+  text-align: center;
+  &__description {
+    font-size: 22px;
+    line-height: 28px;
+    margin-bottom: 32px;
+  }
+  &__items {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-gap: 8px;
+    @media only screen and (max-width: 480px) {
+      grid-template-columns: repeat(3, 1fr);
+      margin-bottom: 88px;
+    }
+  }
+  &__item {
+    padding: 8px 16px;
+    color: #FFFFFF;
+    border-radius: 4px;
+    text-align: center;
+    box-shadow: 0px 1px 3px rgba(0,0,0, 0.08), 0px 2px 2px rgba(0,0,0, 0.06), 0px 0px 2px rgba(0,0,0, 0.04);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    &-icon {
+      display: inline-block;
+      vertical-align: middle;
+      width: 20px;
+      height: 20px;
+      fill: #ffffff;
+    }
+    &-text {
+      display: none;
+    }
+    &--vk {
+      background-color: #4a76a8;
+    }
+    &--facebook {
+      background-color: #1777f2;
+    }
+    &--ok {
+      background-color: #ee8208;
+    }
+    &--email {
+      background-color: #d93025;
+      @media only screen and (max-width: 480px) {
+        display: none;
+      }
+    }
+    &--whatsapp {
+      background-color: #25d366;
+    }
+    &--telegram {
+      background-color: #0088cc;
+    }
+    &--twitter {
+      background-color: #1DA1F2;
+    }
+  }
+}

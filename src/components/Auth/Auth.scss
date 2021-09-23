@@ -1,0 +1,20 @@
+.auth {
+  max-width: 280px;
+  margin: 72px auto;
+  &__title {
+    font-size: 22px;
+    line-height: 28px;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+  p {
+    color: #888888;
+    font-size: 12px;
+    line-height: 16px;
+    text-align: center;
+    margin: 12px 0 24px 0;
+    a {
+      color: rgba(136,136,136,0.9);
+    }
+  }
+}
