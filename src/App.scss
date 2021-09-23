@@ -8,7 +8,7 @@
     display: block;
     position: absolute;
     z-index: 1;
-    background: rgba($mainColor, 0.9);
+    background: rgba($mainBgColor, 0.9);
   }
 
   &--overlay &__content {
@@ -27,6 +27,12 @@
   }
 }
 
+.main {
+  position: relative;
+  display: block;
+  height: calc(100vh - 64px);
+}
+
 .modal {
   position: absolute;
   left: 50%;
@@ -34,7 +40,7 @@
   margin-right: -50%;
   transform: translate(-50%, -50%);
   z-index: 9999;
-  background: #ffffff;
+  background: $bgColor;
   padding: 48px;
   box-sizing: border-box;
   outline: none;
@@ -86,7 +92,7 @@
     }
     &:hover:before,
     &:hover:after {
-      background: rgba($mainColor, 0.9);
+      background: rgba($mainBgColor, 0.9);
     }
   }
   &__overlay {

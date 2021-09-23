@@ -8,5 +8,8 @@
     "messagingSenderId": "361036704066",
     "appId": "1:361036704066:web:0c93b106b72eeef11000db",
     "measurementId": "G-QGR0X1YBKH"
+  },
+  "yandexMapConfig": {
+    "apikey": "2fa54cfd-7441-4248-a25c-bb630aec22ff"
   }
 }

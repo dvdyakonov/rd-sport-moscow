@@ -1,9 +1,10 @@
 import React from 'react';
 import Button from '../Button';
+import { Link } from "react-router-dom";
 import {ReactComponent as ArrowIcon} from './arrow.svg';
 import './Header.scss';
 
-const Header = ({setMapData, setStep, isResultsHidden, toggleResults}) => {
+const Header = ({setMapData, setStep}) => {
   return (
     <header className="header">
       <div className="header__logo" onClick={()=> {
@@ -15,12 +16,13 @@ const Header = ({setMapData, setStep, isResultsHidden, toggleResults}) => {
         });
         setStep(0);
       }}>QRNTN</div>
-      <div className="header__info">
-        <Button kind="info" className="header__action" onClick={() => toggleResults(!isResultsHidden)}>
-          <ArrowIcon className={isResultsHidden ? 'icon--rotate' : undefined}/>
-        </Button>
-        {/* <Button kind="info"><span>i</span></Button> */}
-      </div>
+    <nav className="header__nav">
+      <ul className="header__nav-list">
+        <li className="header__nav-item">
+          <Link to="/profile">Профиль</Link>
+        </li>
+      </ul>
+    </nav>
     </header>
   )
 }

@@ -1,45 +1,25 @@
+@import '../../styles/variables';
+
 .header {
-  position: absolute;
+  position: relative;
   top: 0;
   left: 0;
   right: 0;
   z-index: 1000;
+  height: 64px;
   pointer-events: none;
+  padding: 0 24px;
+  background: $mainBgColor;
+  @media only screen and (max-width: 320px) {
+    padding: 0 16px;
+  }
   &__logo {
-    position: absolute;
-    left: 24px;
-    top: 24px;
     font-size: 24px;
     letter-spacing: 1.25px;
     text-transform: uppercase;
     font-weight: bold;
-    color: #ffffff;
+    color: $mainFontColor;
     cursor: pointer;
     pointer-events: initial;
-    @media only screen and (max-width: 320px) {
-      left: 16px;
-      top: 16px;
-    }
-  }
-  &__info {
-    position: absolute;
-    right: 14px;
-    top: 14px;
-    pointer-events: initial;
-    display: none;
-    @media only screen and (max-width: 320px) {
-      right: 8px;
-      top: 8px;
-    }
-  }
-}
-
-.icon--rotate {
-  transform: rotate(180deg);
-}
-
-.step1 .header__info {
-  @media only screen and (max-width: 480px) {
-    display: block;
   }
 }

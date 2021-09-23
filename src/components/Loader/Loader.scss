@@ -6,7 +6,7 @@
   display: block;
   position: absolute;
   z-index: 1;
-  background: rgba($mainColor, 0.9);
+  background: rgba($mainBgColor, 0.9);
   &:before,
   &:after {
     position: absolute;
@@ -23,7 +23,7 @@
   }
 
   &:before {
-    border-color: #FFFFFF;
+    border-color: $bgColor;
   }
 
   &:after {

@@ -1,0 +1,94 @@
+@import '../../styles/variables';
+
+.aside {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 320px;
+  z-index: 1000;
+  background-color: $bgColor;
+  padding: 16px;
+  &__toggle {
+    background: rgba($fontColor, 0.56);
+    border-radius: 30px;
+    overflow: hidden;
+    text-align: center;
+    font-size: 18px;
+    letter-spacing: 1px;
+    color: $bgColor;
+    border: 1px solid $fontColor;
+    position: relative;
+    width: calc(100% - 32px);
+    padding-right: calc(50% - 16px);
+    position: absolute;
+    bottom: 32px;
+    left: 16px;
+    right: 16px;
+
+    &:before {
+      content: "Площадки";
+      position: absolute;
+      color: $fontColor;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      width: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    &-checkbox {
+      cursor: pointer;
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      bottom: 0;
+      margin: 0;
+      outline: none;
+      opacity: 0;
+      z-index: 2;
+
+      &:checked + .aside__toggle-label:before {
+        transform: translateX(calc(100% + 2px));
+        transition: transform 300ms linear;
+      }
+
+      & + .aside__toggle-label {
+        position: relative;
+        padding: 15px 0;
+        display: block;
+        user-select: none;
+        pointer-events: none;
+        color: $fontColor;
+
+        &:before {
+          content: "";
+          background: $bgColor;
+          height: calc(100% - 2px);
+          width: calc(100% - 2px);
+          border: 1px solid $fontColor;
+          position: absolute;
+          left: 0;
+          top: 0;
+          border-radius: 30px;
+          transform: translateX(0);
+          transition: transform 300ms;
+        }
+
+        .aside__toggle-label-span {
+          position: relative;
+        }
+      }
+    }
+  }
+}
+
+.icon--rotate {
+  transform: rotate(180deg);
+}

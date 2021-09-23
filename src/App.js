@@ -11,7 +11,7 @@ import './App.scss';
 
 // Components
 import Header from "./components/Header";
-// import Footer from "./components/Footer";
+import Aside from "./components/Aside";
 import Loader from "./components/Loader";
 import Auth from "./components/Auth";
 import SearchForm from "./components/SearchForm";
@@ -40,8 +40,9 @@ const App = () => {
   const [user, setUserData] = useState({});
   const [isAuthPopupVisible, showAuthPopup] = useState(false);
   const [isResultsHidden, toggleResults] = useState(false);
-  const [step, setStep] = useState(0);
   const [map, setMapInstance] = useState();
+  const [objectType, objectTypeToggle] = useState('points');  // points or events
+  const [asideType, setAsideType] = useState('default');
   const [mapData, setMapData] = useState({
     coords: [55.751244, 37.618423],
     name: 'Москва',
@@ -54,7 +55,7 @@ const App = () => {
     const mapDataFromUrl = qs.parse(location.search.slice(1));
     const requiredKeys = Object.keys(mapDataFromUrl).filter(item => ['coords', 'name', 'zoom', 'distance'].indexOf(item) !== -1);
     if(requiredKeys.length === 4 && parseInt(mapDataFromUrl.distance) <= 2) {
-      setMapData(mapDataFromUrl, setStep(1)); // Данные уже введены, отправляем на второй шаг
+      setMapData(mapDataFromUrl); // Данные уже введены, отправляем на второй шаг
     }
 
     // Проверяем авторизован ли пользователь
@@ -85,40 +86,13 @@ const App = () => {
 
   return (
     <>
-    <div className={`app step${step}`}>
-      <Header setMapData={setMapData} setStep={setStep} toggleResults={toggleResults} isResultsHidden={isResultsHidden}/>
-      {user.uid ? (
-        <div className={cx('block', 'block--overlay', { [`block--hidden`]: isResultsHidden })}>
-          <div className="block__content">
-          {step === 0 && map && (
-            <SearchForm currentMap={map} setMapData={setMapData} setStep={setStep}/>
-          )}
-
-          {step === 1 && (
-            <>
-              <Results isResultsHidden={isResultsHidden} user={user} data={mapData} points={filteredPoints} setStep={setStep} showAuthPopup={showAuthPopup} />
-              {!user.email && (
-                <Modal
-                    className="modal"
-                    id="modalAuth"
-                    ariaHideApp={false}
-                    overlayClassName="modal__overlay"
-                    isOpen={isAuthPopupVisible}
-                    onRequestClose={() => showAuthPopup(false)}
-                  >
-                  <button className="modal__close" onClick={() => showAuthPopup(false)}></button>
-                  <Auth user={user} setUserData={setUserData}/>
-                </Modal>
-              )}
-            </>
-          )}
-          </div>
-        </div>
-      ) : (
-        <Loader />
-      )}
-      <YandexMap points={filteredPoints} mapData={mapData} step={step} setMapInstance={setMapInstance} />
-    </div>
+      <div className={`app`}>
+        <Header setMapData={setMapData} toggleResults={toggleResults} isResultsHidden={isResultsHidden}/>
+        <main className="main">
+          {map && <Aside type={asideType} setMapData={setMapData} currentMap={map} objectType={objectType} objectTypeToggle={objectTypeToggle} />}
+          <YandexMap points={filteredPoints} mapData={mapData} setMapInstance={setMapInstance} />
+        </main>
+      </div>
     </>
   )
 }

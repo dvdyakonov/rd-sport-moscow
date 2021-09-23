@@ -59,7 +59,7 @@ const geocode = (ymaps, address, callback) => {
 
 }
 
-const SearchForm = ({ setMapData, setStep, currentMap }) => {
+const SearchForm = ({ setMapData, currentMap }) => {
   const history = useHistory();
   const [address, setAddress] = useState("");
 
@@ -77,7 +77,6 @@ const SearchForm = ({ setMapData, setStep, currentMap }) => {
         setMapData(mapData);
         history.push({ path: "/", search: qs.stringify(mapData)});
 
-        setStep(1);
         firebase.analytics().logEvent('search_start');
       })
   }
