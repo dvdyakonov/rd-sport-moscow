@@ -4,45 +4,7 @@ import Button from '../Button';
 import {ReactComponent as FacebookIcon} from './facebook.svg';
 import {ReactComponent as GoogleIcon} from './google.svg';
 import firebase from "firebase/compat/app";
-import "firebase/compat/messaging";
 import "firebase/compat/analytics";
-
-const saveToken = (uid) => {
-  if (firebase.messaging.isSupported()) {
-    firebase.messaging().getToken().then((currentToken) => {
-      if (currentToken) {
-        firebase.database().ref('users/' + uid + '/notificationTokens/' + currentToken).set(true);
-      } else {
-        requestPermission(uid);
-      }
-    }).catch((err) => {
-      firebase.analytics().logEvent('push_permission', {
-        push_enabled: false,
-        error_message: err.code,
-      });
-    });
-  } else {
-    firebase.analytics().logEvent('push_permission', {
-      push_enabled: false,
-      error_message: 'unsupported-browser',
-    });
-  }
-};
-
-// Requests permission to send notifications on this browser.
-const requestPermission = (uid) => {
-  firebase.messaging().requestPermission().then(() => {
-    firebase.analytics().logEvent('push_permission', {
-      push_enabled: true,
-    });
-    saveToken(uid);
-  }).catch(function (err) {
-    firebase.analytics().logEvent('push_permission', {
-      push_enabled: false,
-      error_message: err,
-    });
-  });
-};
 
 const Auth = ({user, setUserData}) => {
   const signIn = (type) => {
@@ -77,16 +39,12 @@ const Auth = ({user, setUserData}) => {
 
         firebase.database().ref(`users/${result.user.uid}`).update(profile);
 
-        saveToken(user.uid);
-
       }).catch(function(error) {
         firebase.auth().signInWithCredential(error.credential).then(result => {
 
           firebase.analytics().logEvent('signup_success', {
             provider: provider,
           });
-
-          saveToken(user.uid);
 
         }).catch(error => {
           firebase.analytics().logEvent('signup_fail', {

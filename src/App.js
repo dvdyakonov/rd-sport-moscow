@@ -3,7 +3,6 @@ import { useLocation } from "react-router-dom";
 import cx from 'classnames';
 import qs from "qs";
 import firebase from "firebase/compat/app";
-import { getMessaging } from "firebase/compat/messaging";
 import Modal from 'react-modal';
 
 import { firebaseConfig } from './config/app.json';
@@ -27,11 +26,6 @@ import "firebase/compat/auth";
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
-
-if (firebase.messaging.isSupported()) {
-  const messaging = firebase.messaging();
-  messaging.usePublicVapidKey("BBbDIQ-QTMMFc3mKXnsqzN1NZst0R69VR9RaE2aEc4nOioEaRVtzaK0kZNSqKLt7lt0RK2tM-cSH269YCjl0Zrs");
-}
 
 // Расширяем данные о пользователе
 let profile = {};
