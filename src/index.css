@@ -85,7 +85,7 @@ table {
 body {
   margin: 0;
   font-family: 'Proxima Nova', sans-serif;
-  background: rgb(94, 176, 48);
+  background: #c22;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

@@ -72,24 +72,21 @@ const Results = ({ points, data, user, setStep, showAuthPopup, isResultsHidden }
     <>
       <div className={cx('results', { [`results--hidden`]: isResultsHidden })}>
         <Helmet>
-          <title>{`Рядом с вами ${points.length} случая заражения коронавирусом – ${data.name}`}</title>
+          <title>{`Рядом с вами ${points.length} спортивных площадки – ${data.name}`}</title>
         </Helmet>
         <div className="panel panel--results">
           <p className="address">Ваш адрес: <span>{data.name}</span></p>
           {points.length > 0 ? (
             <div className="text">
-              <p>Мы нашли <span>{`${points.length} ${num2str(points.length)}`}</span> заражения коронавирусом в радиусе <span>{data.distance} км</span> от ваc.</p>
-              {yourPoints.length > 0 && (
-                <p><span> {`${yourPoints.length} ${num2str(yourPoints.length)}`}</span> из них в вашем доме.</p>
-              )}
+              <p>Мы нашли <span>{`${points.length}`}</span> спортивных объекта в радиусе <span>{data.distance} км</span> от ваc.</p>
             </div>
           ) : (
-            <div className="text">Мы не нашли случаи заражения в радиусе <span>{data.distance} км</span> от ваc</div>
+            <div className="text">Мы не нашли спортивных объектов в радиусе <span>{data.distance} км</span> от ваc. Попробуйте увеличить радиус или сменить адрес</div>
           )}
         </div>
         <div className="panel panel--subscribe">
           <BellIcon className="panel__icon"/>
-          <p className="message">Хотите узнать о новых случаях заражения рядом с вами?</p>
+          <p className="message">Хотите узнать о появлении новых спортивных объектов в городе?</p>
           {isRequestSent ? (
             <p className="message message--success">Мы отправим вам уведомление!</p>
           ) : (

@@ -1,3 +1,5 @@
+@import 'styles/variables';
+
 .block {
   box-sizing: border-box;
   &--overlay {
@@ -6,7 +8,7 @@
     display: block;
     position: absolute;
     z-index: 1;
-    background: rgba(94, 176, 48, 0.9);
+    background: rgba($mainColor, 0.9);
   }
 
   &--overlay &__content {
@@ -84,7 +86,7 @@
     }
     &:hover:before,
     &:hover:after {
-      background: rgba(94, 176, 48, 0.9);
+      background: rgba($mainColor, 0.9);
     }
   }
   &__overlay {
