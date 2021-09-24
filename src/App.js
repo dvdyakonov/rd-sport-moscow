@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import firebase from "firebase/compat/app";
-// import Modal from 'react-modal';
+import Modal from 'react-modal';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 
 import { firebaseConfig } from 'config/app.json';
@@ -8,6 +8,7 @@ import './App.scss';
 
 // Components
 import Header from "components/Header";
+import Auth from "./components/Auth";
 
 // Pages
 import Home from "containers/Home";
@@ -22,6 +23,7 @@ firebase.initializeApp(firebaseConfig);
 
 const App = () => {
   const [user, setUserData] = useState({});
+  const [isAuthPopupVisible, showAuthPopup] = useState(false);
 
   useEffect(() => {
     // Проверяем авторизован ли пользователь
@@ -47,8 +49,21 @@ const App = () => {
             <Home />
           </Route>
           <Route path="/points/:id" exact>
-            <TrackActivity user={user} />
+            <TrackActivity user={user} showAuthPopup={showAuthPopup} />
           </Route>
+          {!user.email && (
+            <Modal
+                className="modal"
+                id="modalAuth"
+                ariaHideApp={false}
+                overlayClassName="modal__overlay"
+                isOpen={isAuthPopupVisible}
+                onRequestClose={() => showAuthPopup(false)}
+              >
+              <button className="modal__close" onClick={() => showAuthPopup(false)}></button>
+              <Auth user={user} setUserData={setUserData}/>
+            </Modal>
+          )}
         </Router>
       </div>
     </React.StrictMode>
