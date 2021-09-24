@@ -54,7 +54,7 @@
       opacity: 0;
       z-index: 2;
 
-      &:checked + .aside__toggle-label:before {
+      &[value="true"] + .aside__toggle-label:before {
         transform: translateX(calc(100% + 2px));
         transition: transform 300ms linear;
       }
@@ -87,8 +87,4 @@
       }
     }
   }
-}
-
-.icon--rotate {
-  transform: rotate(180deg);
 }
