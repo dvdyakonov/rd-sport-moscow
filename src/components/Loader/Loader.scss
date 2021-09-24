@@ -1,4 +1,4 @@
-@import '../../styles/variables';
+@import 'styles/variables';
 
 .loader {
   height: 100vh;
@@ -23,7 +23,7 @@
   }
 
   &:before {
-    border-color: $bgColor;
+    border-color: $fontColor;
   }
 
   &:after {

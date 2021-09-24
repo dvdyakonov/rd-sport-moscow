@@ -9,6 +9,7 @@ import './App.scss';
 // Components
 import Header from "components/Header";
 import Auth from "./components/Auth";
+import Loader from 'components/Loader';
 
 // Pages
 import Home from "containers/Home";
@@ -44,25 +45,31 @@ const App = () => {
     <React.StrictMode>
       <div className="app">
         <Router >
-          <Header />
-          <Route path="/" exact >
-            <Home />
-          </Route>
-          <Route path="/points/:id" exact>
-            <TrackActivity user={user} showAuthPopup={showAuthPopup} />
-          </Route>
-          {!user.email && (
-            <Modal
-                className="modal"
-                id="modalAuth"
-                ariaHideApp={false}
-                overlayClassName="modal__overlay"
-                isOpen={isAuthPopupVisible}
-                onRequestClose={() => showAuthPopup(false)}
-              >
-              <button className="modal__close" onClick={() => showAuthPopup(false)}></button>
-              <Auth user={user} setUserData={setUserData}/>
-            </Modal>
+          {user.uid ? (
+            <>
+              <Header user={user} showAuthPopup={showAuthPopup}/>
+              <Route path="/" exact >
+                <Home />
+              </Route>
+              <Route path="/points/:id" exact>
+                <TrackActivity user={user} showAuthPopup={showAuthPopup} />
+              </Route>
+              {!user.email && (
+                <Modal
+                    className="modal"
+                    id="modalAuth"
+                    ariaHideApp={false}
+                    overlayClassName="modal__overlay"
+                    isOpen={isAuthPopupVisible}
+                    onRequestClose={() => showAuthPopup(false)}
+                  >
+                  <button className="modal__close" onClick={() => showAuthPopup(false)}></button>
+                  <Auth user={user} setUserData={setUserData}/>
+                </Modal>
+              )}
+            </>
+          ) : (
+            <Loader />
           )}
         </Router>
       </div>
