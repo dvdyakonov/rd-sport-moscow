@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import firebase from "firebase/compat/app";
-import Modal from 'react-modal';
+// import Modal from 'react-modal';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 
-import { firebaseConfig } from './config/app.json';
+import { firebaseConfig } from 'config/app.json';
 import './App.scss';
 
 // Components
-import Header from "./components/Header";
+import Header from "components/Header";
 
 // Pages
-import Home from "./containers/Home";
+import Home from "containers/Home";
+import TrackActivity from 'containers/TrackActivity';
 
 import "firebase/compat/analytics";
 import "firebase/compat/database";
@@ -42,7 +43,12 @@ const App = () => {
       <div className="app">
         <Router >
           <Header />
-          <Route path="/" component={Home} />
+          <Route path="/" exact >
+            <Home />
+          </Route>
+          <Route path="/points/:id" exact>
+            <TrackActivity user={user} />
+          </Route>
         </Router>
       </div>
     </React.StrictMode>
