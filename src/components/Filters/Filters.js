@@ -1,8 +1,18 @@
 import './Filters.scss';
+import FilterStatus from './FilterStatus';
+import FilterSport from './FilterSport';
+import FilterDate from './FilterDate';
+import types from 'config/types.json';
 
-const Filters = ({ type }) => {
+const Filters = ({ status }) => {
+  // status === true, если показаны события. False - показаны точки
   return <div className="filters">
-    {type}
+    <FilterStatus />
+    {
+      status ?
+        <FilterDate /> :
+        <FilterSport />
+    }
   </div>
 }
 

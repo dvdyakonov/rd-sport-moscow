@@ -23,9 +23,10 @@
   }
 
   &--l {
-    font-size: 16px;
-    padding: 8px 16px;
+    font-size: 18px;
+    padding: 15px 30px;
     border-radius: 64px;
+    text-transform: uppercase;
     @media only screen and (max-width: 320px) {
       border-radius: 6px;
     }

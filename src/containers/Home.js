@@ -10,7 +10,7 @@ import Filters from '../components/Filters';
 const Home = () => {
   const location = useLocation();
   const [map, setMapInstance] = useState();
-  const [objectType, objectTypeToggle] = useState('points');  // points or events
+  const [showEvents, showEventsToggle] = useState(false);  // points or events
   const [asideType, setAsideType] = useState('default');
   const [mapData, setMapData] = useState({
     coords: [55.751244, 37.618423],
@@ -40,9 +40,9 @@ const Home = () => {
 
   return (
     <main className="main">
-      {map && <Aside type={asideType} setMapData={setMapData} currentMap={map} objectType={objectType} objectTypeToggle={objectTypeToggle} />}
+      {map && <Aside type={asideType} setMapData={setMapData} currentMap={map} status={showEvents} showEventsToggle={showEventsToggle} />}
       <YandexMap points={filteredPoints} mapData={mapData} setMapInstance={setMapInstance} />
-      <Filters type={objectType} />
+      <Filters status={showEvents} />
     </main>
   )
 }
