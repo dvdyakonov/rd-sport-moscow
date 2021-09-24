@@ -11,7 +11,7 @@ const Aside = ({type, setMapData, currentMap, objectType, objectTypeToggle}) => 
         )
       case 'event':
         return (
-          <SearchForm />
+          <SearchForm setMapData={setMapData} currentMap={currentMap} />
         )
       default:
         return (
@@ -19,8 +19,6 @@ const Aside = ({type, setMapData, currentMap, objectType, objectTypeToggle}) => 
         )
     }
   }
-
-  console.log(objectType);
 
   return (
     <aside className={`aside aside--${type}`}>

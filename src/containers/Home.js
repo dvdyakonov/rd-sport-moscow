@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import qs from "qs";
 import { useLocation } from "react-router-dom";
 import points from '../config/points.json';
-import { getDistance, jsonp } from "../utils";
+import { getDistance } from "../utils";
 import Aside from '../components/Aside';
 import YandexMap from '../components/YandexMap';
+import Filters from '../components/Filters';
 
 const Home = () => {
   const location = useLocation();
@@ -23,7 +24,7 @@ const Home = () => {
     const mapDataFromUrl = qs.parse(location.search.slice(1));
     const requiredKeys = Object.keys(mapDataFromUrl).filter(item => ['coords', 'name', 'zoom', 'distance'].indexOf(item) !== -1);
     if(requiredKeys.length === 4 && parseInt(mapDataFromUrl.distance) <= 2) {
-      setMapData(mapDataFromUrl); // Данные уже введены, отправляем на второй шаг
+      setMapData(mapDataFromUrl); // Данные уже введены
     }
   }, []);
 
@@ -41,6 +42,7 @@ const Home = () => {
     <main className="main">
       {map && <Aside type={asideType} setMapData={setMapData} currentMap={map} objectType={objectType} objectTypeToggle={objectTypeToggle} />}
       <YandexMap points={filteredPoints} mapData={mapData} setMapInstance={setMapInstance} />
+      <Filters type={objectType} />
     </main>
   )
 }

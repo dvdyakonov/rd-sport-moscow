@@ -7,9 +7,12 @@
   right: 0;
   z-index: 1000;
   height: 64px;
-  pointer-events: none;
   padding: 0 24px;
   background: $mainBgColor;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
   @media only screen and (max-width: 320px) {
     padding: 0 16px;
   }
@@ -21,5 +24,13 @@
     color: $mainFontColor;
     cursor: pointer;
     pointer-events: initial;
+  }
+  &__nav {
+    &-link {
+      color: $mainFontColor;
+      display: block;
+      text-decoration: none;
+      cursor: pointer;
+    }
   }
 }

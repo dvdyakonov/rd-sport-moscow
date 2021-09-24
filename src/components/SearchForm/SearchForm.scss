@@ -7,8 +7,8 @@
   }
   p {
     text-align: center;
-    font-size: 22px;
-    line-height: 28px;
+    font-size: 18px;
+    line-height: 24px;
     color: $fontColor;
     max-width: 100%;
     margin: 0 auto;
@@ -33,6 +33,7 @@
 
 .input {
   position: relative;
+  margin-bottom: 24px;
   &__icon {
     position: absolute;
     left: 0;
