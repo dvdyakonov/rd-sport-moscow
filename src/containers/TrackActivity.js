@@ -21,14 +21,7 @@ const TrackActivity = ({ user, showAuthPopup }) => {
 
     const [activityKey, setActivityKey] = useState(localStorage.getItem('activityKey'));
     const [activityStart, setActivityStart] = useState(localStorage.getItem('activityStart'));
-    const [prevEmail, setPrevEmail] = useState(user.email);
-
-    useEffect(() => {
-        if (prevEmail !== user.email) {
-            setPrevEmail(user.email);
-        }
-    }, [user.email])
-
+    
     const options = types.map(type => ({ "value": type.id, "label": type.title }) )
 
     const sendRequest = () => {

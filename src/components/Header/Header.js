@@ -1,17 +1,24 @@
 import React from 'react';
-import Button from '../Button';
-import { Link } from "react-router-dom";
-import {ReactComponent as ArrowIcon} from './arrow.svg';
+import Button from 'components/Button';
 import './Header.scss';
 
-const Header = ({}) => {
+import firebase from "firebase/compat/app";
+
+const Header = ({user, showAuthPopup}) => {
   return (
     <header className="header">
       <div className="header__logo">QRNTN</div>
     <nav className="header__nav">
       <ul className="header__nav-list">
         <li className="header__nav-item">
-          <Link to="/profile" className="header__nav-link">Профиль</Link>
+          {user.email ? (
+            <>
+            {user.email}
+            <Button className="header__nav-link" onClick={() => firebase.auth().signOut()}>Выход</Button>
+            </>
+          ) : (
+            <Button className="header__nav-link" onClick={() => showAuthPopup(true)}>Авторизоваться</Button>
+          )}
         </li>
       </ul>
     </nav>
