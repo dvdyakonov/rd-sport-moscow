@@ -25,7 +25,7 @@
 
 .form {
   max-width: 100%;
-  margin: 24px 0 96px;
+  margin: 24px 0 24px;
   button {
     width: 100%;
   }
@@ -61,7 +61,7 @@
     font-size: 18px;
     font-family: 'Proxima Nova', sans-serif;
     font-weight: 400;
-    padding: 0 24px 0 56px;
+    padding: 0 24px 0 24px;
     color: $fontColor;
     box-sizing: border-box;
     border: 2px solid rgba($borderColor, 0.4);

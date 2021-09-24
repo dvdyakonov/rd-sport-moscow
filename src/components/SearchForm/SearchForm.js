@@ -99,7 +99,6 @@ const SearchForm = ({ setMapData, currentMap }) => {
         <p>Введите адрес, чтобы узнать о случаях заражения коронавирусом рядом.</p>
         <form className="form form--search" onSubmit={handleSubmit}>
           <div className="input">
-            <SearchIcon className="input__icon"/>
             <input type="text" name="address" className="input__element" id="suggest" placeholder="Введите свой адрес" value={address} required onChange={e => setAddress(e.target.value)}/>
           </div>
           <Button kind="check" type="submit" size="l">Проверить</Button>
