@@ -4,12 +4,42 @@
   position: absolute;
   top: 32px;
   right: 32px;
-  background-color: #fff;
+  background-color: $bgColor;
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
   align-items: center;
+  &__item {
+    &-popover {
+      background-color: $bgColor;
+    }
+  }
   &__btn {
     padding: 12px;
+    cursor: pointer;
+  }
+}
+
+.filter {
+  &__sport {
+    &-list {
+      list-style: none;
+      margin: 0;
+    }
+    &-item {
+      padding: 8px 12px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      &-title {
+        margin-right: auto;
+        margin-left: 8px;
+        cursor: pointer;
+      }
+      &-checkbox {
+        margin-left: 12px;
+      }
+    }
   }
 }
