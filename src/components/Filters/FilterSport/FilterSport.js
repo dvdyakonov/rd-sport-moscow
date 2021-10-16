@@ -23,7 +23,7 @@ const FilterSport = () => {
       <ul className="filter__sport-list">
       {
         types.map((type, index) => <li className="filter__sport-item" key={type.id}>
-          <img src={`/sport-icons/${type.name}.svg`} alt={type.title} className="filter__sport-item-img" width="24" height="24" />
+          {/* <img src={`/sport-icons/${type.name}.svg`} alt={type.title} className="filter__sport-item-img" width="24" height="24" /> */}
           <label htmlFor={`custom-checkbox-${type.id}`} className="filter__sport-item-title">{type.title}</label>
           <input
             type="checkbox"

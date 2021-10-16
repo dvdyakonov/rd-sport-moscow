@@ -20,7 +20,7 @@ const YandexMap = ({ setMapInstance, points, mapData }) => {
             }}
           >
               {points.map((item, index) => (
-                <Placemark key={`place_${index}`} geometry={item.coords} properties={{hintContent: item.name}} options={{
+                <Placemark key={`place_${index}`} geometry={item.coords} properties={{hintContent: item.title}} options={{
                     iconLayout: 'default#image',
                     iconImageHref: 'coronavirus.png',
                     iconImageSize: [40, 40],

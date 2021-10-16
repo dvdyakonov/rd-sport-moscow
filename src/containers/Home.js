@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import qs from "qs";
 import { useLocation } from "react-router-dom";
-import points from '../config/points.json';
-import { getDistance } from "../utils";
-import Aside from '../components/Aside';
-import YandexMap from '../components/YandexMap';
-import Filters from '../components/Filters';
+import points from 'config/points.json';
+import { getDistance } from "utils";
+import Aside from 'components/Aside';
+import YandexMap from 'components/YandexMap';
+import Filters from 'components/Filters';
 
 const Home = () => {
   const location = useLocation();
@@ -18,6 +18,9 @@ const Home = () => {
     zoom: 10,
     distance: 0.5,
   });
+
+  console.log(points);
+
 
   useEffect(() => {
     // Забираем данные из адреса
