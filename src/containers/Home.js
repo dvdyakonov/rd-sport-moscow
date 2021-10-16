@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import qs from "qs";
 import { useLocation } from "react-router-dom";
-import points from 'config/points.json';
+
 import { getDistance } from "utils";
 import Aside from 'components/Aside';
 import YandexMap from 'components/YandexMap';
@@ -19,32 +19,30 @@ const Home = () => {
     distance: 0.5,
   });
 
-  console.log(points);
 
 
-  useEffect(() => {
-    // Забираем данные из адреса
-    const mapDataFromUrl = qs.parse(location.search.slice(1));
-    const requiredKeys = Object.keys(mapDataFromUrl).filter(item => ['coords', 'name', 'zoom', 'distance'].indexOf(item) !== -1);
-    if(requiredKeys.length === 4 && parseInt(mapDataFromUrl.distance) <= 2) {
-      setMapData(mapDataFromUrl); // Данные уже введены
-    }
-  }, []);
+  // useEffect(() => {
+  //   // Забираем данные из адреса
+  //   const mapDataFromUrl = qs.parse(location.search.slice(1));
+  //   const requiredKeys = Object.keys(mapDataFromUrl).filter(item => ['coords', 'name', 'zoom', 'distance'].indexOf(item) !== -1);
+  //   if(requiredKeys.length === 4 && parseInt(mapDataFromUrl.distance) <= 2) {
+  //     setMapData(mapDataFromUrl); // Данные уже введены
+  //   }
+  // }, []);
 
-  const filteredPoints = points.filter((item) => {
-    const pointDistance = getDistance(mapData.coords, item.coords);
-    if (pointDistance < mapData.distance) {
-      item.distance = pointDistance;
-      return true;
-    }
-    return false;
-  });
-
+  // const filteredPoints = points.filter((item) => {
+  //   const pointDistance = getDistance(mapData.coords, item.coords);
+  //   if (pointDistance < mapData.distance) {
+  //     item.distance = pointDistance;
+  //     return true;
+  //   }
+  //   return false;
+  // });
 
   return (
     <main className="main">
       {map && <Aside type={asideType} setMapData={setMapData} currentMap={map} status={showEvents} showEventsToggle={showEventsToggle} />}
-      <YandexMap points={filteredPoints} mapData={mapData} setMapInstance={setMapInstance} />
+      <YandexMap mapData={mapData} setMapInstance={setMapInstance} />
       <Filters status={showEvents} />
     </main>
   )
