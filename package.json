@@ -21,6 +21,7 @@
   "homepage": "",
   "dependencies": {
     "classnames": "^2.3.1",
+    "csvtojson": "^2.0.10",
     "firebase": "^9.0.2",
     "lodash": "^4.17.21",
     "node-sass": "^6.0.1",
