@@ -19,9 +19,6 @@ const Home = () => {
     distance: 0.5,
   });
 
-  console.log(points);
-
-
   useEffect(() => {
     // Забираем данные из адреса
     const mapDataFromUrl = qs.parse(location.search.slice(1));
@@ -29,6 +26,8 @@ const Home = () => {
     if(requiredKeys.length === 4 && parseInt(mapDataFromUrl.distance) <= 2) {
       setMapData(mapDataFromUrl); // Данные уже введены
     }
+
+    console.log(map);
   }, []);
 
   const filteredPoints = points.filter((item) => {

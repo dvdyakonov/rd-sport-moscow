@@ -1,17 +1,24 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { YMaps, Map, Placemark, Clusterer, Circle, ZoomControl } from 'react-yandex-maps';
-import config from '../../config/app.json';
+import { attachYandexHeatmap } from 'utils';
+import config from 'config/app.json';
 import './YandexMap.scss';
 
 const YandexMap = ({ setMapInstance, points, mapData }) => {
   const { yandexMapConfig: { apikey } } = config;
+  const map = useRef(null);
 
   return (
     <YMaps query={{
           apikey,
         }}
       >
-      <Map className="map" state={{ center: mapData.coords, zoom: mapData.zoom }} onLoad={ymaps => setMapInstance(ymaps)} modules={["SuggestView", "geocode", "suggest"]}>
+      <Map className="map" instanceRef={map} state={{ center: mapData.coords, zoom: mapData.zoom }} onLoad={ymaps => {
+        ymaps.modules.require('Heatmap');
+        setMapInstance(ymaps);
+        attachYandexHeatmap(ymaps);
+        console.log(ymaps);
+      }} modules={["SuggestView", "geocode", "suggest"]}>
         <>
           <Clusterer
             options={{
@@ -20,12 +27,7 @@ const YandexMap = ({ setMapInstance, points, mapData }) => {
             }}
           >
               {points.map((item, index) => (
-                <Placemark key={`place_${index}`} geometry={item.coords} properties={{hintContent: item.title}} options={{
-                    iconLayout: 'default#image',
-                    iconImageHref: 'coronavirus.png',
-                    iconImageSize: [40, 40],
-                    iconImageOffset:[-20,-20]
-                  }} modules={['geoObject.addon.hint']} />
+                <Placemark key={`place_${index}`} geometry={item.coords} properties={{hintContent: item.title}} modules={['geoObject.addon.hint']} />
               ))}
           </Clusterer>
           <Placemark geometry={mapData.coords} options={{preset: 'islands#blueDotIcon', iconColor: '#1d98ff'}} properties={{hintContent: mapData.name}} modules={['geoObject.addon.hint']}/>
