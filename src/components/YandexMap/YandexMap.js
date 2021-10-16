@@ -1,10 +1,16 @@
 import React, { useRef } from 'react';
+import { useSelector } from 'react-redux';
+import {
+  selectPoints,
+} from '../../services/points/pointsSlice';
 import { YMaps, Map, Placemark, Clusterer, Circle, ZoomControl } from 'react-yandex-maps';
 import { attachYandexHeatmap } from 'utils';
 import config from 'config/app.json';
 import './YandexMap.scss';
 
-const YandexMap = ({ setMapInstance, points, mapData }) => {
+const YandexMap = ({ setMapInstance, mapData }) => {
+  let points = useSelector(selectPoints);
+  points = points.slice(0, 100);
   const { yandexMapConfig: { apikey } } = config;
   const map = useRef(null);
 
