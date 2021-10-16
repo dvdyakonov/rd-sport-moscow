@@ -7,8 +7,8 @@ import firebase from "firebase/compat/app";
 const Header = ({user, showAuthPopup}) => {
   return (
     <header className="header">
-      <div className="header__logo">QRNTN</div>
-    <nav className="header__nav">
+      <div className="header__logo">MOSSPORT</div>
+      <nav className="header__nav">
       <ul className="header__nav-list">
         <li className="header__nav-item">
           {user.email ? (
