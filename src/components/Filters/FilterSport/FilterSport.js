@@ -1,28 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import { Popover } from 'react-tiny-popover';
-import types from 'config/types.json';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+  selectFilters,
+  selectTotalFilters,
+  changeFilters,
+} from '../../../services/filters/filtersSlice';
+import {
+  filterData,
+} from '../../../services/points/pointsSlice';
 
 const FilterSport = () => {
   const [isPopoverOpen, setIsPopoverOpen] = useState();
-  const [checkedState, setCheckedState] = useState(
-    new Array(types.length).fill(true)
-  );
-  const [total, setTotal] = useState(types.length);
+  const dispatch = useDispatch();
+  const filters = useSelector(selectFilters);
+  const total = useSelector(selectTotalFilters);
 
   const handleOnChange = (position) => {
-    const updatedCheckedState = checkedState.map((item, index) =>
-      index === position ? !item : item
-    );
-
-    setCheckedState(updatedCheckedState);
-    setTotal(updatedCheckedState.filter(st => st).length);
+    const newFilters = filters.map((item, index) => index === position ? {
+      ...item,
+      status: !item.status
+    } : item);
+    dispatch(changeFilters(newFilters));
   };
 
   const content = () => (
     <div className="filters__item-popover">
       <ul className="filter__sport-list">
       {
-        types.map((type, index) => <li className="filter__sport-item" key={type.id}>
+        filters.map((type, index) => <li className="filter__sport-item" key={type.id}>
           {/* <img src={`/sport-icons/${type.name}.svg`} alt={type.title} className="filter__sport-item-img" width="24" height="24" /> */}
           <label htmlFor={`custom-checkbox-${type.id}`} className="filter__sport-item-title">{type.title}</label>
           <input
@@ -31,7 +37,7 @@ const FilterSport = () => {
             id={`custom-checkbox-${type.id}`}
             name={type.name}
             value={type.name}
-            checked={checkedState[index]}
+            checked={type.status}
             onChange={() => handleOnChange(index)}
           />
         </li>)

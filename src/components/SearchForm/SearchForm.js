@@ -93,7 +93,7 @@ const SearchForm = ({ setMapData, currentMap }) => {
   return (
     <>
       <Helmet>
-        <title>QRNTN – Узнай о случаях заражения коронавирусом рядом</title>
+        <title>MOSSPORT – Интерактивная карта спортивной инфраструктуры</title>
       </Helmet>
       <div className="search-form">
         <p>Введите адрес, чтобы узнать о случаях заражения коронавирусом рядом.</p>
