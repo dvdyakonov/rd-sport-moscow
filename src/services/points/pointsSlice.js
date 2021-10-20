@@ -3,6 +3,7 @@ import points from 'config/points.json';
 
 const initialState = {
   data: [...points],
+  active: null,
 };
 
 export const pointsSlice = createSlice({
@@ -11,6 +12,9 @@ export const pointsSlice = createSlice({
   reducers: {
     filterData: (state, action) => {
       console.log("FILTER DATA");
+    },
+    setActive: (state, action) => {
+      state.active = action.payload;
     }
   },
   extraReducers: {
@@ -27,13 +31,13 @@ export const pointsSlice = createSlice({
       } else {
         state.data = [...points.slice(0, 100)];
       }
-
     }
   }
 });
 
-export const { filterData } = pointsSlice.actions;
+export const { filterData, setActive } = pointsSlice.actions;
 
 export const selectPoints = (state) => state.points.data;
+export const selectActivePoint = (state) => state.points.active;
 
 export default pointsSlice.reducer;

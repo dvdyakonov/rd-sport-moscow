@@ -6,9 +6,9 @@ import {
 import { withYandexMap } from 'hocs';
 import './Map.scss';
 
-const init = (features, mapRef) => {
+const init = (features, map) => {
   const ymaps = window.ymaps;
-  const myMap = new ymaps.Map(mapRef.current, {
+  const myMap = new ymaps.Map(map.current, {
     center: [55.76, 37.64],
     zoom: 10
   }, {
@@ -54,7 +54,17 @@ const Map = ({ isYmapsInit, mapData }) => {
   const featuresFunc = (points) => ({
     "type": "FeatureCollection",
     "features": points.map(point => (
-      { "type": "Feature", "id": point.id, "geometry": { "type": "Point", "coordinates": point.coords }, "properties": { "balloonContentHeader": "<font size=3><b><a target='_blank' href='https://yandex.ru'>Здесь может быть ваша ссылка</a></b></font>", "balloonContentBody": "<p>Ваше имя: <input name='login'></p><p><em>Телефон в формате 2xxx-xxx:</em>  <input></p><p><input type='submit' value='Отправить'></p>", "balloonContentFooter": "<font size=1>Информация предоставлена: </font> <strong>этим балуном</strong>", "clusterCaption": "<strong><s>Еще</s> одна</strong> метка", "hintContent": "<strong>Текст  <s>подсказки</s></strong>" } }
+      {
+        "type": "Feature",
+        "id": point.id,
+        "geometry": {
+          "type": "Point",
+          "coordinates": point.coords
+        },
+        "properties": {
+          "balloonContentHeader": "<font size=3><b><a target='_blank' href='https://yandex.ru'>Здесь может быть ваша ссылка</a></b></font>", "balloonContentBody": "<p>Ваше имя: <input name='login'></p><p><em>Телефон в формате 2xxx-xxx:</em>  <input></p><p><input type='submit' value='Отправить'></p>", "balloonContentFooter": "<font size=1>Информация предоставлена: </font> <strong>этим балуном</strong>", "clusterCaption": "<strong><s>Еще</s> одна</strong> метка", "hintContent": "<strong>Текст  <s>подсказки</s></strong>"
+        }
+      }
     ))
   });
 

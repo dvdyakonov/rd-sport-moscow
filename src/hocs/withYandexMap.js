@@ -8,7 +8,7 @@ function withYandexMap(WrappedComponent) {
         }
         componentDidMount() {
             var self = this;
-            attachYandexMap(function () {
+            !this.state.isYmapsInit && attachYandexMap(function () {
                 self.setState({'isYmapsInit': true})
                 attachYandexHeatmap();
             });
