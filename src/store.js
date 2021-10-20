@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import pointsReducer from './services/points/pointsSlice';
 import filtersReducer from './services/filters/filtersSlice';
-import mapReducer from 'services/map/mapSlice';
+import mapReducer from './services/map/mapSlice';
 
 export default configureStore({
   reducer: {

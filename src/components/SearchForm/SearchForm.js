@@ -2,11 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useHistory } from "react-router-dom";
 import firebase from "firebase/compat/app";
 
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import {
   setMapOptions,
-  selectMapInstance,
 } from 'services/map/mapSlice';
 
 import { Helmet } from "react-helmet";
@@ -68,7 +67,7 @@ const geocode = (ymaps, address, callback) => {
 
 const SearchForm = () => {
   const history = useHistory();
-  const mapInstance = useSelector(selectMapInstance);
+  const mapInstance = window.ymaps;
   const dispatch = useDispatch();
   const [address, setAddress] = useState("");
 
@@ -91,16 +90,16 @@ const SearchForm = () => {
   }
 
   useEffect(() => {
-    console.log(mapInstance);
-    if (mapInstance) {
-      const suggestView = new mapInstance.SuggestView("suggest", {
+    if (window.ymaps) {
+      const suggestView = new window.ymaps.SuggestView("suggest", {
         boundedBy: MoscowArea,
       });
       suggestView.events.add("select", function(e){
+        console.log(e.get('item'));
         setAddress(e.get('item').value)
       })
     }
-  });
+  }, [address]);
 
   return (
     <>
