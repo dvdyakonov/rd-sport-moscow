@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import {
   selectPoints,
 } from '../../services/points/pointsSlice';
-import { YMaps, Map, Placemark, Clusterer, ObjectManager, Circle, ZoomControl } from 'react-yandex-maps';
+import { YMaps, Map, Placemark, ObjectManager, Circle, ZoomControl } from 'react-yandex-maps';
 import { attachYandexHeatmap } from 'utils';
 import config from 'config/app.json';
 import './YandexMap.scss';
@@ -27,10 +27,11 @@ const YandexMap = ({ setMapInstance, mapData }) => {
         }}
       >
       <Map className="map" instanceRef={map} state={{ center: mapData.coords, zoom: mapData.zoom }} onLoad={ymaps => {
-        ymaps.modules.require('Heatmap');
         setMapInstance(ymaps);
-        attachYandexHeatmap(ymaps);
-        console.log(ymaps);
+        attachYandexHeatmap(ymaps, function (Heatmap) {
+          var heatmap = new Heatmap(features);
+          heatmap.setMap(map);
+        });
       }} modules={["SuggestView", "geocode", "suggest"]}>
         <>
           {/* <Clusterer

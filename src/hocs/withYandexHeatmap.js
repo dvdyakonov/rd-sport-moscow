@@ -4,7 +4,11 @@ import { attachYandexHeatmap } from 'utils';
 function withYandexHeatmap(WrappedComponent) {
     return class extends React.Component {
         componentDidMount() {
-            attachYandexHeatmap();
+            const {isYmapsInit} = this.props;
+            if (isYmapsInit) {
+                console.log(124);
+                attachYandexHeatmap();   
+            }
         }
 
         render() {

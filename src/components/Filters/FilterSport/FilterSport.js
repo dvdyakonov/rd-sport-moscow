@@ -1,14 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Popover } from 'react-tiny-popover';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   selectFilters,
   selectTotalFilters,
   changeFilters,
-} from '../../../services/filters/filtersSlice';
-import {
-  filterData,
-} from '../../../services/points/pointsSlice';
+} from 'services/filters/filtersSlice';
 
 const FilterSport = () => {
   const [isPopoverOpen, setIsPopoverOpen] = useState();

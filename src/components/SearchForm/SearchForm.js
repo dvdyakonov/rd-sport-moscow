@@ -1,10 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from "react-router-dom";
 import firebase from "firebase/compat/app";
+
+import { useSelector, useDispatch } from 'react-redux';
+
+import {
+  setMapOptions,
+  selectMapInstance,
+} from 'services/map/mapSlice';
+
 import { Helmet } from "react-helmet";
 import qs from "qs";
 import Button from '../Button';
-import {ReactComponent as SearchIcon} from './search.svg';
 
 // Подлючаем аналитику
 import "firebase/compat/analytics";
@@ -59,36 +66,41 @@ const geocode = (ymaps, address, callback) => {
 
 }
 
-const SearchForm = ({ setMapData, currentMap }) => {
+const SearchForm = () => {
   const history = useHistory();
+  const mapInstance = useSelector(selectMapInstance);
+  const dispatch = useDispatch();
   const [address, setAddress] = useState("");
 
   const handleSubmit = (event) => {
       event.preventDefault();
-
-      geocode(currentMap, address.replace(/^\s*(.*)\s*$/, '$1'), (coords) => {
-        const mapData = {
+      console.log(mapInstance);
+      geocode(mapInstance, address.replace(/^\s*(.*)\s*$/, '$1'), (coords) => {
+        const mapOptions = {
           name: address,
           coords: coords,
           zoom: (window.innerWidth < 480) ? 15 : 16,
           distance: 0.5,
         };
 
-        setMapData(mapData);
-        history.push({ path: "/", search: qs.stringify(mapData)});
+        dispatch(setMapOptions(mapOptions));
+        history.push({ path: "/", search: qs.stringify(mapOptions)});
 
         firebase.analytics().logEvent('search_start');
       })
   }
 
   useEffect(() => {
-    const suggestView = new currentMap.SuggestView("suggest", {
-      boundedBy: MoscowArea,
-    });
-    suggestView.events.add("select", function(e){
-      setAddress(e.get('item').value)
-    })
-  }, [currentMap.SuggestView]);
+    console.log(mapInstance);
+    if (mapInstance) {
+      const suggestView = new mapInstance.SuggestView("suggest", {
+        boundedBy: MoscowArea,
+      });
+      suggestView.events.add("select", function(e){
+        setAddress(e.get('item').value)
+      })
+    }
+  });
 
   return (
     <>
