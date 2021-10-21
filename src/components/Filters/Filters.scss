@@ -1,15 +1,21 @@
-@import '../../styles/variables';
+@import 'styles/variables';
 
 .filters {
-  position: absolute;
-  top: 32px;
-  right: 32px;
   background-color: $bgColor;
   display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  align-items: center;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  &__title {
+    margin-top: 24px;
+    margin-bottom: 24px;
+    text-align: left;
+    font-weight: bold;
+    font-size: 24px;
+    line-height: 120%;
+  }
   &__item {
+    margin-bottom: 16px;
     &-popover {
       background-color: $bgColor;
     }
@@ -21,25 +27,5 @@
 }
 
 .filter {
-  &__sport {
-    &-list {
-      list-style: none;
-      margin: 0;
-    }
-    &-item {
-      padding: 8px 12px;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-between;
-      &-title {
-        margin-right: auto;
-        margin-left: 8px;
-        cursor: pointer;
-      }
-      &-checkbox {
-        margin-left: 12px;
-      }
-    }
-  }
+
 }

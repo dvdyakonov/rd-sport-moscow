@@ -41,9 +41,8 @@ const Home = () => {
 
   return (
     <main className="main">
-      {map && <Aside type={asideType} setMapData={setMapData} currentMap={map} status={showEvents} showEventsToggle={showEventsToggle} />}
+      {map && <Aside />}
       <YandexMap mapData={mapData} setMapInstance={setMapInstance} />
-      <Filters status={showEvents} />
     </main>
   )
 }

@@ -1,17 +1,14 @@
 import './Filters.scss';
-import FilterStatus from './FilterStatus';
+import FilterAvaliable from './FilterAvaliable';
 import FilterSport from './FilterSport';
-import FilterDate from './FilterDate';
+import FilterObjectName from './FilterObjectName';
 
-const Filters = ({ status }) => {
-  // status === true, если показаны события. False - показаны точки
+const Filters = () => {
   return <div className="filters">
+    <div className="filters__title">Фильтры:</div>
+    <FilterObjectName />
     <FilterSport />
-    {
-      status ?
-        <FilterDate /> :
-        <FilterStatus />
-    }
+    <FilterAvaliable />
   </div>
 }
 

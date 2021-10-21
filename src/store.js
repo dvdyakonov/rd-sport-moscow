@@ -7,4 +7,8 @@ export default configureStore({
     points: pointsReducer,
     types: filtersReducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
 });
