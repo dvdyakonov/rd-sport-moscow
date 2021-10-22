@@ -3,19 +3,14 @@ import Select from 'react-select';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectFilters, setFilter } from 'services/points/pointsSlice';
 
-const variants = [
-  { value: 500, label: 'Шаговая доступность' },
-  { value: 1000, label: 'Районная доступность' },
-  { value: 3000, label: 'Окружная доступность' },
-  { value: 5000, label: 'Городское значение' },
-]
+import organizations from 'config/organizations.json';
 
 const FilterAvaliable = () => {
-  const { avaliable } = useSelector(selectFilters);
+  const { organization } = useSelector(selectFilters);
   const dispatch = useDispatch();
   const handleOnChange = (val) => {
     dispatch(setFilter({
-      param: 'avaliable',
+      param: 'organization',
       value: val ? val.value : null
     }));
   };
@@ -24,11 +19,11 @@ const FilterAvaliable = () => {
     <Select
       isClearable
       name="avaliable"
-      options={variants}
-      placeholder="По доступности"
+      options={organizations}
+      placeholder="По ведомствам"
       className="filter__field filter__field--select"
       onChange={handleOnChange}
-      value={variants.filter(el => el.value === avaliable)[0]}
+      value={organizations.filter(el => el.value === organization)[0]}
     />
   </div>
 }

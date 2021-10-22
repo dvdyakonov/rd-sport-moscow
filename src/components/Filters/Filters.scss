@@ -11,11 +11,12 @@
     margin-bottom: 24px;
     text-align: left;
     font-weight: bold;
-    font-size: 24px;
+    font-size: 20px;
     line-height: 120%;
   }
   &__item {
     margin-bottom: 16px;
+    width: 100%;
     &-popover {
       background-color: $bgColor;
     }
@@ -27,5 +28,15 @@
 }
 
 .filter {
-
+  &__field {
+    width: 100%;
+    font-size: 16px;
+    line-height: 16px;
+    &--input {
+      padding: 10px;
+      border-radius: 4px;
+      border: 1px solid #cccccc;
+      box-shadow: none;
+    }
+  }
 }

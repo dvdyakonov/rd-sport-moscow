@@ -1,11 +1,11 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { selectFilters, filterData } from 'services/points/pointsSlice';
+import { selectFilters, setFilter } from 'services/points/pointsSlice';
 
 const FilterObjectName = () => {
   const { objectName } = useSelector(selectFilters);
   const dispatch = useDispatch();
   const handleOnChange = (e) => {
-    dispatch(filterData({
+    dispatch(setFilter({
       param: 'objectName',
       value: e.target.value
     }));
