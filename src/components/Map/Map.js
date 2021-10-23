@@ -7,7 +7,12 @@ import densityPoints from 'config/density.json';
 import { withYandexMap } from 'hocs';
 import './Map.scss';
 
-const init = (features, density, map) => {
+const update = ({ sportFeatures, densityFeatures, objManager } ) => {
+  objManager.removeAll();
+  objManager.add(sportFeatures);
+}
+
+const init = ({sportFeatures, densityFeatures, map, objManager, setObjManager }) => {
   const ymaps = window.ymaps;
   const myMap = new ymaps.Map(map.current, {
     center: [55.76, 37.64],
@@ -17,7 +22,7 @@ const init = (features, density, map) => {
     searchControlProvider: 'yandex#search'
   });
 
-  var objectManager = new ymaps.ObjectManager({
+  const objectManager = new ymaps.ObjectManager({
     // Чтобы метки начали кластеризоваться, выставляем опцию.
     clusterize: true,
     // ObjectManager принимает те же опции, что и кластеризатор.
@@ -27,12 +32,12 @@ const init = (features, density, map) => {
 
   // Чтобы задать опции одиночным объектам и кластерам,
   // обратимся к дочерним коллекциям ObjectManager.
-  // objectManager.objects.options.set('preset', 'islands#greenDotIcon');
-  // objectManager.clusters.options.set('preset', 'islands#greenClusterIcons');
 
+  objectManager.objects.options.set('preset', 'islands#greenDotIcon');
+  objectManager.clusters.options.set('preset', 'islands#greenClusterIcons');
 
-  // objectManager.add(features);
   myMap.geoObjects.add(objectManager);
+  // objectManager.add(sportFeatures);
 
   const gradients = [{
     .1: "rgba(0, 255, 0, 0.5)",
@@ -55,13 +60,14 @@ const init = (features, density, map) => {
 
 
   ymaps.modules.require(['Heatmap'], function (Heatmap) {
-    var heatmapSport = new Heatmap(features, {
+    var heatmapSport = new Heatmap(sportFeatures, {
       gradient: gradients[0],
       radius: radiuses[1],
+      intensityOfMidpoint: .01,
       opacity: opacities[2]
     });
 
-    var heatmapDensity = new Heatmap(density, {
+    var heatmapDensity = new Heatmap(densityFeatures, {
       radius: 15,
       dissipating: !0,
       intensityOfMidpoint: .01,
@@ -134,12 +140,17 @@ const init = (features, density, map) => {
       typeList.collapse();
     });
 
-    myMap.controls.add(typeList, { floatIndex: 0 })
+    myMap.controls.add(typeList, {floatIndex: 0});
+    if (!objManager) {
+      setObjManager(objectManager);
+    };
   })
-}
+};
 
-const Map = ({ isYmapsInit, mapData }) => {
+const Map = ({ isYmapsInit }) => {
   const points = useSelector(selectPoints);
+  const [objManager, setObjManager] = useState(null);
+
   const sportPointsConversion = (points) => ({
     "type": "FeatureCollection",
     "features": points.map(point => (
@@ -151,8 +162,8 @@ const Map = ({ isYmapsInit, mapData }) => {
           "coordinates": point.coords
         },
         "properties": {
-          "radius": point.radius,
-          "balloonContentHeader": "<font size=3><b><a target='_blank' href='https://yandex.ru'>Здесь может быть ваша ссылка</a></b></font>", "balloonContentBody": "<p>Ваше имя: <input name='login'></p><p><em>Телефон в формате 2xxx-xxx:</em>  <input></p><p><input type='submit' value='Отправить'></p>", "balloonContentFooter": "<font size=1>Информация предоставлена: </font> <strong>этим балуном</strong>", "clusterCaption": "<strong><s>Еще</s> одна</strong> метка", "hintContent": "<strong>Текст  <s>подсказки</s></strong>"
+          "balloonContentHeader": "<font size=3><b><a target='_blank' href='https://yandex.ru'>Здесь может быть ваша ссылка</a></b></font>", "balloonContentBody": "<p>Ваше имя: <input name='login'></p><p><em>Телефон в формате 2xxx-xxx:</em>  <input></p><p><input type='submit' value='Отправить'></p>", "balloonContentFooter": "<font size=1>Информация предоставлена: </font> <strong>этим балуном</strong>", "clusterCaption": "<strong><s>Еще</s> одна</strong> метка", "hintContent": "<strong>Текст  <s>подсказки</s></strong>",
+          "radius": point.radius
         }
       }
     ))
@@ -188,7 +199,21 @@ const Map = ({ isYmapsInit, mapData }) => {
 
   useEffect(() => {
     if (isYmapsInit) {
-      ymaps.ready(() => init(sportFeatures, densityFeatures, mapRef));
+      if (objManager) {
+        update({
+          sportFeatures,
+          densityFeatures,
+          objManager
+        });
+      } else {
+        ymaps.ready(() => init({
+          sportFeatures,
+          densityFeatures,
+          map: mapRef,
+          objManager,
+          setObjManager,
+        }));
+      }
     }
   }, [isYmapsInit, sportFeatures, densityFeatures, ymaps]);
 

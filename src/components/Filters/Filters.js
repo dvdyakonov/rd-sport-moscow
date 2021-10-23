@@ -1,17 +1,31 @@
+import Button from 'components/Button';
 import './Filters.scss';
-import FilterStatus from './FilterStatus';
+import FilterAvaliable from './FilterAvaliable';
 import FilterSport from './FilterSport';
-import FilterDate from './FilterDate';
+import FilterObjectName from './FilterObjectName';
+import FilterObjects from './FilterObjects';
+import FilterTypes from './FilterTypes';
+import { useSelector, useDispatch } from 'react-redux';
+import { selectFilters, filterData } from 'services/points/pointsSlice';
 
-const Filters = ({ status }) => {
-  // status === true, если показаны события. False - показаны точки
+const Filters = () => {
+  const dispatch = useDispatch();
+  const filters = useSelector(selectFilters);
   return <div className="filters">
+    <div className="filters__title">Фильтры спортивных объектов:</div>
+    <FilterObjectName />
     <FilterSport />
-    {
-      status ?
-        <FilterDate /> :
-        <FilterStatus />
-    }
+    <FilterAvaliable />
+    <FilterTypes />
+    <FilterObjects />
+
+    <Button
+      kind="wide"
+      className="filters__btn"
+      onClick={() => dispatch(filterData(filters))}
+    >
+      Отфильтровать
+    </Button>
   </div>
 }
 
