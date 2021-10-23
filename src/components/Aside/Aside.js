@@ -2,20 +2,20 @@ import React from 'react';
 import SearchForm from '../SearchForm';
 import './Aside.scss';
 
-const Aside = ({type, setMapData, currentMap, status, showEventsToggle}) => {
+const Aside = ({type, status, showEventsToggle}) => {
   const asideRender = (flag) => {
     switch (flag) {
       case 'point':
         return (
-          <SearchForm setMapData={setMapData} currentMap={currentMap} />
+          <SearchForm />
         )
       case 'event':
         return (
-          <SearchForm setMapData={setMapData} currentMap={currentMap} />
+          <SearchForm />
         )
       default:
         return (
-          <SearchForm setMapData={setMapData} currentMap={currentMap} />
+          <SearchForm />
         )
     }
   }
