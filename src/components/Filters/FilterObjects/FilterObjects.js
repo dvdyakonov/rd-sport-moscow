@@ -26,7 +26,7 @@ const FilterObjects = () => {
       name="depart"
       isSearchable
       isClearable
-      placeholder="По ведомствам"
+      placeholder="Ведомственная принадлежность"
       className="filter__field filter__field--select"
       options={options}
       onInputChange={inputChange}

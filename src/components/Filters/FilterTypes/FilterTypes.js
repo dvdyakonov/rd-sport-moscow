@@ -24,7 +24,7 @@ const FilterTypeZone = () => {
       isClearable
       name="types"
       options={typesOptions}
-      placeholder="По типу спортивных зон"
+      placeholder="Тип спортивных зон"
       className="filter__field filter__field--select"
       onChange={handleOnChange}
       value={areaType}

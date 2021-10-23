@@ -6,7 +6,7 @@ const initialState = {
   filters: {
     objectName: '',
     depart: '',
-    areaName: null,
+    areaName: '',
     areaType: null,
     types: [],
     avaliable: null,

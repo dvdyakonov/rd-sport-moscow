@@ -3,6 +3,7 @@ import './Filters.scss';
 import FilterAvaliable from './FilterAvaliable';
 import FilterSport from './FilterSport';
 import FilterObjectName from './FilterObjectName';
+import FilterAreaName from './FilterAreaName';
 import FilterObjects from './FilterObjects';
 import FilterTypes from './FilterTypes';
 import { useSelector, useDispatch } from 'react-redux';
@@ -14,10 +15,12 @@ const Filters = () => {
   return <div className="filters">
     <div className="filters__title">Фильтры спортивных объектов:</div>
     <FilterObjectName />
+    <FilterObjects />
+    <FilterAreaName />
+    <FilterTypes />
     <FilterSport />
     <FilterAvaliable />
-    <FilterTypes />
-    <FilterObjects />
+
 
     <Button
       kind="wide"
