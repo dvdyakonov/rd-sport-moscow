@@ -1,8 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
-import points from 'config/objects.json';
+import { intersection } from 'lodash';
+import objects from 'config/objects.json';
+import areas from 'config/areas.json';
 
 const initialState = {
-  data: [...points],
+  data: [...objects],
   filters: {
     objectName: '',
     depart: '',
@@ -26,25 +28,35 @@ export const pointsSlice = createSlice({
     },
     filterData: (state, action) => {
       const filters = action.payload;
-      const newArr = points.filter(point => {
+
+      // Проверяем на совпадение по наименованию спортивной зоны
+      let tempAreas = [];
+      if (filters.areaName) {
+        tempAreas = areas.filter(item => item.label.toLowerCase().indexOf(filters.areaName.toLowerCase()) !== -1);
+      } else {
+        tempAreas = areas;
+      }
+
+      const newArr = objects.filter(point => {
+        const objectAreas = tempAreas.filter(ar => ar.objectId === point.value);
+
         // Проверяем на совпадение по наименованию объекта
         if (filters.objectName) {
-          if(point.title.indexOf(filters.objectName) < 0) {
+          if(point.label.indexOf(filters.objectName) < 0) {
             return false;
           }
         }
 
-        // Проверяем на совпадение по видам спорта
-        if (filters.types.length > 0) {
-          const typeIds = filters.types.map(type => type.value);
-          if(point.types.filter(type => typeIds.indexOf(type) >= 0).length === 0) {
+        // Проверяем на совпадение по наименованию спортивной зоны
+        if (filters.areaName) {
+          if(objectAreas.length === 0) {
             return false;
           }
         }
 
-        // Проверяем на совпадение ведомственной пренадлежности
+        // Проверяем на совпадение ведомственной принадлежности
         if (filters.depart) {
-          if(point.parent !== filters.depart) {
+          if(filters.depart.objectIds.indexOf(point.value) === -1) {
             return false;
           }
         }
@@ -52,6 +64,22 @@ export const pointsSlice = createSlice({
         // Проверяем на доступность
         if (filters.avaliable) {
           if(point.radius !== filters.avaliable) {
+            return false;
+          }
+        }
+
+        // Проверяем на совпадение по видам спорта
+        if (filters.types.length > 0) {
+          const typeIds = filters.types.map(type => type.value);
+
+          if(objectAreas.filter(item => intersection(typeIds, item.kindIds).length > 0).length === 0) {
+            return false;
+          }
+        }
+
+        // Проверяем совпадение по типам спорт зон
+        if (filters.areaType) {
+          if(objectAreas.filter(item => item.typeId === filters.areaType.value).filter(item => item.objectId === point.value).length === 0) {
             return false;
           }
         }

@@ -112,7 +112,7 @@ const init = ({sportFeatures, populationFeatures, map, objManager, setObjManager
         case 16:
           heatmapPopulation.options.set("intensityOfMidpoint", .5);
           break;
-        default: 
+        default:
           heatmapPopulation.options.set("intensityOfMidpoint", .005);
           break;
       }
@@ -167,7 +167,7 @@ const Map = ({ isYmapsInit }) => {
     "features": points.map(point => (
       {
         "type": "Feature",
-        "id": point.id,
+        "id": point.value,
         "geometry": {
           "type": "Point",
           "coordinates": point.coords
@@ -189,7 +189,6 @@ const Map = ({ isYmapsInit }) => {
     "features": points.map(point => (
       {
         "type": "Feature",
-        "id": point.id,
         "geometry": {
           "type": "Point",
           "coordinates": [Number(point.lat), Number(point.lon)]
