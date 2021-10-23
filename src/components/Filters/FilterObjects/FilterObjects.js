@@ -3,7 +3,7 @@ import Select from "react-select";
 import { useSelector, useDispatch } from 'react-redux';
 import { selectFilters, setFilter } from 'services/points/pointsSlice';
 
-import objects from 'config/objects.json';
+import objects from 'config/departments.json';
 
 const FilterObjects = () => {
   const { depart } = useSelector(selectFilters);

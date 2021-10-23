@@ -4,14 +4,13 @@ let _ = require('lodash');
 
 let fileInputName = 'src/config/csv/objects-by-types.csv';
 
-// csvToJson.generateJsonFileFromCsv(fileInputName,fileOutputName);
-
 let json = csvToJson.getJsonFromCsv(fileInputName);
 
-const points = [];
-const types = [];
-const organizations = [];
+const areas = [];
 const objects = [];
+const departments = [];
+const typesOfAreas = [];
+const kindsOfSports = [];
 const zones = {
   'Шаговая доступность': 500,
   'Районное': 1000,
@@ -21,97 +20,101 @@ const zones = {
 
 for (let i = 0; i < json.length; i++) {
 
-    // JSON со списком видов спорта
+  // Формируем JSON видов спорта
 
-    if (!_.find(types, ['title', json[i]['Видспорта']])) {
-        types.push({
-            value: 'x' + i,
-            label: json[i]['Видспорта']
-        })
+  const kindsOfSportsItem = _.find(kindsOfSports, ['label', json[i]['Видспорта']]);
 
-    }
-
-    // JSON со списком объектов
-
-    if (!_.find(objects, ['id', json[i]['idОбъекта']])) {
-      objects.push({
-          value: json[i]['idОбъекта'],
-          label: json[i]['Объект']
-      })
+  if (typeof kindsOfSportsItem === 'undefined') {
+    kindsOfSports.push({
+      value: kindsOfSports.length + 1,
+      label: json[i]['Видспорта']
+    })
   }
 
-    // JSON со списком организаций
+  // Формируем JSON типа спортивных объектов
+  const typesOfAreasItem = _.find(typesOfAreas, ['label', json[i]['Типспортзоны']]);
 
-    if (!_.find(organizations, ['id', json[i]['idВедомственнойОрганизации']])) {
-        organizations.push({
-            value: json[i]['idВедомственнойОрганизации'],
-            label: json[i]['ВедомственнаяОрганизация']
-        })
+  if (typeof typesOfAreasItem === 'undefined') {
+    typesOfAreas.push({
+      value: typesOfAreas.length + 1,
+      label: json[i]['Типспортзоны']
+    })
+  }
+  
+  // Формируем JSON спортивных зон
+
+  const areasItem = _.find(areas, ['value', Number(json[i]['idСпортзоны'])]);
+  const kindsOfSportsItemId = kindsOfSportsItem !== undefined ? kindsOfSportsItem.value : kindsOfSports.length + 1;
+  const typesOfAreasItemId = typesOfAreasItem !== undefined ? typesOfAreasItem.value : typesOfAreas.length + 1;
+
+  if (typeof areasItem !== 'undefined') {
+    areasItem.kindIds = [...areasItem.kindIds, kindsOfSportsItemId]
+  } else {
+    areas.push({
+      value: Number(json[i]['idСпортзоны']),
+      label: json[i]['Спортзона'],
+      objectId: Number(json[i]['idОбъекта']),
+      typeId: typesOfAreasItemId,
+      kindIds: [kindsOfSportsItemId],
+      square: Number(json[i]['Площадьспортзоны']),
+    })
+  }
+
+  // Формируем JSON спортивных объектов
+
+  const objectsItem = _.find(objects, ['value', Number(json[i]['idОбъекта'])]);
+
+  if (typeof objectsItem !== 'undefined') {
+    if (objectsItem.areasIds.indexOf(Number(json[i]['idСпортзоны'])) === -1) {
+      objectsItem.areasIds = [...objectsItem.areasIds, Number(json[i]['idСпортзоны'])]
     }
+  } else {
+    objects.push({
+      value: Number(json[i]['idОбъекта']),
+      label: json[i]['Спортзона'],
+      coords: [json[i]['Широта(Latitude)'], json[i]['Долгота(Longitude)']],
+      address: json[i]['Адрес'],
+      areasIds: [Number(json[i]['idСпортзоны'])],
+      radius: Number(zones[json[i]['Доступность']]),
+    })
+  }
 
-    // JSON со списком спортзон + группируем
+  // Формируем JSON организаций
 
-    let point = _.find(points, ['id', json[i]['idСпортзоны']]);
-    let pointType = _.find(types, ['title', json[i]['Видспорта']]);
 
-    if (point) {
-        point.types = [...point.types, pointType.id];
-    } else {
-        console.log(json[i]['Доступность']);
-        points.push({
-            id: json[i]['idСпортзоны'],
-            address: json[i]['Адрес'],
-            title: json[i]['Спортзона'],
-            coords: [json[i]['Широта(Latitude)'], json[i]['Долгота(Longitude)']],
-            square: json[i]['Площадьспортзоны'],
-            types: [pointType.id],
-            parent: json[i]['idОбъекта'],
-            radius: zones[json[i]['Доступность']]
-        })
+  const departmentsItem = _.find(departments, ['value', Number(json[i]['idВедомственнойОрганизации'])]);
 
-        // points.push({
-        //   type: "Feature",
-        //   id: json[i]['idСпортзоны'],
-        //   geometry: {
-        //     type: "Point",
-        //     coordinates: [json[i]['Широта(Latitude)'], json[i]['Долгота(Longitude)']],
-        //   },
-        //   properties: {
-        //     balloonContentHeader: "<font size=3><b><a target='_blank' href='https://yandex.ru'>Здесь может быть ваша ссылка</a></b></font>",
-        //     balloonContentBody: "<p>Ваше имя: <input name='login'></p><p><em>Телефон в формате 2xxx-xxx:</em>  <input></p><p><input type='submit' value='Отправить'></p>",
-        //     balloonContentFooter: "<font size=1>Информация предоставлена: </font> <strong>этим балуном</strong>",
-        //     clusterCaption: "<strong><s>Еще</s> одна</strong> метка",
-        //     hintContent: "<strong>Текст  <s>подсказки</s></strong>",
-        //     address: json[i]['Адрес'],
-        //     title: json[i]['Спортзона'],
-        //     square: json[i]['Площадьспортзоны'],
-        //     types: [pointType.id],
-        //     parent: json[i]['idОбъекта']
-        //   }
-        // })
-
-        // {
-        //   "type": "FeatureCollection",
-        //   "features": points,
-        // }
-    }
+  if (typeof departmentsItem === 'undefined') {
+    departments.push({
+      value: Number(json[i]['idВедомственнойОрганизации']),
+      label: json[i]['ВедомственнаяОрганизация']
+    })
+  }
 
 }
 
-fs.writeFile('src/config/types.json', JSON.stringify(types, null, 4), (err) => {
+fs.writeFile('src/config/kindsOfSports.json', JSON.stringify(kindsOfSports, null, 4), (err) => {
     if(err) {
       console.log(err);
     } else {
-      console.log("JSON saved to types.json");
+      console.log("JSON saved to kindsOfSports.json");
     }
 });
 
-fs.writeFile('src/config/organizations.json', JSON.stringify(organizations, null, 4), (err) => {
+fs.writeFile('src/config/typesOfAreas.json', JSON.stringify(typesOfAreas, null, 4), (err) => {
     if(err) {
       console.log(err);
     } else {
-      console.log("JSON saved to organizations.json");
+      console.log("JSON saved to typesOfAreas.json");
     }
+});
+
+fs.writeFile('src/config/areas.json', JSON.stringify(areas, null, 4), (err) => {
+  if(err) {
+    console.log(err);
+  } else {
+    console.log("JSON saved to areas.json");
+  }
 });
 
 fs.writeFile('src/config/objects.json', JSON.stringify(objects, null, 4), (err) => {
@@ -122,10 +125,10 @@ fs.writeFile('src/config/objects.json', JSON.stringify(objects, null, 4), (err) 
   }
 });
 
-fs.writeFile('src/config/points.json', JSON.stringify(points, null, 4), (err) => {
+fs.writeFile('src/config/departments.json', JSON.stringify(departments, null, 4), (err) => {
     if(err) {
       console.log(err);
     } else {
-      console.log("JSON saved to points.json");
+      console.log("JSON saved to departments.json");
     }
 });

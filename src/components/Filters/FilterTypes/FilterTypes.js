@@ -2,11 +2,7 @@ import Select from 'react-select';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectFilters, setFilter } from 'services/points/pointsSlice';
 
-const typesOptions = [
-  { value: 'pool', label: 'Бассейн' },
-  { value: 'covered', label: 'Крытая спортивная зона' },
-  { value: 'open', label: 'Открытая спортивная зона' },
-]
+import typesOfAreasOptions from 'config/typesOfAreas.json';
 
 const FilterTypeZone = () => {
   const { areaType } = useSelector(selectFilters);
@@ -23,7 +19,7 @@ const FilterTypeZone = () => {
       isSearchable
       isClearable
       name="types"
-      options={typesOptions}
+      options={typesOfAreasOptions}
       placeholder="Тип спортивных зон"
       className="filter__field filter__field--select"
       onChange={handleOnChange}
