@@ -1,12 +1,12 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { selectFilters, setFilter } from 'services/points/pointsSlice';
 
-const FilterObjectName = () => {
-  const { objectName } = useSelector(selectFilters);
+const FilterAreaName = () => {
+  const { areaName } = useSelector(selectFilters);
   const dispatch = useDispatch();
   const handleOnChange = (e) => {
     dispatch(setFilter({
-      param: 'objectName',
+      param: 'areaName',
       value: e.target.value
     }));
   };
@@ -14,12 +14,12 @@ const FilterObjectName = () => {
   return <div className="filters__item filter__date">
     <input
       type="text"
-      placeholder="Наименованию спорт объекта"
+      placeholder="Наименованию спорт зоны"
       className="filter__field filter__field--input"
       onChange={handleOnChange}
-      value={objectName}
+      value={areaName}
     />
   </div>
 }
 
-export default FilterObjectName;
+export default FilterAreaName;

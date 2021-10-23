@@ -21,7 +21,7 @@ const FilterSport = () => {
       isClearable
       name="types"
       options={typesOptions}
-      placeholder="По виду спорта"
+      placeholder="Виды спорта"
       className="filter__field filter__field--select"
       onChange={handleOnChange}
       value={types}

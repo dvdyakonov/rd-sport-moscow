@@ -25,7 +25,7 @@ const FilterAvaliable = () => {
       isClearable
       name="avaliable"
       options={variants}
-      placeholder="По доступности"
+      placeholder="Доступность"
       className="filter__field filter__field--select"
       onChange={handleOnChange}
       value={variants.filter(el => el.value === avaliable)[0]}

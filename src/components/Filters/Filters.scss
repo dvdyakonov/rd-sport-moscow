@@ -11,7 +11,7 @@
     margin-bottom: 24px;
     text-align: left;
     font-weight: bold;
-    font-size: 20px;
+    font-size: 18px;
     line-height: 120%;
   }
   &__item {
@@ -22,7 +22,7 @@
     }
   }
   &__btn {
-    padding: 12px;
+    padding: 10px;
     cursor: pointer;
   }
 }
@@ -30,7 +30,7 @@
 .filter {
   &__field {
     width: 100%;
-    font-size: 16px;
+    font-size: 14px;
     line-height: 16px;
     &--input {
       padding: 10px;

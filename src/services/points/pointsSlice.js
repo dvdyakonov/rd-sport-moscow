@@ -5,8 +5,8 @@ const initialState = {
   data: [...points],
   filters: {
     objectName: '',
-    depart: null,
-    areaName: null,
+    depart: '',
+    areaName: '',
     areaType: null,
     types: [],
     avaliable: null,
