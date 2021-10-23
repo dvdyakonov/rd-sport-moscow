@@ -10,7 +10,8 @@ const init = (features, map) => {
   const ymaps = window.ymaps;
   const myMap = new ymaps.Map(map.current, {
     center: [55.76, 37.64],
-    zoom: 10
+    zoom: 10,
+    controls: ['zoomControl', 'typeSelector',  'fullscreenControl'],
   }, {
     searchControlProvider: 'yandex#search'
   });
@@ -19,7 +20,7 @@ const init = (features, map) => {
     // Чтобы метки начали кластеризоваться, выставляем опцию.
     clusterize: true,
     // ObjectManager принимает те же опции, что и кластеризатор.
-    gridSize: 64,
+    gridSize: 72,
     clusterDisableClickZoom: true
   });
 
@@ -28,24 +29,71 @@ const init = (features, map) => {
   objectManager.objects.options.set('preset', 'islands#greenDotIcon');
   objectManager.clusters.options.set('preset', 'islands#greenClusterIcons');
   myMap.geoObjects.add(objectManager);
-  // objectManager.add(features);
 
   const gradients = [{
-    0.1: 'rgba(128, 255, 0, 0.7)',
-    0.2: 'rgba(255, 255, 0, 0.8)',
-    0.7: 'rgba(234, 72, 58, 0.9)',
-    1.0: 'rgba(162, 36, 25, 1)'
-  }]
+    .1: "rgba(0, 255, 0, 0.5)",
+    .2: "rgba(173, 255, 47, 0.5)",
+    .4: "rgba(255, 255, 0, 0.8)",
+    .6: "rgba(255, 165, 0, 0.8)",
+    .8: "rgba(234, 72, 58, 0.8)",
+    1: "rgba(162, 36, 25, 0.8)"
+  },{
+    0.1: 'rgba(55, 255, 0, 0.7)',
+    0.2: 'rgba(55, 255, 0, 0.8)',
+    0.7: 'rgba(55, 72, 58, 0.9)',
+    1.0: 'rgba(55, 36, 25, 1)'
+  }
+  ]
   const radiuses = [5, 10, 20, 30];
   const opacities = [0.4, 0.6, 0.8, 1];
 
   ymaps.modules.require(['Heatmap'], function (Heatmap) {
-    var heatmap = new Heatmap(features, {
+    var heatmapSport = new Heatmap(features, {
       gradient: gradients[0],
       radius: radiuses[1],
       opacity: opacities[2]
     });
-    heatmap.setMap(myMap);
+
+    var heatmapDensity = new Heatmap(features, {
+      gradient: gradients[1],
+      radius: radiuses[1],
+      opacity: opacities[2]
+    });
+
+      // Создадим переключатель вида подписей.
+    var typeList = new ymaps.control.ListBox({
+      data: {
+          content: 'Тепловая карта'
+      },
+      items: [
+          new ymaps.control.ListBoxItem({data: {content: 'Спортивные объекты'}}),
+          new ymaps.control.ListBoxItem({data: {content: 'Население Москвы'}})
+      ]
+    });
+
+    typeList.get(0).events.add('click', function (e) {
+      const item = e.get('target');
+      const itemSelected = item.state.get('selected');
+
+      heatmapSport.setMap(
+        itemSelected ? null : myMap
+      );
+      // Закрываем список.
+      typeList.collapse();
+    });
+
+    typeList.get(1).events.add('click', function (e) {
+      const item = e.get('target');
+      const itemSelected = item.state.get('selected');
+
+      heatmapDensity.setMap(
+        itemSelected ? null : myMap
+      );
+      // Закрываем список.
+      typeList.collapse();
+    });
+
+    myMap.controls.add(typeList, {floatIndex: 0})
   })
 }
 

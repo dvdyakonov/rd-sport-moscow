@@ -12,6 +12,12 @@ const points = [];
 const types = [];
 const organizations = [];
 const objects = [];
+const zones = {
+  'Шаговая доступность': 500,
+  'Районное': 1000,
+  'Окружное': 3000,
+  'Городское': 5000
+}
 
 for (let i = 0; i < json.length; i++) {
 
@@ -51,6 +57,7 @@ for (let i = 0; i < json.length; i++) {
     if (point) {
         point.types = [...point.types, pointType.id];
     } else {
+        console.log(json[i]['Доступность']);
         points.push({
             id: json[i]['idСпортзоны'],
             address: json[i]['Адрес'],
@@ -58,7 +65,8 @@ for (let i = 0; i < json.length; i++) {
             coords: [json[i]['Широта(Latitude)'], json[i]['Долгота(Longitude)']],
             square: json[i]['Площадьспортзоны'],
             types: [pointType.id],
-            parent: json[i]['idОбъекта']
+            parent: json[i]['idОбъекта'],
+            radius: zones[json[i]['Доступность']]
         })   
         
         // points.push({
