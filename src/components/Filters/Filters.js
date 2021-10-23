@@ -5,11 +5,12 @@ import FilterSport from './FilterSport';
 import FilterObjectName from './FilterObjectName';
 import FilterOrganizations from './FilterOrganizations';
 import FilterTypes from './FilterTypes';
-import { useDispatch } from 'react-redux';
-import { filterData } from 'services/points/pointsSlice';
+import { useSelector, useDispatch } from 'react-redux';
+import { selectFilters, filterData } from 'services/points/pointsSlice';
 
 const Filters = () => {
   const dispatch = useDispatch();
+  const filters = useSelector(selectFilters);
   return <div className="filters">
     <div className="filters__title">Фильтры спортивных объектов:</div>
     <FilterObjectName />
@@ -21,7 +22,7 @@ const Filters = () => {
     <Button
       kind="wide"
       className="filters__btn"
-      onClick={() => dispatch(filterData())}
+      onClick={() => dispatch(filterData(filters))}
     >
       Отфильтровать
     </Button>

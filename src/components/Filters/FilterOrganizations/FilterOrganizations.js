@@ -6,11 +6,11 @@ import { selectFilters, setFilter } from 'services/points/pointsSlice';
 import organizations from 'config/organizations.json';
 
 const FilterAvaliable = () => {
-  const { organization } = useSelector(selectFilters);
+  const { depart } = useSelector(selectFilters);
   const dispatch = useDispatch();
   const handleOnChange = (val) => {
     dispatch(setFilter({
-      param: 'organization',
+      param: 'depart',
       value: val ? val.value : null
     }));
   };
@@ -23,7 +23,7 @@ const FilterAvaliable = () => {
       placeholder="По ведомствам"
       className="filter__field filter__field--select"
       onChange={handleOnChange}
-      value={organizations.filter(el => el.value === organization)[0]}
+      value={organizations.filter(el => el.value === depart)[0]}
     />
   </div>
 }

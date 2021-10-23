@@ -9,9 +9,7 @@ const initialState = {
     areaName: null,
     areaType: null,
     types: [],
-    organization: null,
     avaliable: null,
-    typeZone: null,
   }
 };
 
@@ -26,18 +24,14 @@ export const pointsSlice = createSlice({
         [param]: value
       };
     },
-    filterData: state => {
-      // const filtersStatusOn = filters.filter(item => item.status);
-      // if (filtersStatusOn.length) {
-      //   const filtersCodes = filtersStatusOn.reduce((res, cur) => {
-      //     res.push(cur.id);
-      //     return res;
-      //   }, []);
-      //   const filteredPoints = points.filter(point => point.types.some(type => filtersCodes.indexOf(type) >= 0));
-      //   state.data = filteredPoints;
-      // } else {
-      //   state.data = [...points.slice(0, 100)];
-      // }
+    filterData: (state, action) => {
+      const { filters } = action.payload;
+      const newArr = points.filter(point => {
+        // point.title.indexOf(filters.objectName) >= 0 &&
+        // point.types.indexOf(filters)
+      });
+
+      state.data = [...newArr];
     }
   },
 });

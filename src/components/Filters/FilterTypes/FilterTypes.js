@@ -9,11 +9,11 @@ const typesOptions = [
 ]
 
 const FilterTypeZone = () => {
-  const { typeZone } = useSelector(selectFilters);
+  const { areaType } = useSelector(selectFilters);
   const dispatch = useDispatch();
   const handleOnChange = (val) => {
     dispatch(setFilter({
-      param: 'typeZone',
+      param: 'areaType',
       value: val
     }));
   };
@@ -27,7 +27,7 @@ const FilterTypeZone = () => {
       placeholder="По типу спортивных зон"
       className="filter__field filter__field--select"
       onChange={handleOnChange}
-      value={typeZone}
+      value={areaType}
     />
   </div>
 }

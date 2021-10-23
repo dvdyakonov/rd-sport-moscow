@@ -2,7 +2,7 @@ let csvToJson = require('convert-csv-to-json');
 let fs = require('fs');
 let _ = require('lodash');
 
-let fileInputName = 'src/config/csv/objects-by-types.csv'; 
+let fileInputName = 'src/config/csv/objects-by-types.csv';
 
 // csvToJson.generateJsonFileFromCsv(fileInputName,fileOutputName);
 
@@ -19,9 +19,9 @@ for (let i = 0; i < json.length; i++) {
 
     if (!_.find(types, ['title', json[i]['Видспорта']])) {
         types.push({
-            id: 'x' + i,
-            title: json[i]['Видспорта']
-        })    
+            value: 'x' + i,
+            label: json[i]['Видспорта']
+        })
 
     }
 
@@ -29,18 +29,18 @@ for (let i = 0; i < json.length; i++) {
 
     if (!_.find(objects, ['id', json[i]['idОбъекта']])) {
       objects.push({
-          id: json[i]['idОбъекта'],
-          title: json[i]['Объект']
-      })    
+          value: json[i]['idОбъекта'],
+          label: json[i]['Объект']
+      })
   }
 
     // JSON со списком организаций
 
     if (!_.find(organizations, ['id', json[i]['idВедомственнойОрганизации']])) {
         organizations.push({
-            id: json[i]['idВедомственнойОрганизации'],
-            title: json[i]['ВедомственнаяОрганизация']
-        })    
+            value: json[i]['idВедомственнойОрганизации'],
+            label: json[i]['ВедомственнаяОрганизация']
+        })
     }
 
     // JSON со списком спортзон + группируем
@@ -59,8 +59,8 @@ for (let i = 0; i < json.length; i++) {
             square: json[i]['Площадьспортзоны'],
             types: [pointType.id],
             parent: json[i]['idОбъекта']
-        })    
-    } 
+        })
+    }
 
 }
 
