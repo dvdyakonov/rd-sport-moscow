@@ -28,7 +28,11 @@ const FilterDepartments = () => {
       isClearable
       placeholder="Ведомственная принадлежность"
       className="filter__field filter__field--select"
-      options={options}
+      options={options.sort(function(a, b){
+          if(a.label < b.label) { return -1; }
+          if(a.label > b.label) { return 1; }
+          return 0;
+      })}
       onInputChange={inputChange}
       onChange={handleOnChange}
       value={objects.filter(el => el.value === depart.value)[0]}

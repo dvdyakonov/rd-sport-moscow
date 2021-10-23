@@ -19,7 +19,11 @@ const FilterAreaTypes = () => {
       isSearchable
       isClearable
       name="types"
-      options={typesOfAreasOptions}
+      options={typesOfAreasOptions.sort(function(a, b){
+          if(a.label < b.label) { return -1; }
+          if(a.label > b.label) { return 1; }
+          return 0;
+      })}
       placeholder="Тип спортивных зон"
       className="filter__field filter__field--select"
       onChange={handleOnChange}
