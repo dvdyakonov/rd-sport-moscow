@@ -46,9 +46,15 @@ const init = ({sportFeatures, populationFeatures, map, objManager, setObjManager
 
   objectManager.objects.options.set('preset', 'islands#greenDotIcon');
   objectManager.clusters.options.set('preset', 'islands#greenClusterIcons');
+  objectManager.add(sportFeatures);
 
   myMap.geoObjects.add(objectManager);
-  objectManager.add(sportFeatures);
+
+  objectManager.objects.events.add('click', function (e) {
+    const point = objectManager.objects.getById(e.get('objectId'));
+    const circle = new ymaps.Circle([point.geometry.coordinates, point.properties.radius]);
+    myMap.geoObjects.add(circle);
+  });
 
   const gradients = [{
     .1: "rgba(0, 255, 0, 0.5)",
@@ -68,6 +74,20 @@ const init = ({sportFeatures, populationFeatures, map, objManager, setObjManager
   ]
   const radiuses = [5, 10, 20, 30];
   const opacities = [0.4, 0.6, 0.8, 1];
+
+
+  const circle = new ymaps.Circle([[55.43, 37.7], 5000], null, { draggable: true });
+        
+  circle.events.add('drag', function () {
+    // Объекты, попадающие в круг, будут становиться красными.
+    var storage = ymaps.geoQuery(objectManager.objects);
+    var objectsInsideCircle = storage.searchInside(circle);
+    objectsInsideCircle.setOptions('preset', 'islands#redIcon');
+    // Оставшиеся объекты - синими.
+    storage.remove(objectsInsideCircle).setOptions('preset', 'islands#blueIcon');
+  });
+  
+  myMap.geoObjects.add(circle);
 
 
   ymaps.modules.require(['Heatmap'], function (Heatmap) {
@@ -167,17 +187,21 @@ const Map = ({ isYmapsInit }) => {
     "features": points.map(point => (
       {
         "type": "Feature",
-        "id": point.id,
+        "id": point.value,
         "geometry": {
           "type": "Point",
           "coordinates": point.coords
         },
         "properties": {
-          "balloonContentHeader": "<font size=3><b><a target='_blank' href='https://yandex.ru'>Здесь может быть ваша ссылка</a></b></font>",
-          "balloonContentBody": "<p>Ваше имя: <input name='login'></p><p><em>Телефон в формате 2xxx-xxx:</em>  <input></p><p><input type='submit' value='Отправить'></p>",
-          "balloonContentFooter": "<font size=1>Информация предоставлена: </font> <strong>этим балуном</strong>",
-          "clusterCaption": "<strong><s>Еще</s> одна</strong> метка",
-          "hintContent": "<strong>Текст  <s>подсказки</s></strong>",
+          "balloonContentHeader": `<font size=3><b>${point.label}</b></font>`,
+          "balloonContentBody": `<dl>
+            <dt>Адрес:</dt>
+            <dd>${point.address}</dd>
+            <dt>Доступность:</dt>
+            <dd>${point.radius}</dd>
+          </dl>`,
+          "balloonContentFooter": ``,
+          "clusterCaption": `<strong>${point.label}</strong>`,
           "radius": point.radius
         }
       }
@@ -189,7 +213,6 @@ const Map = ({ isYmapsInit }) => {
     "features": points.map(point => (
       {
         "type": "Feature",
-        "id": point.id,
         "geometry": {
           "type": "Point",
           "coordinates": [Number(point.lat), Number(point.lon)]
