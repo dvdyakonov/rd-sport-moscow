@@ -3,40 +3,70 @@ import points from 'config/points.json';
 
 const initialState = {
   data: [...points],
-  active: null,
+  filters: {
+    objectName: '',
+    depart: null,
+    areaName: null,
+    areaType: null,
+    types: [],
+    avaliable: null,
+  }
 };
 
 export const pointsSlice = createSlice({
   name: 'points',
   initialState,
   reducers: {
-    filterData: (state, action) => {
-      console.log("FILTER DATA");
+    setFilter: (state, action) => {
+      const { param, value } = action.payload;
+      state.filters = {
+        ...state.filters,
+        [param]: value
+      };
     },
-    setActive: (state, action) => {
-      state.active = action.payload;
+    filterData: (state, action) => {
+      const filters = action.payload;
+      const newArr = points.filter(point => {
+        // Проверяем на совпадение по наименованию объекта
+        if (filters.objectName) {
+          if(point.title.indexOf(filters.objectName) < 0) {
+            return false;
+          }
+        }
+
+        // Проверяем на совпадение по видам спорта
+        if (filters.types.length > 0) {
+          const typeIds = filters.types.map(type => type.value);
+          if(point.types.filter(type => typeIds.indexOf(type) >= 0).length === 0) {
+            return false;
+          }
+        }
+
+        // Проверяем на совпадение ведомственной пренадлежности
+        if (filters.depart) {
+          if(point.parent !== filters.depart) {
+            return false;
+          }
+        }
+
+        // Проверяем на доступность
+        if (filters.avaliable) {
+          if(point.radius !== filters.avaliable) {
+            return false;
+          }
+        }
+
+        return true;
+      });
+
+      state.data = [...newArr];
     }
   },
-  extraReducers: {
-    'types/changeFilters': (state, action) => {
-      const { payload: filters } = action;
-      const filtersStatusOn = filters.filter(item => item.status);
-      if (filtersStatusOn.length) {
-        const filtersCodes = filtersStatusOn.reduce((res, cur) => {
-          res.push(cur.id);
-          return res;
-        }, []);
-        const filteredPoints = points.filter(point => point.types.some(type => filtersCodes.indexOf(type) >= 0));
-        state.data = filteredPoints;
-      } else {
-        state.data = [...points.slice(0, 100)];
-      }
-    }
-  }
 });
 
-export const { filterData, setActive } = pointsSlice.actions;
+export const { setFilter, filterData } = pointsSlice.actions;
 
+export const selectFilters = (state) => state.points.filters;
 export const selectPoints = (state) => state.points.data;
 export const selectActivePoint = (state) => state.points.active;
 

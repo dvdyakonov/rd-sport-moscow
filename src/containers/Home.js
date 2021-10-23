@@ -1,13 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 // import { useLocation } from "react-router-dom";
 import Aside from 'components/Aside';
 import Map from 'components/Map';
-import Filters from 'components/Filters';
 
 const Home = () => {
-  // const location = useLocation();
-  const [showEvents, showEventsToggle] = useState(false);  // points or events
-  const [asideType, setAsideType] = useState('default');
 
   // useEffect(() => {
   //   // Забираем данные из адреса
@@ -29,9 +25,8 @@ const Home = () => {
 
   return (
     <main className="main">
-      <Aside type={asideType} status={showEvents} showEventsToggle={showEventsToggle} />
+      <Aside />
       <Map />
-      <Filters status={showEvents} />
     </main>
   )
 }
