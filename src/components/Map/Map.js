@@ -37,7 +37,7 @@ const init = ({sportFeatures, densityFeatures, map, objManager, setObjManager })
   objectManager.clusters.options.set('preset', 'islands#greenClusterIcons');
 
   myMap.geoObjects.add(objectManager);
-  // objectManager.add(sportFeatures);
+  objectManager.add(sportFeatures);
 
   const gradients = [{
     .1: "rgba(0, 255, 0, 0.5)",
