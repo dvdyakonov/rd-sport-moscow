@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { useParams } from "react-router-dom"
 import { Helmet } from "react-helmet";
 
-import points from 'config/points.json';
-import types from 'config/types.json';
+import points from 'config/objects.json';
+import types from 'config/kindsOfSports.json';
 
 // Components
 import Button from 'components/Button';

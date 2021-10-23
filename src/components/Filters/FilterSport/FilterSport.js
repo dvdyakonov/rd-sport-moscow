@@ -2,7 +2,7 @@ import Select from 'react-select';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectFilters, setFilter } from 'services/points/pointsSlice';
 
-import typesOptions from 'config/types.json';
+import typesOptions from 'config/kindsOfSports.json';
 
 const FilterSport = () => {
   const { types } = useSelector(selectFilters);

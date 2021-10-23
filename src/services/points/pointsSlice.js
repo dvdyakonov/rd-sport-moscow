@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import points from 'config/points.json';
+import points from 'config/objects.json';
 
 const initialState = {
   data: [...points],
