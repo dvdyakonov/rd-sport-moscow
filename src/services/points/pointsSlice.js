@@ -40,5 +40,6 @@ export const { setFilter, filterData } = pointsSlice.actions;
 
 export const selectFilters = (state) => state.points.filters;
 export const selectPoints = (state) => state.points.data;
+export const selectActivePoint = (state) => state.points.active;
 
 export default pointsSlice.reducer;

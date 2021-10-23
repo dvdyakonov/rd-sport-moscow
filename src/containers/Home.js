@@ -1,25 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import qs from "qs";
-import { useLocation } from "react-router-dom";
-
-import { getDistance } from "utils";
+import React from 'react';
+// import { useLocation } from "react-router-dom";
 import Aside from 'components/Aside';
-import YandexMap from 'components/YandexMap';
-import Filters from 'components/Filters';
+import Map from 'components/Map';
 
 const Home = () => {
-  const location = useLocation();
-  const [map, setMapInstance] = useState();
-  const [showEvents, showEventsToggle] = useState(false);  // points or events
-  const [asideType, setAsideType] = useState('default');
-  const [mapData, setMapData] = useState({
-    coords: [55.751244, 37.618423],
-    name: 'Москва',
-    zoom: 10,
-    distance: 0.5,
-  });
-
-
 
   // useEffect(() => {
   //   // Забираем данные из адреса
@@ -41,8 +25,8 @@ const Home = () => {
 
   return (
     <main className="main">
-      {map && <Aside />}
-      <YandexMap mapData={mapData} setMapInstance={setMapInstance} />
+      <Aside />
+      <Map />
     </main>
   )
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useParams } from "react-router-dom"
 import { Helmet } from "react-helmet";
 
@@ -15,13 +15,13 @@ import "firebase/compat/database";
 
 const TrackActivity = ({ user, showAuthPopup }) => {
     const { id: activityId } = useParams();
-    const [activityType, setActivityType] = useState();  
+    const [activityType, setActivityType] = useState();
 
     const pointData = points.find(item => item.id === Number(activityId));
 
     const [activityKey, setActivityKey] = useState(localStorage.getItem('activityKey'));
     const [activityStart, setActivityStart] = useState(localStorage.getItem('activityStart'));
-    
+
     const options = types.map(type => ({ "value": type.id, "label": type.title }) )
 
     const sendRequest = () => {
@@ -63,7 +63,7 @@ const TrackActivity = ({ user, showAuthPopup }) => {
                     {pointData.title}
                     {pointData.id}
                     <Select options={options} onChange={(option) => setActivityType(option.value)}/>
-                    
+
                     и тут будет текст
                     {activityKey ? (
                         <>
