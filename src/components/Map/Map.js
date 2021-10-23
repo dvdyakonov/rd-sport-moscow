@@ -6,7 +6,12 @@ import {
 import { withYandexMap } from 'hocs';
 import './Map.scss';
 
-const init = (features, map) => {
+const update = (features, objManager) => {
+  objManager.removeAll();
+  objManager.add(features);
+}
+
+const init = (features, map, objManager, setObjManager) => {
   const ymaps = window.ymaps;
   const myMap = new ymaps.Map(map.current, {
     center: [55.76, 37.64],
@@ -16,7 +21,7 @@ const init = (features, map) => {
     searchControlProvider: 'yandex#search'
   });
 
-  var objectManager = new ymaps.ObjectManager({
+  const objectManager = new ymaps.ObjectManager({
     // Чтобы метки начали кластеризоваться, выставляем опцию.
     clusterize: true,
     // ObjectManager принимает те же опции, что и кластеризатор.
@@ -28,6 +33,7 @@ const init = (features, map) => {
   // обратимся к дочерним коллекциям ObjectManager.
   objectManager.objects.options.set('preset', 'islands#greenDotIcon');
   objectManager.clusters.options.set('preset', 'islands#greenClusterIcons');
+
   myMap.geoObjects.add(objectManager);
   objectManager.add(features);
 
@@ -43,8 +49,7 @@ const init = (features, map) => {
     0.2: 'rgba(55, 255, 0, 0.8)',
     0.7: 'rgba(55, 72, 58, 0.9)',
     1.0: 'rgba(55, 36, 25, 1)'
-  }
-  ]
+  }]
   const radiuses = [5, 10, 20, 30];
   const opacities = [0.4, 0.6, 0.8, 1];
 
@@ -94,13 +99,17 @@ const init = (features, map) => {
       typeList.collapse();
     });
 
-    myMap.controls.add(typeList, {floatIndex: 0})
+    myMap.controls.add(typeList, {floatIndex: 0});
+    if (!objManager) {
+      setObjManager(objectManager);
+    };
   })
-}
+};
 
 const Map = ({ isYmapsInit, mapData }) => {
   const points = useSelector(selectPoints);
-  console.log(points);
+  const [objManager, setObjManager] = useState(null);
+
   const featuresFunc = (points) => ({
     "type": "FeatureCollection",
     "features": points.map(point => (
@@ -112,7 +121,8 @@ const Map = ({ isYmapsInit, mapData }) => {
           "coordinates": point.coords
         },
         "properties": {
-          "balloonContentHeader": "<font size=3><b><a target='_blank' href='https://yandex.ru'>Здесь может быть ваша ссылка</a></b></font>", "balloonContentBody": "<p>Ваше имя: <input name='login'></p><p><em>Телефон в формате 2xxx-xxx:</em>  <input></p><p><input type='submit' value='Отправить'></p>", "balloonContentFooter": "<font size=1>Информация предоставлена: </font> <strong>этим балуном</strong>", "clusterCaption": "<strong><s>Еще</s> одна</strong> метка", "hintContent": "<strong>Текст  <s>подсказки</s></strong>"
+          "balloonContentHeader": "<font size=3><b><a target='_blank' href='https://yandex.ru'>Здесь может быть ваша ссылка</a></b></font>", "balloonContentBody": "<p>Ваше имя: <input name='login'></p><p><em>Телефон в формате 2xxx-xxx:</em>  <input></p><p><input type='submit' value='Отправить'></p>", "balloonContentFooter": "<font size=1>Информация предоставлена: </font> <strong>этим балуном</strong>", "clusterCaption": "<strong><s>Еще</s> одна</strong> метка", "hintContent": "<strong>Текст  <s>подсказки</s></strong>",
+          "radius": point.radius
         }
       }
     ))
@@ -123,13 +133,16 @@ const Map = ({ isYmapsInit, mapData }) => {
   const ymaps = window.ymaps;
 
   useEffect(() => {
-    setFeatures(() => featuresFunc(points))
+    setFeatures(() => featuresFunc(points));
   }, [points]);
 
   useEffect(() => {
-    console.log(isYmapsInit);
     if (isYmapsInit) {
-      ymaps.ready(() => init(features, mapRef));
+      if (objManager) {
+        update(features, objManager);
+      } else {
+        ymaps.ready(() => init(features, mapRef, objManager, setObjManager));
+      }
     }
   }, [isYmapsInit, features, ymaps]);
 
