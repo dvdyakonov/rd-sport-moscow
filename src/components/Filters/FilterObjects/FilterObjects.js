@@ -3,9 +3,9 @@ import Select from 'react-select';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectFilters, setFilter } from 'services/points/pointsSlice';
 
-import organizations from 'config/organizations.json';
+import objects from 'config/objects.json';
 
-const FilterAvaliable = () => {
+const FilterObjects = () => {
   const { depart } = useSelector(selectFilters);
   const dispatch = useDispatch();
   const handleOnChange = (val) => {
@@ -19,13 +19,13 @@ const FilterAvaliable = () => {
     <Select
       isClearable
       name="avaliable"
-      options={organizations}
+      options={objects}
       placeholder="По ведомствам"
       className="filter__field filter__field--select"
       onChange={handleOnChange}
-      value={organizations.filter(el => el.value === depart)[0]}
+      value={objects.filter(el => el.value === depart)[0]}
     />
   </div>
 }
 
-export default FilterAvaliable;
+export default FilterObjects;

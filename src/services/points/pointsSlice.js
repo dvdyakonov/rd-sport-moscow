@@ -25,10 +25,38 @@ export const pointsSlice = createSlice({
       };
     },
     filterData: (state, action) => {
-      const { filters } = action.payload;
+      const filters = action.payload;
       const newArr = points.filter(point => {
-        // point.title.indexOf(filters.objectName) >= 0 &&
-        // point.types.indexOf(filters)
+        // Проверяем на совпадение по наименованию объекта
+        if (filters.objectName) {
+          if(point.title.indexOf(filters.objectName) < 0) {
+            return false;
+          }
+        }
+
+        // Проверяем на совпадение по видам спорта
+        if (filters.types.length > 0) {
+          const typeIds = filters.types.map(type => type.value);
+          if(point.types.filter(type => typeIds.indexOf(type) >= 0).length === 0) {
+            return false;
+          }
+        }
+
+        // Проверяем на совпадение ведомственной пренадлежности
+        if (filters.depart) {
+          if(point.parent !== filters.depart) {
+            return false;
+          }
+        }
+
+        // Проверяем на доступность
+        if (filters.avaliable) {
+          if(point.radius !== filters.avaliable) {
+            return false;
+          }
+        }
+
+        return true;
       });
 
       state.data = [...newArr];

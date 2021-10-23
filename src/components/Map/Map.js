@@ -100,6 +100,7 @@ const init = (features, map) => {
 
 const Map = ({ isYmapsInit, mapData }) => {
   const points = useSelector(selectPoints);
+  console.log(points);
   const featuresFunc = (points) => ({
     "type": "FeatureCollection",
     "features": points.map(point => (
@@ -126,6 +127,7 @@ const Map = ({ isYmapsInit, mapData }) => {
   }, [points]);
 
   useEffect(() => {
+    console.log(isYmapsInit);
     if (isYmapsInit) {
       ymaps.ready(() => init(features, mapRef));
     }

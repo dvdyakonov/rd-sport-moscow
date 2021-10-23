@@ -3,7 +3,7 @@ import './Filters.scss';
 import FilterAvaliable from './FilterAvaliable';
 import FilterSport from './FilterSport';
 import FilterObjectName from './FilterObjectName';
-import FilterOrganizations from './FilterOrganizations';
+import FilterObjects from './FilterObjects';
 import FilterTypes from './FilterTypes';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectFilters, filterData } from 'services/points/pointsSlice';
@@ -17,7 +17,7 @@ const Filters = () => {
     <FilterSport />
     <FilterAvaliable />
     <FilterTypes />
-    <FilterOrganizations />
+    <FilterObjects />
 
     <Button
       kind="wide"
