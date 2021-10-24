@@ -12,7 +12,7 @@ const update = ({ sportFeatures, populationFeatures, objManager } ) => {
   objManager.add(sportFeatures);
 }
 
-const init = ({sportFeatures, populationFeatures, map, objManager, setObjManager }) => {
+const init = ({sportFeatures, populationFeatures, map, objManager, setObjManager, setPoly }) => {
   const ymaps = window.ymaps;
   const myMap = new ymaps.Map(map.current, {
     center: [55.76, 37.64],
@@ -24,14 +24,29 @@ const init = ({sportFeatures, populationFeatures, map, objManager, setObjManager
 
   // Рисуем полигон
 
-  const polygon = new ymaps.GeoObject({
-    geometry: {
-        type: "Polygon",
-        coordinates: []
-    }
+  // Создаем многоугольник без вершин.
+  var myPolygon = new ymaps.Polygon([], {}, {
+      // Курсор в режиме добавления новых вершин.
+      editorDrawingCursor: "crosshair",
+      // Максимально допустимое количество вершин.
+      editorMaxPoints: 5,
+      // Цвет заливки.
+      fillColor: 'rgba(14,14,14,0.2)',
+      // Цвет обводки.
+      strokeColor: '#0000FF',
+      // Ширина обводки.
+      strokeWidth: 5
+  });
+  // Добавляем многоугольник на карту.
+  myMap.geoObjects.add(myPolygon);
+
+  // В режиме добавления новых вершин меняем цвет обводки многоугольника.
+  var stateMonitor = new ymaps.Monitor(myPolygon.editor.state);
+  stateMonitor.add("drawing", function (newValue) {
+      myPolygon.options.set("strokeColor", newValue ? '#FF0000' : '#0000FF');
   });
 
-  polygon.editor.startDrawing();
+  setPoly(myPolygon);
 
   const objectManager = new ymaps.ObjectManager({
     // Чтобы метки начали кластеризоваться, выставляем опцию.
@@ -161,6 +176,18 @@ const init = ({sportFeatures, populationFeatures, map, objManager, setObjManager
 const Map = ({ isYmapsInit }) => {
   const points = useSelector(selectPoints);
   const [objManager, setObjManager] = useState(null);
+  const [draw, setDraw] = useState(false);
+  const [poly, setPoly] = useState(null);
+
+  const polygonToggle = () => {
+    if (draw) {
+      poly.editor.stopDrawing();
+      setDraw(false);
+    } else {
+      poly.editor.startDrawing();
+      setDraw(true);
+    }
+  }
 
   const sportPointsConversion = (points) => ({
     "type": "FeatureCollection",
@@ -226,13 +253,17 @@ const Map = ({ isYmapsInit }) => {
           map: mapRef,
           objManager,
           setObjManager,
+          setPoly,
         }));
       }
     }
   }, [isYmapsInit, sportFeatures, populationFeatures, ymaps]);
 
   return (
-    <div className="map" ref={mapRef}></div>
+    <>
+      <div className="map" ref={mapRef}></div>
+      <button className="polyBtn" onClick={polygonToggle}>Poly</button>
+    </>
   )
 }
 

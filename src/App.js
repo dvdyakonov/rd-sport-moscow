@@ -30,7 +30,6 @@ const App = () => {
     // Проверяем авторизован ли пользователь
     firebase.auth().onAuthStateChanged(userAuth => {
       if (userAuth) {
-        console.log(userAuth.photoURL);
         setUserData({
           uid: userAuth.uid,
           email: userAuth.email,
