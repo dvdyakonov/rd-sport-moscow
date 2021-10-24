@@ -200,8 +200,15 @@ const Map = ({ isYmapsInit }) => {
           "coordinates": point.coords
         },
         "properties": {
-          "balloonContentHeader": "<font size=3><b><a target='_blank' href='https://yandex.ru'>Здесь может быть ваша ссылка</a></b></font>",
-          "balloonContentBody": "<p>Ваше имя: <input name='login'></p><p><em>Телефон в формате 2xxx-xxx:</em>  <input></p><p><input type='submit' value='Отправить'></p>",
+          "balloonContentHeader": `<b>${point.label}</b>`,
+          "balloonContentBody": `
+            <p>Адрес: ${point.address}</p>
+            <p>Ведомство: ${point.departmentId}</p>
+            <table>
+              <tr><th>Наименование спортзоны</th><th>Площадь</th></th>
+              ${point.areasItems.map((item) => `<tr><td>${item.label}</td><td>${item.square}</td></tr>`).join('')}
+            </table>
+          `,
           "balloonContentFooter": "<font size=1>Информация предоставлена: </font> <strong>этим балуном</strong>",
           "clusterCaption": "<strong><s>Еще</s> одна</strong> метка",
           "hintContent": "<strong>Текст  <s>подсказки</s></strong>",
