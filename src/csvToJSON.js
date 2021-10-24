@@ -44,8 +44,8 @@ for (let i = 0; i < json.length; i++) {
   // Формируем JSON спортивных зон
 
   const areasItem = _.find(areas, ['value', Number(json[i]['idСпортзоны'])]);
-  const kindsOfSportsItemId = kindsOfSportsItem !== undefined ? kindsOfSportsItem.value : kindsOfSports.length + 1;
-  const typesOfAreasItemId = typesOfAreasItem !== undefined ? typesOfAreasItem.value : typesOfAreas.length + 1;
+  const kindsOfSportsItemId = kindsOfSportsItem !== undefined ? kindsOfSportsItem.value : kindsOfSports.length;
+  const typesOfAreasItemId = typesOfAreasItem !== undefined ? typesOfAreasItem.value : typesOfAreas.length;
 
   if (typeof areasItem !== 'undefined') {
     if (areasItem.kindIds.indexOf(kindsOfSportsItemId) === -1) {
