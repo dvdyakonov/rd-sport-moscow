@@ -13,7 +13,7 @@ const Header = ({user, showAuthPopup}) => {
         <li className="header__nav-item">
           {user.email ? (
             <>
-            {user.email}
+            <img src={user.photo} alt={user.email} className="header__photo" />
             <Button className="header__nav-link" onClick={() => firebase.auth().signOut()}>Выход</Button>
             </>
           ) : (
