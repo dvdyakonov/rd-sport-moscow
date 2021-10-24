@@ -99,7 +99,7 @@ export const pointsSlice = createSlice({
               return true;
             }
 
-            if (area.typeId === filters.areaType.value){
+            if (filters.areaType && area.typeId === filters.areaType.value){
               return true;
             }
             return false;

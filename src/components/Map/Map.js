@@ -5,15 +5,17 @@ import {
 } from 'services/points/pointsSlice';
 import populationPoints from 'config/population.json';
 import { withYandexMap } from 'hocs';
+import { drawCircle } from './helpers';
 import './Map.scss';
 
-const update = ({ sportFeatures, populationFeatures, objManager } ) => {
-  objManager.removeAll();
-  objManager.add(sportFeatures);
+const update = ({ sportFeatures, populationFeatures, sportObjManager } ) => {
+  sportObjManager.removeAll();
+  sportObjManager.add(sportFeatures);
 }
 
-const init = ({sportFeatures, populationFeatures, map, objManager, setObjManager, setPoly }) => {
+const init = ({sportFeatures, populationFeatures, map, sportObjManager, setSportObjManager, setPoly }) => {
   const ymaps = window.ymaps;
+  // Инициализируем карту Москвы
   const myMap = new ymaps.Map(map.current, {
     center: [55.76, 37.64],
     zoom: 10,
@@ -22,22 +24,61 @@ const init = ({sportFeatures, populationFeatures, map, objManager, setObjManager
     searchControlProvider: 'yandex#search'
   });
 
-  // Рисуем полигон
+
+  // Создаем менеджер объектов для точек спортивных объектов
+  const sportPointsObjectManager = new ymaps.ObjectManager({
+    clusterize: true,
+    gridSize: 72,
+    clusterDisableClickZoom: true
+  });
+
+  sportPointsObjectManager.objects.options.set('preset', 'islands#greenDotIcon');
+  sportPointsObjectManager.clusters.options.set('preset', 'islands#greenClusterIcons');
+  sportPointsObjectManager.add(sportFeatures);
+  if (!sportObjManager) {
+    setSportObjManager(sportPointsObjectManager);
+  };
+
+  sportPointsObjectManager.objects.events.add('click', (e) => {
+    const point = sportPointsObjectManager.objects.getById(e.get('objectId'));
+    const circle = drawCircle(point.geometry.coordinates, point.properties.radius);
+    myMap.geoObjects.add(circle);
+    let population = 0;
+    // console.log(ymaps.geoQuery(populationFeatures).searchInside(circle));
+    ymaps.geoQuery(populationFeatures).searchInside(circle).each(function (object) {
+      population += object.properties.get('residents');
+    });
+
+    console.log(`Проживает: ${population} человек`);
+
+  })
+
+  // Создаем менеджер объектов для плотности населения
+  const populationPointsObjectManager = new ymaps.ObjectManager({
+    clusterize: true,
+    gridSize: 72,
+    clusterDisableClickZoom: true
+  });
+
+  populationPointsObjectManager.add(populationFeatures);
+
+  const userPolygonsObjectManager = new ymaps.ObjectManager();
 
   // Создаем многоугольник без вершин.
   var myPolygon = new ymaps.Polygon([], {}, {
-      // Курсор в режиме добавления новых вершин.
       editorDrawingCursor: "crosshair",
-      // Максимально допустимое количество вершин.
-      editorMaxPoints: 5,
-      // Цвет заливки.
+      editorMaxPoints: 15,
       fillColor: 'rgba(14,14,14,0.2)',
-      // Цвет обводки.
       strokeColor: '#0000FF',
-      // Ширина обводки.
       strokeWidth: 5
   });
-  // Добавляем многоугольник на карту.
+
+  // userPolygonsObjectManager.add(myPolygon);
+
+
+
+  // Добавляем менеджеры объектов на карту
+  myMap.geoObjects.add(sportPointsObjectManager);
   myMap.geoObjects.add(myPolygon);
 
   // В режиме добавления новых вершин меняем цвет обводки многоугольника.
@@ -48,54 +89,23 @@ const init = ({sportFeatures, populationFeatures, map, objManager, setObjManager
 
   setPoly(myPolygon);
 
-  const objectManager = new ymaps.ObjectManager({
-    // Чтобы метки начали кластеризоваться, выставляем опцию.
-    clusterize: true,
-    // ObjectManager принимает те же опции, что и кластеризатор.
-    gridSize: 72,
-    clusterDisableClickZoom: true
-  });
-
-  // Чтобы задать опции одиночным объектам и кластерам,
-  // обратимся к дочерним коллекциям ObjectManager.
-
-  objectManager.objects.options.set('preset', 'islands#greenDotIcon');
-  objectManager.clusters.options.set('preset', 'islands#greenClusterIcons');
-
-  myMap.geoObjects.add(objectManager);
-  objectManager.add(sportFeatures);
-
-  const gradients = [{
-    .1: "rgba(0, 255, 0, 0.5)",
-    .2: "rgba(173, 255, 47, 0.5)",
-    .4: "rgba(255, 255, 0, 0.8)",
-    .6: "rgba(255, 165, 0, 0.8)",
-    .8: "rgba(234, 72, 58, 0.8)",
-    1: "rgba(162, 36, 25, 0.8)"
-  }, {
-    .1: "rgba(0, 255, 0, 0.5)",
-    .2: "rgba(173, 255, 47, 0.5)",
-    .4: "rgba(255, 255, 0, 0.8)",
-    .6: "rgba(255, 165, 0, 0.8)",
-    .8: "rgba(234, 72, 58, 0.8)",
-    1: "rgba(162, 36, 25, 0.8)"
-  }
-  ]
-  const radiuses = [5, 10, 20, 30];
-  const opacities = [0.4, 0.6, 0.8, 1];
-
 
   ymaps.modules.require(['Heatmap'], function (Heatmap) {
     var heatmapSport = new Heatmap(sportFeatures, {
-      gradient: gradients[0],
-      radius: radiuses[1],
+      gradient: {
+        .1: "rgba(0, 255, 0, 0.5)",
+        .2: "rgba(173, 255, 47, 0.5)",
+        .4: "rgba(255, 255, 0, 0.8)",
+        .6: "rgba(255, 165, 0, 0.8)",
+        .8: "rgba(234, 72, 58, 0.8)",
+        1: "rgba(162, 36, 25, 0.8)"
+      },
+      radius: 15,
       intensityOfMidpoint: .01,
-      opacity: opacities[2]
     });
 
     var heatmapPopulation = new Heatmap(populationFeatures, {
       radius: 15,
-      dissipating: !0,
       intensityOfMidpoint: .01,
       gradient: {
         .1: "rgba(0, 255, 0, 0.5)",
@@ -167,15 +177,12 @@ const init = ({sportFeatures, populationFeatures, map, objManager, setObjManager
     });
 
     myMap.controls.add(typeList, {floatIndex: 0});
-    if (!objManager) {
-      setObjManager(objectManager);
-    };
   })
 };
 
 const Map = ({ isYmapsInit }) => {
   const points = useSelector(selectPoints);
-  const [objManager, setObjManager] = useState(null);
+  const [sportObjManager, setSportObjManager] = useState(null);
   const [draw, setDraw] = useState(false);
   const [poly, setPoly] = useState(null);
 
@@ -247,19 +254,19 @@ const Map = ({ isYmapsInit }) => {
 
   useEffect(() => {
     if (isYmapsInit) {
-      if (objManager) {
+      if (sportObjManager) {
         update({
           sportFeatures,
           populationFeatures,
-          objManager
+          sportObjManager
         });
       } else {
         ymaps.ready(() => init({
           sportFeatures,
           populationFeatures,
           map: mapRef,
-          objManager,
-          setObjManager,
+          sportObjManager,
+          setSportObjManager,
           setPoly,
         }));
       }
