@@ -213,13 +213,13 @@ const Map = ({ isYmapsInit }) => {
         "properties": {
           "balloonContentHeader": `<b style="margin-bottom: 12px;">${point.label}</b>`,
           "balloonContentBody": `
-            <p style="margin-bottom: 12px;">Ведомство: ${departments.find(item => item.value === point.departmentId).label}</p>
+            <p style="margin-bottom: 12px;"><b style="font-weight: bold;">Ведомство:</b> ${departments.find(item => item.value === point.departmentId).label}</p>
             <table style="width: 100%; margin-bottom: 12px;">
-              <tr><th>Наименование спортзоны</th><th style="text-align: right;">Площадь</th></th>
+              <tr><th><b style="font-weight: bold;">Наименование спортзоны</b></th><th style="text-align: right;"><b style="font-weight: bold;">Площадь</b></th></th>
               ${point.areasItems.map((item) => `<tr><td>${item.label}</td><td style="text-align: right;">${item.square}</td></tr>`).join('')}
             </table>
-            <p style="margin-bottom: 12px;">Типы спортивных зон: ${uniq(point.areasItems.map((item) => (typesOfAreas.find(type => type.value === item.typeId).label))).join(', ')}</p>
-            <p style="margin-bottom: 12px;">Виды спорта на объекте: ${uniq(point.areasItems.reduce((res, cur) => {
+            <p style="margin-bottom: 12px;"><b style="font-weight: bold;">Типы спортивных зон:</b> ${uniq(point.areasItems.map((item) => (typesOfAreas.find(type => type.value === item.typeId).label))).join(', ')}</p>
+            <p style="margin-bottom: 12px;"><b style="font-weight: bold;">Виды спорта на объекте:</b> ${uniq(point.areasItems.reduce((res, cur) => {
                 cur.kindIds.forEach((item) => {
                   const obj = kindsOfSports.find(kind => kind.value === item);
                   obj && res.push(obj.label);
@@ -227,7 +227,7 @@ const Map = ({ isYmapsInit }) => {
                 return res;
               }, [])).join(', ')}</p>
           `,
-          "balloonContentFooter": `<p>Адрес: ${point.address}</p>`,
+          "balloonContentFooter": `<p><b style="font-weight: bold;">Адрес:</b> ${point.address}</p>`,
           "clusterCaption": `<strong>${point.label}</strong>`,
           "radius": point.radius
         }
