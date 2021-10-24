@@ -4,13 +4,6 @@ import {
   selectPoints,
 } from 'services/points/pointsSlice';
 import populationPoints from 'config/population.json';
-<<<<<<< HEAD
-import typesOfAreas from 'config/typesOfAreas.json';
-import kindsOfSports from 'config/kindsOfSports.json';
-import departments from 'config/departments.json';
-import regions from 'config/regions.json';
-=======
->>>>>>> master
 import { withYandexMap } from 'hocs';
 import { drawCircle, getPopulation, getSquare, setPolygonColor, sportPointsConversion, populationPointsConversion } from './helpers';
 import './Map.scss';
