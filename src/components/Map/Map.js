@@ -9,7 +9,7 @@ import typesOfAreas from 'config/typesOfAreas.json';
 import kindsOfSports from 'config/kindsOfSports.json';
 import departments from 'config/departments.json';
 import { withYandexMap } from 'hocs';
-import { drawCircle, getPopulation, getSquare } from './helpers';
+import { drawCircle, getPopulation, getSquare, setPolygonColor } from './helpers';
 import './Map.scss';
 
 const update = ({ sportFeatures, populationFeatures, sportObjManager } ) => {
@@ -32,7 +32,7 @@ const init = ({sportFeatures, populationFeatures, map, sportObjManager, setSport
   // Создаем менеджер объектов для точек спортивных объектов
   const sportPointsObjectManager = new ymaps.ObjectManager({
     clusterize: true,
-    gridSize: 72,
+    gridSize: 96,
     clusterDisableClickZoom: true
   });
 
@@ -54,6 +54,7 @@ const init = ({sportFeatures, populationFeatures, map, sportObjManager, setSport
     const sportObjects = ymaps.geoQuery(sportPointsObjectManager.objects).searchInside(circle);
     const population = getPopulation(results);
     const square = getSquare(sportObjects);
+    setPolygonColor(circle, square);
     console.log(`Проживает: ${population} человек, Площадь спортивных зон: ${square}`);
 
   })
