@@ -9,7 +9,7 @@ import typesOfAreas from 'config/typesOfAreas.json';
 import kindsOfSports from 'config/kindsOfSports.json';
 import departments from 'config/departments.json';
 import { withYandexMap } from 'hocs';
-import { drawCircle } from './helpers';
+import { drawCircle, getPopulation, getSquare } from './helpers';
 import './Map.scss';
 
 const update = ({ sportFeatures, populationFeatures, sportObjManager } ) => {
@@ -47,13 +47,13 @@ const init = ({sportFeatures, populationFeatures, map, sportObjManager, setSport
     const point = sportPointsObjectManager.objects.getById(e.get('objectId'));
     const circle = drawCircle(point.geometry.coordinates, point.properties.radius);
     myMap.geoObjects.add(circle);
-    let population = 0;
-    // console.log(ymaps.geoQuery(populationFeatures).searchInside(circle));
-    ymaps.geoQuery(populationFeatures).searchInside(circle).each(function (object) {
-      population += object.properties.get('residents');
-    });
 
-    console.log(`Проживает: ${population} человек`);
+    // console.log(ymaps.geoQuery(populationFeatures).searchInside(circle));
+    const results = ymaps.geoQuery(populationFeatures).searchInside(circle);
+    const sportObjects = ymaps.geoQuery(sportPointsObjectManager.objects).searchInside(circle);
+    const population = getPopulation(results);
+    const square = getSquare(sportObjects);
+    console.log(`Проживает: ${population} человек, Площадь спортивных зон: ${square}`);
 
   })
 
@@ -216,7 +216,7 @@ const Map = ({ isYmapsInit }) => {
             <p style="margin-bottom: 12px;"><b style="font-weight: bold;">Ведомство:</b> ${departments.find(item => item.value === point.departmentId).label}</p>
             <table style="width: 100%; margin-bottom: 12px;">
               <tr><th><b style="font-weight: bold;">Наименование спортзоны</b></th><th style="text-align: right;"><b style="font-weight: bold;">Площадь</b></th></th>
-              ${point.areasItems.map((item) => `<tr><td>${item.label}</td><td style="text-align: right;">${item.square}</td></tr>`).join('')}
+              ${point.areasItems.map((item) => `<tr><td>${item.label}</td><td style="text-align: right;">${item.square} м2</td></tr>`).join('')}
             </table>
             <p style="margin-bottom: 12px;"><b style="font-weight: bold;">Типы спортивных зон:</b> ${uniq(point.areasItems.map((item) => (typesOfAreas.find(type => type.value === item.typeId).label))).join(', ')}</p>
             <p style="margin-bottom: 12px;"><b style="font-weight: bold;">Виды спорта на объекте:</b> ${uniq(point.areasItems.reduce((res, cur) => {
@@ -226,10 +226,15 @@ const Map = ({ isYmapsInit }) => {
                 });
                 return res;
               }, [])).join(', ')}</p>
+              <p style="margin-bottom: 12px;"><b style="font-weight: bold;">Доступность: ${point.radius} м. <button>построить окружность</button></b></p>
           `,
           "balloonContentFooter": `<p><b style="font-weight: bold;">Адрес:</b> ${point.address}</p>`,
           "clusterCaption": `<strong>${point.label}</strong>`,
-          "radius": point.radius
+          "radius": point.radius,
+          "square": point.areasItems.reduce((res, cur) => {
+            res += cur.square;
+            return res;
+          }, 0)
         }
       }
     ))
