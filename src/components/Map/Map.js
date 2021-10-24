@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
+import { uniq } from 'lodash';
 import {
   selectPoints,
 } from 'services/points/pointsSlice';
 import populationPoints from 'config/population.json';
+import kindsOfSports from 'config/kindsOfSports.json';
+import departments from 'config/departments.json';
 import { withYandexMap } from 'hocs';
 import './Map.scss';
 
@@ -173,18 +176,23 @@ const Map = ({ isYmapsInit }) => {
           "coordinates": point.coords
         },
         "properties": {
-          "balloonContentHeader": `<b>${point.label}</b>`,
+          "balloonContentHeader": `<b style="margin-bottom: 12px;">${point.label}</b>`,
           "balloonContentBody": `
-            <p>Адрес: ${point.address}</p>
-            <p>Ведомство: ${point.departmentId}</p>
-            <table>
-              <tr><th>Наименование спортзоны</th><th>Площадь</th></th>
-              ${point.areasItems.map((item) => `<tr><td>${item.label}</td><td>${item.square}</td></tr>`).join('')}
+            <p style="margin-bottom: 12px;">Ведомство: ${departments.find(item => item.value === point.departmentId).label}</p>
+            <table style="width: 100%; margin-bottom: 12px;">
+              <tr><th>Наименование спортзоны</th><th style="text-align: right;">Площадь</th></th>
+              ${point.areasItems.map((item) => `<tr><td>${item.label}</td><td style="text-align: right;">${item.square}</td></tr>`).join('')}
             </table>
+            <p style="margin-bottom: 12px;">Виды спорта на объекте: ${uniq(point.areasItems.reduce((res, cur) => {
+                cur.kindIds.forEach((item) => {
+                  const obj = kindsOfSports.find(kind => kind.value === item);
+                  obj && res.push(obj.label);
+                });
+                return res;
+              }, [])).join(', ')}</p>
           `,
-          "balloonContentFooter": "<font size=1>Информация предоставлена: </font> <strong>этим балуном</strong>",
-          "clusterCaption": "<strong><s>Еще</s> одна</strong> метка",
-          "hintContent": "<strong>Текст  <s>подсказки</s></strong>",
+          "balloonContentFooter": `<p>Адрес: ${point.address}</p>`,
+          "clusterCaption": `<strong>${point.label}</strong>`,
           "radius": point.radius
         }
       }
