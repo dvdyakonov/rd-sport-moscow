@@ -11,13 +11,11 @@ import { withYandexMap } from 'hocs';
 import './Map.scss';
 
 const update = ({ sportFeatures, populationFeatures, objManager } ) => {
-  console.log("UPDATE");
   objManager.removeAll();
   objManager.add(sportFeatures);
 }
 
 const init = ({sportFeatures, populationFeatures, map, objManager, setObjManager }) => {
-  console.log("INIT");
   const ymaps = window.ymaps;
   const myMap = new ymaps.Map(map.current, {
     center: [55.76, 37.64],

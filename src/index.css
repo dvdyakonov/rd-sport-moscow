@@ -103,3 +103,7 @@ html, body {
     height: 100%;
     position: relative;
 }
+
+input {
+  font-family: 'Proxima Nova';
+}
