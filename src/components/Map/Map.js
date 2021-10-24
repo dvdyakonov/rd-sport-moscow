@@ -1,15 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
-import { uniq } from 'lodash';
 import {
   selectPoints,
 } from 'services/points/pointsSlice';
 import populationPoints from 'config/population.json';
-import typesOfAreas from 'config/typesOfAreas.json';
-import kindsOfSports from 'config/kindsOfSports.json';
-import departments from 'config/departments.json';
 import { withYandexMap } from 'hocs';
-import { drawCircle, getPopulation, getSquare, setPolygonColor } from './helpers';
+import { drawCircle, getPopulation, getSquare, setPolygonColor, sportPointsConversion, populationPointsConversion } from './helpers';
 import './Map.scss';
 
 const update = ({ sportFeatures, populationFeatures, sportObjManager } ) => {
@@ -43,19 +39,22 @@ const init = ({sportFeatures, populationFeatures, map, sportObjManager, setSport
     setSportObjManager(sportPointsObjectManager);
   };
 
-  sportPointsObjectManager.objects.events.add('click', (e) => {
-    const point = sportPointsObjectManager.objects.getById(e.get('objectId'));
-    const circle = drawCircle(point.geometry.coordinates, point.properties.radius);
-    myMap.geoObjects.add(circle);
+  // sportPointsObjectManager.objects.events.add('click', (e) => {
+  window.document.addEventListener('click', (e) => {
+    if (e.target.id.indexOf('balloon-btn-') !== -1) {
+      const objectId = Number(e.target.id.slice('balloon-btn-'.length));
+      const point = sportPointsObjectManager.objects.getById(objectId);
+      const circle = drawCircle(point.geometry.coordinates, point.properties.radius);
+      myMap.geoObjects.add(circle);
 
-    // console.log(ymaps.geoQuery(populationFeatures).searchInside(circle));
-    const results = ymaps.geoQuery(populationFeatures).searchInside(circle);
-    const sportObjects = ymaps.geoQuery(sportPointsObjectManager.objects).searchInside(circle);
-    const population = getPopulation(results);
-    const square = getSquare(sportObjects);
-    setPolygonColor(circle, square);
-    console.log(`Проживает: ${population} человек, Площадь спортивных зон: ${square}`);
+      const results = ymaps.geoQuery(populationFeatures).searchInside(circle);
+      const sportObjects = ymaps.geoQuery(sportPointsObjectManager.objects).searchInside(circle);
+      const population = getPopulation(results);
+      const square = getSquare(sportObjects);
+      setPolygonColor(circle, square);
 
+      circle.properties.set('hintContent', `<p>Проживает: ${population} человек,</p><p>Площадь спортивных зон: ${square}</p>`)
+    }
   })
 
   // Создаем менеджер объектов для плотности населения
@@ -200,63 +199,6 @@ const Map = ({ isYmapsInit }) => {
       setDraw(true);
     }
   }
-
-  const sportPointsConversion = (points) => ({
-    "type": "FeatureCollection",
-    "features": points.map(point => (
-      {
-        "type": "Feature",
-        "id": point.value,
-        "geometry": {
-          "type": "Point",
-          "coordinates": point.coords
-        },
-        "properties": {
-          "balloonContentHeader": `<b style="margin-bottom: 12px;">${point.label}</b>`,
-          "balloonContentBody": `
-            <p style="margin-bottom: 12px;"><b style="font-weight: bold;">Ведомство:</b> ${departments.find(item => item.value === point.departmentId).label}</p>
-            <table style="width: 100%; margin-bottom: 12px;">
-              <tr><th><b style="font-weight: bold;">Наименование спортзоны</b></th><th style="text-align: right;"><b style="font-weight: bold;">Площадь</b></th></th>
-              ${point.areasItems.map((item) => `<tr><td>${item.label}</td><td style="text-align: right;">${item.square} м2</td></tr>`).join('')}
-            </table>
-            <p style="margin-bottom: 12px;"><b style="font-weight: bold;">Типы спортивных зон:</b> ${uniq(point.areasItems.map((item) => (typesOfAreas.find(type => type.value === item.typeId).label))).join(', ')}</p>
-            <p style="margin-bottom: 12px;"><b style="font-weight: bold;">Виды спорта на объекте:</b> ${uniq(point.areasItems.reduce((res, cur) => {
-                cur.kindIds.forEach((item) => {
-                  const obj = kindsOfSports.find(kind => kind.value === item);
-                  obj && res.push(obj.label);
-                });
-                return res;
-              }, [])).join(', ')}</p>
-              <p style="margin-bottom: 12px;"><b style="font-weight: bold;">Доступность: ${point.radius} м. <button>построить окружность</button></b></p>
-          `,
-          "balloonContentFooter": `<p><b style="font-weight: bold;">Адрес:</b> ${point.address}</p>`,
-          "clusterCaption": `<strong>${point.label}</strong>`,
-          "radius": point.radius,
-          "square": point.areasItems.reduce((res, cur) => {
-            res += cur.square;
-            return res;
-          }, 0)
-        }
-      }
-    ))
-  });
-
-  const populationPointsConversion = (points) => ({
-    "type": "FeatureCollection",
-    "features": points.map(point => (
-      {
-        "type": "Feature",
-        "geometry": {
-          "type": "Point",
-          "coordinates": [Number(point.lat), Number(point.lon)]
-        },
-        "properties": {
-          "weight": Number(point.weight),
-          "residents": Number(point.weight) * 31
-        }
-      }
-    ))
-  });
 
   const [sportFeatures, setSportFeatures] = useState(() => sportPointsConversion(points));
   const [populationFeatures, setpopulationFeatures] = useState(() => populationPointsConversion(populationPoints));
