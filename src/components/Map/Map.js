@@ -243,18 +243,20 @@ const Map = () => {
         populationFeatures,
         sportObjManager
       });
-    } else {
-      ymaps.ready(['util.calculateArea', 'Heatmap'], () => init({
-        sportFeatures,
-        populationFeatures,
-        map: mapRef,
-        sportObjManager,
-        setSportObjManager,
-        setPoly,
-        polygonToggle,
-      }));
     }
   }, [sportFeatures, populationFeatures, ymaps]);
+
+  useEffect(() => {
+    ymaps.ready(['util.calculateArea', 'Heatmap'], () => init({
+      sportFeatures,
+      populationFeatures,
+      map: mapRef,
+      sportObjManager,
+      setSportObjManager,
+      setPoly,
+      polygonToggle,
+    }));
+  }, []);
 
   return (
     <>
