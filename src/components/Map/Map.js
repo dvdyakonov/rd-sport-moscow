@@ -4,6 +4,13 @@ import {
   selectPoints,
 } from 'services/points/pointsSlice';
 import populationPoints from 'config/population.json';
+<<<<<<< HEAD
+import typesOfAreas from 'config/typesOfAreas.json';
+import kindsOfSports from 'config/kindsOfSports.json';
+import departments from 'config/departments.json';
+import regions from 'config/regions.json';
+=======
+>>>>>>> master
 import { withYandexMap } from 'hocs';
 import { drawCircle, getPopulation, getSquare, setPolygonColor, sportPointsConversion, populationPointsConversion } from './helpers';
 import './Map.scss';
@@ -32,8 +39,8 @@ const init = ({sportFeatures, populationFeatures, map, sportObjManager, setSport
     clusterDisableClickZoom: true
   });
 
-  sportPointsObjectManager.objects.options.set('preset', 'islands#greenDotIcon');
-  sportPointsObjectManager.clusters.options.set('preset', 'islands#greenClusterIcons');
+  sportPointsObjectManager.objects.options.set('preset', 'islands#redDotIcon');
+  sportPointsObjectManager.clusters.options.set('preset', 'islands#redClusterIcons');
   sportPointsObjectManager.add(sportFeatures);
   if (!sportObjManager) {
     setSportObjManager(sportPointsObjectManager);
@@ -78,7 +85,6 @@ const init = ({sportFeatures, populationFeatures, map, sportObjManager, setSport
   });
 
   // userPolygonsObjectManager.add(myPolygon);
-
 
 
   // Добавляем менеджеры объектов на карту
@@ -147,18 +153,32 @@ const init = ({sportFeatures, populationFeatures, map, sportObjManager, setSport
       }
     }));
 
+
     // Создадим переключатель вида подписей.
     var typeList = new ymaps.control.ListBox({
       data: {
-        content: 'Тепловая карта'
+        content: 'Слои'
       },
       items: [
-        new ymaps.control.ListBoxItem({ data: { content: 'Спортивные объекты' } }),
-        new ymaps.control.ListBoxItem({ data: { content: 'Население Москвы' } })
+        new ymaps.control.ListBoxItem({ data: { content: 'Точки спортивных объектов' } , state: { selected: true }}),
+        new ymaps.control.ListBoxItem({ data: { content: 'Тепловая карта спортивных объектов' } }),
+        new ymaps.control.ListBoxItem({ data: { content: 'Тепловая карта плотности населения' } })
       ]
     });
 
     typeList.get(0).events.add('click', function (e) {
+      const item = e.get('target');
+      const itemSelected = item.state.get('selected');
+      if (itemSelected) {
+        myMap.geoObjects.remove(sportPointsObjectManager);
+      } else {
+        myMap.geoObjects.add(sportPointsObjectManager);
+      }
+      // Закрываем список.
+      typeList.collapse();
+    });
+
+    typeList.get(1).events.add('click', function (e) {
       const item = e.get('target');
       const itemSelected = item.state.get('selected');
 
@@ -169,7 +189,7 @@ const init = ({sportFeatures, populationFeatures, map, sportObjManager, setSport
       typeList.collapse();
     });
 
-    typeList.get(1).events.add('click', function (e) {
+    typeList.get(2).events.add('click', function (e) {
       const item = e.get('target');
       const itemSelected = item.state.get('selected');
 
