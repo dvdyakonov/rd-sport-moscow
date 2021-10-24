@@ -5,6 +5,7 @@ import {
   selectPoints,
 } from 'services/points/pointsSlice';
 import populationPoints from 'config/population.json';
+import typesOfAreas from 'config/typesOfAreas.json';
 import kindsOfSports from 'config/kindsOfSports.json';
 import departments from 'config/departments.json';
 import { withYandexMap } from 'hocs';
@@ -217,6 +218,7 @@ const Map = ({ isYmapsInit }) => {
               <tr><th>Наименование спортзоны</th><th style="text-align: right;">Площадь</th></th>
               ${point.areasItems.map((item) => `<tr><td>${item.label}</td><td style="text-align: right;">${item.square}</td></tr>`).join('')}
             </table>
+            <p style="margin-bottom: 12px;">Типы спортивных зон: ${uniq(point.areasItems.map((item) => (typesOfAreas.find(type => type.value === item.typeId).label))).join(', ')}</p>
             <p style="margin-bottom: 12px;">Виды спорта на объекте: ${uniq(point.areasItems.reduce((res, cur) => {
                 cur.kindIds.forEach((item) => {
                   const obj = kindsOfSports.find(kind => kind.value === item);
