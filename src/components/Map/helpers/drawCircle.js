@@ -1,8 +1,5 @@
 const drawCircle = (coords, radius, color = "#ff0000") => {
-    return new window.ymaps.Circle([coords, radius], {
-        balloonContent: "Радиус круга - 10 км",
-        hintContent: "Радиус круга - 10 км"
-    }, {
+    return new window.ymaps.Circle([coords, radius], {}, {
         fillColor: color,
         fillOpacity: 0.5,
         strokeColor: color,
