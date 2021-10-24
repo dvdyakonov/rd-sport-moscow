@@ -75,6 +75,7 @@ for (let i = 0; i < json.length; i++) {
     objects.push({
       value: Number(json[i]['idОбъекта']),
       label: json[i]['Спортзона'],
+      departmentId: Number(json[i]['idВедомственнойОрганизации']),
       coords: [json[i]['Широта(Latitude)'], json[i]['Долгота(Longitude)']],
       address: json[i]['Адрес'],
       areasIds: [Number(json[i]['idСпортзоны'])],
