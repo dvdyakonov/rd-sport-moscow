@@ -30,11 +30,11 @@ const App = () => {
     // Проверяем авторизован ли пользователь
     firebase.auth().onAuthStateChanged(userAuth => {
       if (userAuth) {
-        console.log(userAuth.photoURL);
+        const providerData = userAuth.providerData[0];
         setUserData({
           uid: userAuth.uid,
           email: userAuth.email,
-          photo: userAuth.providerData[0].photoURL,
+          photo: providerData ? providerData.photoURL : null,
         });
       } else {
         firebase.auth().signInAnonymously();

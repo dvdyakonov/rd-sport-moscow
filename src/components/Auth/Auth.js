@@ -23,14 +23,17 @@ const Auth = ({user, setUserData}) => {
     if (provider) {
       firebase.auth().currentUser.linkWithPopup(provider).then(result => {
         const providerData = result.user.providerData[0];
+        console.log(providerData);
         const profile = {
           name: providerData.displayName,
           email: providerData.email,
+          photo: providerData.photoURL,
         }
 
         setUserData({
           uid: user.uid,
           email: profile.email,
+          photo: profile.photo,
         });
 
         firebase.analytics().logEvent('signup_success', {

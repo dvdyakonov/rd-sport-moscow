@@ -69,6 +69,7 @@ for (let i = 0; i < json.length; i++) {
   if (typeof objectsItem !== 'undefined') {
     if (objectsItem.areasIds.indexOf(Number(json[i]['idСпортзоны'])) === -1) {
       objectsItem.areasIds = [...objectsItem.areasIds, Number(json[i]['idСпортзоны'])]
+      objectsItem.areasItems = [...objectsItem.areasItems, areas[areas.length - 1]]
     }
   } else {
     objects.push({
@@ -77,6 +78,7 @@ for (let i = 0; i < json.length; i++) {
       coords: [json[i]['Широта(Latitude)'], json[i]['Долгота(Longitude)']],
       address: json[i]['Адрес'],
       areasIds: [Number(json[i]['idСпортзоны'])],
+      areasItems: [areas[areas.length - 1]],
       radius: Number(zones[json[i]['Доступность']]),
     })
   }
