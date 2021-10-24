@@ -87,7 +87,27 @@ export const pointsSlice = createSlice({
         return true;
       });
 
-      state.data = [...newArr];
+      const newArr2 = [];
+
+      // 
+      newArr.forEach(object => {
+        newArr2.push({
+          ...object,
+          areasItems: object.areasItems.filter(area => {
+            const typeIds = filters.types.map(type => type.value);
+            if (intersection(typeIds, area.kindIds).length > 0){
+              return true;
+            }
+
+            if (area.typeId === filters.areaType.value){
+              return true;
+            }
+            return false;
+          })
+        });
+      })
+
+      state.data = [...newArr2];
     }
   },
 });
