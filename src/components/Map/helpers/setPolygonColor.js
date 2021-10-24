@@ -1,4 +1,4 @@
-const setPolygonColor = (polygon) => {
+const setPolygonColor = (polygon, square) => {
     const colors = [
         {
             min: 1000000,
@@ -65,7 +65,12 @@ const setPolygonColor = (polygon) => {
             max: 2499,
             color: "#b6001d",
         }
-    ]
+    ];
+
+    const currentColor = colors.find(item => square >= item.min && square <= item.max).color;
+
+    polygon.options.set("strokeColor", currentColor);
+    polygon.options.set("fillColor", currentColor);
 } 
 
 export default setPolygonColor;

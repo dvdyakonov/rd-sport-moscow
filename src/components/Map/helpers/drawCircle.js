@@ -4,9 +4,9 @@ const drawCircle = (coords, radius, color = "#ff0000") => {
         hintContent: "Подвинь меня"
     }, {
         fillColor: color,
-        fillOpacity: 0.8,
+        fillOpacity: 0.5,
         strokeColor: color,
-        strokeOpacity: 0.8,
+        strokeOpacity: 0.5,
         strokeWidth: 0
     });
 } 
