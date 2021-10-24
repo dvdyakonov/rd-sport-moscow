@@ -45,6 +45,7 @@ const init = ({sportFeatures, populationFeatures, map, sportObjManager, setSport
 
   sportPointsObjectManager.objects.events.add('click', (e) => {
     const point = sportPointsObjectManager.objects.getById(e.get('objectId'));
+    console.log(point.properties);
     const circle = drawCircle(point.geometry.coordinates, point.properties.radius);
     myMap.geoObjects.add(circle);
 
