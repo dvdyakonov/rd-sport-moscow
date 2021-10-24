@@ -13,7 +13,7 @@ const update = ({ sportFeatures, populationFeatures, sportObjManager } ) => {
   sportObjManager.add(sportFeatures);
 }
 
-const init = ({sportFeatures, populationFeatures, map, sportObjManager, setSportObjManager, setPoly }) => {
+const init = ({sportFeatures, populationFeatures, map, sportObjManager, setSportObjManager, setPoly, polygonToggle }) => {
   const ymaps = window.ymaps;
   // Инициализируем карту Москвы
   const myMap = new ymaps.Map(map.current, {
@@ -24,6 +24,17 @@ const init = ({sportFeatures, populationFeatures, map, sportObjManager, setSport
     searchControlProvider: 'yandex#search'
   });
 
+  const buttons = {
+    polygon: new ymaps.control.Button({
+      data: {
+        content: 'Создать полигон'
+      },
+      options: {
+          selectOnClick: true,
+          maxWidth: 150
+      }
+    })
+  }
 
   // Создаем менеджер объектов для точек спортивных объектов
   const sportPointsObjectManager = new ymaps.ObjectManager({
@@ -90,8 +101,18 @@ const init = ({sportFeatures, populationFeatures, map, sportObjManager, setSport
       myPolygon.options.set("strokeColor", newValue ? '#FF0000' : '#0000FF');
   });
 
+  myPolygon.events.add('mouseenter', (event) => {
+    const results = ymaps.geoQuery(populationFeatures).searchInside(myPolygon);
+    const population = getPopulation(results);
+    myPolygon.properties.set('hintContent', `<p>На данной территории проживает: ${population} человек</p>`)
+  });
+
   setPoly(myPolygon);
 
+  // myPolygon.properties.set('hintContent', `<p>Проживает: ${population} человек,</p><p>Площадь спортивных зон: ${square}</p>`)
+
+  buttons.polygon.events.add('press', () => polygonToggle(myPolygon));
+  myMap.controls.add(buttons['polygon']);
 
   ymaps.modules.require(['Heatmap'], function (Heatmap) {
     var heatmapSport = new Heatmap(sportFeatures, {
@@ -203,12 +224,13 @@ const Map = ({ isYmapsInit }) => {
   const [draw, setDraw] = useState(false);
   const [poly, setPoly] = useState(null);
 
-  const polygonToggle = () => {
+  const polygonToggle = (statePoly) => {
+    const p = statePoly || poly;
     if (draw) {
-      poly.editor.stopDrawing();
+      p.editor.stopDrawing();
       setDraw(false);
     } else {
-      poly.editor.startDrawing();
+      p.editor.startDrawing();
       setDraw(true);
     }
   }
@@ -239,6 +261,7 @@ const Map = ({ isYmapsInit }) => {
           sportObjManager,
           setSportObjManager,
           setPoly,
+          polygonToggle,
         }));
       }
     }
@@ -247,7 +270,6 @@ const Map = ({ isYmapsInit }) => {
   return (
     <>
       <div className="map" ref={mapRef}></div>
-      <button className="polyBtn" onClick={polygonToggle}>Poly</button>
     </>
   )
 }
