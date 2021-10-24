@@ -1,11 +1,11 @@
 import Button from 'components/Button';
 import './Filters.scss';
-import FilterAvaliable from './FilterAvaliable';
+import FilterRadius from './FilterRadius';
 import FilterSport from './FilterSport';
 import FilterObjectName from './FilterObjectName';
 import FilterAreaName from './FilterAreaName';
-import FilterObjects from './FilterObjects';
-import FilterTypes from './FilterTypes';
+import FilterDepartments from './FilterDepartments';
+import FilterAreaTypes from './FilterAreaTypes';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectFilters, filterData } from 'services/points/pointsSlice';
 
@@ -15,11 +15,11 @@ const Filters = () => {
   return <div className="filters">
     <div className="filters__title">Фильтры спортивных объектов:</div>
     <FilterObjectName />
-    <FilterObjects />
+    <FilterDepartments />
     <FilterAreaName />
-    <FilterTypes />
+    <FilterAreaTypes />
     <FilterSport />
-    <FilterAvaliable />
+    <FilterRadius />
 
 
     <Button

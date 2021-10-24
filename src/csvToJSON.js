@@ -40,7 +40,7 @@ for (let i = 0; i < json.length; i++) {
       label: json[i]['Типспортзоны']
     })
   }
-  
+
   // Формируем JSON спортивных зон
 
   const areasItem = _.find(areas, ['value', Number(json[i]['idСпортзоны'])]);
@@ -48,7 +48,9 @@ for (let i = 0; i < json.length; i++) {
   const typesOfAreasItemId = typesOfAreasItem !== undefined ? typesOfAreasItem.value : typesOfAreas.length + 1;
 
   if (typeof areasItem !== 'undefined') {
-    areasItem.kindIds = [...areasItem.kindIds, kindsOfSportsItemId]
+    if (areasItem.kindIds.indexOf(kindsOfSportsItemId) === -1) {
+      areasItem.kindIds = [...areasItem.kindIds, kindsOfSportsItemId]
+    }
   } else {
     areas.push({
       value: Number(json[i]['idСпортзоны']),
@@ -84,10 +86,15 @@ for (let i = 0; i < json.length; i++) {
 
   const departmentsItem = _.find(departments, ['value', Number(json[i]['idВедомственнойОрганизации'])]);
 
-  if (typeof departmentsItem === 'undefined') {
+  if (typeof departmentsItem !== 'undefined') {
+    if (departmentsItem.objectIds.indexOf(Number(json[i]['idОбъекта'])) === -1) {
+      departmentsItem.objectIds = [...departmentsItem.objectIds, Number(json[i]['idОбъекта'])]
+    }
+  } else {
     departments.push({
       value: Number(json[i]['idВедомственнойОрганизации']),
-      label: json[i]['ВедомственнаяОрганизация']
+      label: json[i]['ВедомственнаяОрганизация'],
+      objectIds: [Number(json[i]['idОбъекта'])]
     })
   }
 
