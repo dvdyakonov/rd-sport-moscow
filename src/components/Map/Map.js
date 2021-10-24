@@ -5,7 +5,7 @@ import {
 } from 'services/points/pointsSlice';
 import populationPoints from 'config/population.json';
 import { withYandexMap } from 'hocs';
-import { drawCircle, getPopulation, getSquare, setPolygonColor, sportPointsConversion, populationPointsConversion } from './helpers';
+import { drawCircle, setEventPolygon, getPopulation, getSquare, setPolygonColor, sportPointsConversion, populationPointsConversion } from './helpers';
 import './Map.scss';
 
 const update = ({ sportFeatures, populationFeatures, sportObjManager } ) => {
@@ -101,11 +101,7 @@ const init = ({sportFeatures, populationFeatures, map, sportObjManager, setSport
       myPolygon.options.set("strokeColor", newValue ? '#FF0000' : '#0000FF');
   });
 
-  myPolygon.events.add('mouseenter', (event) => {
-    const results = ymaps.geoQuery(populationFeatures).searchInside(myPolygon);
-    const population = getPopulation(results);
-    myPolygon.properties.set('hintContent', `<p>На данной территории проживает: ${population} человек</p>`)
-  });
+  setEventPolygon(myPolygon, populationFeatures);
 
   setPoly(myPolygon);
 

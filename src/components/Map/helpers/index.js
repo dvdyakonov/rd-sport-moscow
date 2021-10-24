@@ -4,5 +4,6 @@ import getSquare from './getSquare';
 import setPolygonColor from './setPolygonColor';
 import populationPointsConversion from './populationPointsConversion';
 import sportPointsConversion from './sportPointsConversion';
+import setEventPolygon from './setEventPolygon';
 
-export { drawCircle, getPopulation, getSquare, setPolygonColor, sportPointsConversion, populationPointsConversion };
+export { drawCircle, getPopulation, getSquare, setEventPolygon, setPolygonColor, sportPointsConversion, populationPointsConversion };
