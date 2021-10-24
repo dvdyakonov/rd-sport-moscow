@@ -23,7 +23,6 @@ const Auth = ({user, setUserData}) => {
     if (provider) {
       firebase.auth().currentUser.linkWithPopup(provider).then(result => {
         const providerData = result.user.providerData[0];
-        console.log(providerData);
         const profile = {
           name: providerData.displayName,
           email: providerData.email,

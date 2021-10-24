@@ -73,7 +73,6 @@ const SearchForm = () => {
 
   const handleSubmit = (event) => {
       event.preventDefault();
-      console.log(mapInstance);
       geocode(mapInstance, address.replace(/^\s*(.*)\s*$/, '$1'), (coords) => {
         const mapOptions = {
           name: address,
@@ -95,7 +94,6 @@ const SearchForm = () => {
         boundedBy: MoscowArea,
       });
       suggestView.events.add("select", function(e){
-        console.log(e.get('item'));
         setAddress(e.get('item').value)
       })
     }

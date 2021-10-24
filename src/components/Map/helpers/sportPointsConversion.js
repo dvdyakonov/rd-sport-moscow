@@ -36,6 +36,7 @@ const sportPointsConversion = (points) => ({
         "balloonContentFooter": `<p><b style="font-weight: bold;">Адрес:</b> ${point.address}</p>`,
         "clusterCaption": `<strong>${point.label}</strong>`,
         "radius": point.radius,
+        "areas": point.areasItems.length,
         "square": point.areasItems.reduce((res, cur) => {
           res += cur.square;
           return res;

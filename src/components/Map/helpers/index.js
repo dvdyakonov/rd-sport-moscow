@@ -1,9 +1,9 @@
 import drawCircle from './drawCircle';
 import getPopulation from './getPopulation';
-import getSquare from './getSquare';
 import setPolygonColor from './setPolygonColor';
 import populationPointsConversion from './populationPointsConversion';
 import sportPointsConversion from './sportPointsConversion';
-import setEventPolygon from './setEventPolygon';
+import setPolygonClickEvent from './setPolygonClickEvent';
+import getPolygonInfo from './getPolygonInfo';
 
-export { drawCircle, getPopulation, getSquare, setEventPolygon, setPolygonColor, sportPointsConversion, populationPointsConversion };
+export { drawCircle, getPopulation, setPolygonClickEvent, setPolygonColor, sportPointsConversion, populationPointsConversion, getPolygonInfo };
