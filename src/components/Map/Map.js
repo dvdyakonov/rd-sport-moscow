@@ -4,6 +4,7 @@ import {
   selectPoints,
 } from 'services/points/pointsSlice';
 import populationPoints from 'config/population.json';
+import districtsPolygons from 'config/districts.json';
 import { drawCircle, setPolygonClickEvent, getPopulation, getPolygonInfo, setPolygonColor, sportPointsConversion, populationPointsConversion } from './helpers';
 import './Map.scss';
 
@@ -88,6 +89,13 @@ const init = ({ sportFeatures, populationFeatures, map, sportObjManager, setSpor
   // userPolygonsObjectManager.add(myPolygon);
 
 
+
+  // Создаем менеджер объектов для плотности населения
+  const districtsPolygonsObjectManager = new ymaps.ObjectManager();
+
+  districtsPolygonsObjectManager.add(districtsPolygons);
+
+
   // Добавляем менеджеры объектов на карту
   myMap.geoObjects.add(sportPointsObjectManager);
   myMap.geoObjects.add(myPolygon);
@@ -168,7 +176,8 @@ const init = ({ sportFeatures, populationFeatures, map, sportObjManager, setSpor
     items: [
       new ymaps.control.ListBoxItem({ data: { content: 'Точки спортивных объектов' }, state: { selected: true } }),
       new ymaps.control.ListBoxItem({ data: { content: 'Тепловая карта спортивных объектов' } }),
-      new ymaps.control.ListBoxItem({ data: { content: 'Тепловая карта плотности населения' } })
+      new ymaps.control.ListBoxItem({ data: { content: 'Тепловая карта плотности населения' } }),
+      new ymaps.control.ListBoxItem({ data: { content: 'Границы районов' } }),
     ]
   });
 
@@ -202,6 +211,18 @@ const init = ({ sportFeatures, populationFeatures, map, sportObjManager, setSpor
     heatmapPopulation.setMap(
       itemSelected ? null : myMap
     );
+    // Закрываем список.
+    typeList.collapse();
+  });
+
+  typeList.get(3).events.add('click', function (e) {
+    const item = e.get('target');
+    const itemSelected = item.state.get('selected');
+    if (itemSelected) {
+      myMap.geoObjects.remove(districtsPolygonsObjectManager);
+    } else {
+      myMap.geoObjects.add(districtsPolygonsObjectManager);
+    }
     // Закрываем список.
     typeList.collapse();
   });
