@@ -1,8 +1,9 @@
 export const prepareCSVName = `mossport-report.csv`;
 
-export function prepareCSV ({ stats }) {
+export function prepareCSV (stats) {
   const data = [];
   const tableHeading = [
+    'ID',
     'Площадь области',
     'Численность населения',
     'Плотность населения на 1 км²',
@@ -17,13 +18,14 @@ export function prepareCSV ({ stats }) {
   stats.map((item) => {
     const row = [];
     row.push(
+      item.id,
       item.square,
       item.population,
       item.populationDensity,
       item.areas,
       item.areasPerHuman,
-      item.areaSquare,
-      item.areaSquarePerHuman,
+      item.areasSquare,
+      item.areasSquarePerHuman,
     );
     return data.push(row);
   });
@@ -35,12 +37,12 @@ export function exportToCsv (filename, rows) {
   const processRow = (row) => {
     let finalVal = '';
     for (let j = 0; j < row.length; j += 1) {
-      let innerValue = row[j] === null ? '' : row[j].toString();
+      let innerValue = row[j] === null ? '' : row[j];
       if (row[j] instanceof Date) {
         innerValue = row[j].toLocaleString();
       }
-      let result = innerValue.replace(/"/g, '""');
-      if (result.match(/\./gmi) && result.match(/\./gmi).length === 1) result = result.replace('.', ',');
+      let result = innerValue; //.replace(/"/g, '""');
+      // if (result.match(/\./gmi) && result.match(/\./gmi).length === 1) result = result.replace('.', ',');
       if (j > 0) finalVal += ';';
       finalVal += `"${result}"`;
     }

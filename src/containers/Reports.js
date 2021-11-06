@@ -18,7 +18,7 @@ const Reports = () => {
         id: item.idx,
         square: `${polygonSquare} км²`,
         population: item.data.population,
-        populationDestiny: (item.data.population / polygonSquare).toFixed(3),
+        populationDensity: (item.data.population / polygonSquare).toFixed(3),
         areas: item.data.areas,
         areasPerHuman: (
           item.data.population
@@ -40,7 +40,7 @@ const Reports = () => {
   });
 
   const saveFile = () => {
-    console.log(prepareCSVName);
+    exportToCsv(prepareCSVName, prepareCSV(polygonsData));
   };
 
   const data = useMemo(() => [...polygonsData], []);
@@ -57,7 +57,7 @@ const Reports = () => {
       accessor: 'population'
     }, {
       Header: 'Плотность населения на 1 км²',
-      accessor: 'populationDestiny'
+      accessor: 'populationDensity'
     }, {
       Header: 'Кол-во спортзон',
       accessor: 'areas'
