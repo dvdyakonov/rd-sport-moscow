@@ -39,9 +39,7 @@ const Reports = () => {
     return dataConverter(polygons);
   });
 
-  const saveFile = () => {
-    exportToCsv(prepareCSVName, prepareCSV(polygonsData));
-  };
+  const saveFile = () => exportToCsv(prepareCSVName, prepareCSV(polygonsData));
 
   const data = useMemo(() => [...polygonsData], []);
 

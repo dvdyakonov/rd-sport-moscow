@@ -41,8 +41,7 @@ export function exportToCsv (filename, rows) {
       if (row[j] instanceof Date) {
         innerValue = row[j].toLocaleString();
       }
-      let result = innerValue; //.replace(/"/g, '""');
-      // if (result.match(/\./gmi) && result.match(/\./gmi).length === 1) result = result.replace('.', ',');
+      let result = innerValue;
       if (j > 0) finalVal += ';';
       finalVal += `"${result}"`;
     }
