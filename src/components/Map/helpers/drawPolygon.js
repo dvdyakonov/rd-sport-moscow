@@ -29,6 +29,7 @@ const drawPolygon = (collection, button) => {
 
         userPolygons.push({
             idx: idx,
+            center: polygon.geometry.getBounds()[0],
             coords: polygon.geometry.getCoordinates()
         });
 
