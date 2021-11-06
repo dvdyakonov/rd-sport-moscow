@@ -1,0 +1,15 @@
+@import 'styles/variables';
+
+.dashboard-filters {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  &__item {
+    margin: 0 12px 12px 0;
+    .filters__item {
+      margin: 0;
+    }
+  }
+}
