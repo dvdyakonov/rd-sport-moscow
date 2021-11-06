@@ -13,7 +13,6 @@ import Loader from 'components/Loader';
 
 // Pages
 import Home from "containers/Home";
-import Reports from "containers/Reports";
 import TrackActivity from 'containers/TrackActivity';
 import PolygonReport from 'containers/PolygonReport';
 
@@ -54,9 +53,6 @@ const App = () => {
               <Header user={user} showAuthPopup={showAuthPopup}/>
               <Route path="/" exact >
                 <Home />
-              </Route>
-              <Route path="/reports" exact >
-                <Reports />
               </Route>
               <Route path="/points/:id" exact>
                 <TrackActivity user={user} showAuthPopup={showAuthPopup} />

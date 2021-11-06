@@ -1,15 +1,19 @@
 import React, {useMemo, useState} from 'react';
 import {useHistory} from "react-router-dom";
-import { useTable, useSortBy } from 'react-table'
+import { useTable, useSortBy } from 'react-table';
+import { useSelector } from 'react-redux';
+import {
+  selectShowReports,
+} from 'services/points/pointsSlice';
 import Button from 'components/Button';
 import DashboardFilter from 'components/Dashboard/DashboardFilters';
 import {exportToCsv, prepareCSVName, prepareCSV} from 'utils/csv';
 
 import './Reports.scss';
 
-
 const Reports = () => {
   const history = useHistory();
+  const showReports = useSelector(selectShowReports);
   const goToPolygon = (id) => history.push(`/polygons/${id}`);
   const dataConverter = (array) => {
     return array.map(item => {
@@ -76,61 +80,54 @@ const Reports = () => {
 
   const {getTableProps, getTableBodyProps, headerGroups, rows, prepareRow} = useTable({columns, data}, useSortBy);
 
-  return (<main className="main">
-    <div className="reports">
-      <div className="reports__container">
-        <div className="reports__heading">
-          <div className="reports__title">Отчеты</div>
-          <Button className="reports__heading-action" onClick={saveFile}>Экспорт</Button>
-        </div>
-        <div className="reports__subtitle">Ниже представлен список сохраненных полигонов с информацией о спортивных зонах на его территории</div>
+  return (<div className={`reports ${showReports ? 'reports--visible' : ''}`}>
+    <div className="reports__container">
+      <div className="reports__heading">
+        <div className="reports__title">Отчеты</div>
+        <Button className="reports__heading-action" onClick={saveFile}>Экспорт</Button>
+      </div>
+      <div className="reports__subtitle">Ниже представлен список сохраненных полигонов с информацией о спортивных зонах на его территории</div>
 
-        <div className="reports__filters">
-          <div className="reports__filters-title">Фильтры</div>
-          <DashboardFilter/>
-        </div>
-
-        <div className="reports__table-wrapper">
-          <table {...getTableProps()} className="reports__table">
-            <thead>
-              {
-                headerGroups.map(headerGroup => (<tr {...headerGroup.getHeaderGroupProps()} className="reports__table-head-tr">
+      <div className="reports__table-wrapper">
+        <table {...getTableProps()} className="reports__table">
+          <thead>
+            {
+              headerGroups.map(headerGroup => (<tr {...headerGroup.getHeaderGroupProps()} className="reports__table-head-tr">
+                {
+                  headerGroup.headers.map(column => (<th {...column.getHeaderProps(column.getSortByToggleProps())} className="reports__table-head-th">
+                    {column.render('Header')}
+                    <span>
+                      {column.isSorted
+                        ? column.isSortedDesc
+                          ? ' 🔽'
+                          : ' 🔼'
+                        : ''}
+                    </span>
+                  </th>))
+                }
+              </tr>))
+            }
+          </thead>
+          <tbody {...getTableBodyProps()}>
+            {
+              rows.map(row => {
+                prepareRow(row)
+                return (<tr {...row.getRowProps()} className="reports__table-body-th">
                   {
-                    headerGroup.headers.map(column => (<th {...column.getHeaderProps(column.getSortByToggleProps())} className="reports__table-head-th">
-                      {column.render('Header')}
-                      <span>
-                        {column.isSorted
-                          ? column.isSortedDesc
-                            ? ' 🔽'
-                            : ' 🔼'
-                          : ''}
-                      </span>
-                    </th>))
+                    row.cells.map(cell => {
+                      return (<td {...cell.getCellProps()} className="reports__table-body-td">
+                        {cell.render('Cell')}
+                      </td>)
+                    })
                   }
-                </tr>))
-              }
-            </thead>
-            <tbody {...getTableBodyProps()}>
-              {
-                rows.map(row => {
-                  prepareRow(row)
-                  return (<tr {...row.getRowProps()} className="reports__table-body-th">
-                    {
-                      row.cells.map(cell => {
-                        return (<td {...cell.getCellProps()} className="reports__table-body-td">
-                          {cell.render('Cell')}
-                        </td>)
-                      })
-                    }
-                  </tr>)
-                })
-              }
-            </tbody>
-          </table>
-        </div>
+                </tr>)
+              })
+            }
+          </tbody>
+        </table>
       </div>
     </div>
-  </main>)
+  </div>)
 }
 
 export default Reports;
