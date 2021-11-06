@@ -4,14 +4,16 @@ import { useTable, useSortBy } from 'react-table';
 import { useSelector } from 'react-redux';
 import {
   selectShowReports,
+  selectPolygons,
 } from 'services/points/pointsSlice';
 import Button from 'components/Button';
-import DashboardFilter from 'components/Dashboard/DashboardFilters';
+// import DashboardFilter from 'components/Dashboard/DashboardFilters';
 import {exportToCsv, prepareCSVName, prepareCSV} from 'utils/csv';
 
 import './Reports.scss';
 
 const Reports = () => {
+  const polygonList = useSelector(selectPolygons);
   const history = useHistory();
   const showReports = useSelector(selectShowReports);
   const goToPolygon = (id) => history.push(`/polygons/${id}`);
@@ -38,14 +40,8 @@ const Reports = () => {
     })
   }
 
-  const [polygonsData, setPolygonsData] = useState(() => {
-    const polygons = window.localStorage.getItem('userPolygons') ? JSON.parse(window.localStorage.getItem('userPolygons')) : [];
-    return dataConverter(polygons);
-  });
-
-  const saveFile = () => exportToCsv(prepareCSVName, prepareCSV(polygonsData));
-
-  const data = useMemo(() => [...polygonsData], []);
+  const saveFile = () => exportToCsv(prepareCSVName, prepareCSV(dataConverter(polygonList)));
+  const data = useMemo(() => [...dataConverter(polygonList)], [polygonList]);
 
   const columns = useMemo(() => [
     {
