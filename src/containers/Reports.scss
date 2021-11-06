@@ -60,11 +60,12 @@
         font-weight: bold;
         font-family: "Proxima Nova", sans-serif;
         padding: 8px 4px;
-        text-align: left;
+        text-align: right;
       }
     }
     &-body {
       &-td {
+        text-align: right;
         font-size: 14px;
         line-height: 16px;
         letter-spacing: 0.5px;
