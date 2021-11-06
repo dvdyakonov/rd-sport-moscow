@@ -1,6 +1,6 @@
 import React, {useMemo, useState} from 'react';
 import {useHistory} from "react-router-dom";
-import {useTable} from 'react-table'
+import { useTable, useSortBy } from 'react-table'
 import Button from 'components/Button';
 import DashboardFilter from 'components/Dashboard/DashboardFilters';
 import {exportToCsv, prepareCSVName, prepareCSV} from 'utils/csv';
@@ -74,7 +74,7 @@ const Reports = () => {
     }
   ], []);
 
-  const {getTableProps, getTableBodyProps, headerGroups, rows, prepareRow} = useTable({columns, data});
+  const {getTableProps, getTableBodyProps, headerGroups, rows, prepareRow} = useTable({columns, data}, useSortBy);
 
   return (<main className="main">
     <div className="reports">
@@ -96,8 +96,15 @@ const Reports = () => {
               {
                 headerGroups.map(headerGroup => (<tr {...headerGroup.getHeaderGroupProps()} className="reports__table-head-tr">
                   {
-                    headerGroup.headers.map(column => (<th {...column.getHeaderProps()} className="reports__table-head-th">
+                    headerGroup.headers.map(column => (<th {...column.getHeaderProps(column.getSortByToggleProps())} className="reports__table-head-th">
                       {column.render('Header')}
+                      <span>
+                        {column.isSorted
+                          ? column.isSortedDesc
+                            ? ' 🔽'
+                            : ' 🔼'
+                          : ''}
+                      </span>
                     </th>))
                   }
                 </tr>))
