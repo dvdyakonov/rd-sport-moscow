@@ -5,7 +5,7 @@ import populationPointsConversion from './populationPointsConversion';
 import sportPointsConversion from './sportPointsConversion';
 import setPolygonClickEvent from './setPolygonClickEvent';
 import getPolygonInfo from './getPolygonInfo';
-import { drawPolygon, removePolygon } from './drawPolygon';
+import { createPolygon, drawPolygon, removePolygon } from './drawPolygon';
 
 export {
     drawCircle,
@@ -15,6 +15,7 @@ export {
     sportPointsConversion,
     populationPointsConversion,
     getPolygonInfo,
+    createPolygon,
     drawPolygon,
     removePolygon
 };

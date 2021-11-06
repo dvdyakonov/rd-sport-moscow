@@ -5,7 +5,7 @@ import {
 } from 'services/points/pointsSlice';
 import populationPoints from 'config/population.json';
 import districtsPolygons from 'config/districts.json';
-import { drawCircle, drawPolygon, setPolygonClickEvent, getPopulation, getPolygonInfo, setPolygonColor, sportPointsConversion, populationPointsConversion } from './helpers';
+import { drawCircle, drawPolygon,removePolygon, setPolygonClickEvent, getPopulation, getPolygonInfo, setPolygonColor, sportPointsConversion, populationPointsConversion, createPolygon } from './helpers';
 import './Map.scss';
 
 const update = ({ sportFeatures, sportObjManager }) => {
@@ -15,6 +15,7 @@ const update = ({ sportFeatures, sportObjManager }) => {
 
 const init = ({ sportFeatures, populationFeatures, map, sportObjManager, setSportObjManager }) => {
   const ymaps = window.ymaps;
+  const userPolygons = JSON.parse(localStorage.getItem('userPolygons')) || [];
   // Инициализируем карту Москвы
   const myMap = new ymaps.Map(map.current, {
     center: [55.76, 37.64],
@@ -54,23 +55,6 @@ const init = ({ sportFeatures, populationFeatures, map, sportObjManager, setSpor
     setSportObjManager(sportPointsObjectManager);
   };
 
-  // sportPointsObjectManager.objects.events.add('click', (e) => {
-  window.document.addEventListener('click', (e) => {
-    if (e.target.id.indexOf('balloon-btn-') !== -1) {
-      const objectId = Number(e.target.id.slice('balloon-btn-'.length));
-      const point = sportPointsObjectManager.objects.getById(objectId);
-      const circle = drawCircle(point.geometry.coordinates, point.properties.radius);
-      myMap.geoObjects.add(circle);
-
-      const results = ymaps.geoQuery(populationFeatures).searchInside(circle);
-      const sportObjects = ymaps.geoQuery(sportPointsObjectManager.objects).searchInside(circle);
-      const population = getPopulation(results);
-      const data = getPolygonInfo(sportObjects);
-      setPolygonColor(circle, data.square);
-
-      circle.properties.set('hintContent', `<p>Проживает: ${population} человек,</p><p>Площадь спортивных зон: ${data.square}</p>`)
-    }
-  })
 
   // Создаем менеджер объектов для плотности населения
   const populationPointsObjectManager = new ymaps.ObjectManager({
@@ -90,20 +74,17 @@ const init = ({ sportFeatures, populationFeatures, map, sportObjManager, setSpor
 
   const userObjectCollection = new ymaps.GeoObjectCollection();
 
+  userPolygons.forEach(item => userObjectCollection.add(createPolygon(item.idx, item.coords)))
+
   userObjectCollection.events.add('click', (e) => {
     const polygon = e.get('target');
-
-    setPolygonClickEvent(polygon,populationFeatures, sportPointsObjectManager.objects)
+    setPolygonClickEvent(polygon, populationFeatures, sportPointsObjectManager.objects)
   })
 
 
   // Добавляем менеджеры объектов и коллекции объектов на карту
   myMap.geoObjects.add(sportPointsObjectManager);
   myMap.geoObjects.add(userObjectCollection);
-  
-
-
-
 
   myMap.controls.add(buttons.polygon);
 
@@ -236,6 +217,33 @@ const init = ({ sportFeatures, populationFeatures, map, sportObjManager, setSpor
 
 
   myMap.controls.add(typeList, { floatIndex: 0 });
+
+
+  // sportPointsObjectManager.objects.events.add('click', (e) => {
+  window.document.addEventListener('click', (e) => {
+    if (e.target.id.indexOf('balloon-btn-') !== -1) {
+      const objectId = Number(e.target.id.slice('balloon-btn-'.length));
+      const point = sportPointsObjectManager.objects.getById(objectId);
+      const circle = drawCircle(point.geometry.coordinates, point.properties.radius);
+      myMap.geoObjects.add(circle);
+
+      const results = ymaps.geoQuery(populationFeatures).searchInside(circle);
+      const sportObjects = ymaps.geoQuery(sportPointsObjectManager.objects).searchInside(circle);
+      const population = getPopulation(results);
+      const data = getPolygonInfo(sportObjects);
+      setPolygonColor(circle, data.square);
+
+      circle.properties.set('hintContent', `<p>Проживает: ${population} человек,</p><p>Площадь спортивных зон: ${data.square}</p>`)
+    }
+
+    if (e.target.dataset.id) {
+      userObjectCollection.each(item => {
+        if (item.properties.get('id') === Number(e.target.dataset.id)) {
+          removePolygon(userObjectCollection, item);
+        }
+      })
+    }
+  })
 };
 
 const Map = () => {

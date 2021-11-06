@@ -9,6 +9,8 @@ const convertSquare = (square) => {
 }
 
 const setPolygonClickEvent = (polygon, populationFeatures, sportFeatures) => {
+  const userPolygons = JSON.parse(localStorage.getItem('userPolygons')) || [];
+
   const results = window.ymaps.geoQuery(populationFeatures).searchInside(polygon);
   const sportObjects = window.ymaps.geoQuery(sportFeatures).searchInside(polygon);
 
@@ -19,6 +21,16 @@ const setPolygonClickEvent = (polygon, populationFeatures, sportFeatures) => {
 
   const polygonSquare = convertSquare(Math.round(window.ymaps.util.calculateArea(polygon)));
   const dataSquare = convertSquare(data.square);
+  const polygonId = polygon.properties.get('id');
+
+  const newUserPolygons = userPolygons.map(item => {
+    if (Number(item.idx) === Number(polygonId)) {
+      item.data = data;
+    }
+    return item;
+  })
+
+  localStorage.setItem('userPolygons', JSON.stringify(newUserPolygons));
 
   polygon.properties.set('balloonContentHeader', '<b style="margin-bottom: 12px;">Информация по выделенной области</b>');
 
@@ -41,10 +53,10 @@ const setPolygonClickEvent = (polygon, populationFeatures, sportFeatures) => {
         `
       )}
     </table>
-    <p><button id="balloon-btn-x" style="font-size: 14px; line-height: 16px;
-            background-color: #fff; padding: 6px 12px; color: #cc2223; font-family: 'Proxima Nova'; box-shadow: none; border: 1px solid #cc2223; border-radius: 4px; cursor: pointer;">Подробный отчет</button>
-    <button id="balloon-btn-x" style="float: right; margin-top: 0; font-size: 14px; line-height: 16px;
-            background-color: #fff; padding: 6px 12px; color: #cc2223; font-family: 'Proxima Nova'; box-shadow: none; border: 1px solid #cc2223; border-radius: 4px; cursor: pointer;">Удалить полигон</button></p>
+    <p><a href="/polygons/${polygonId}" style="float: left; text-decoration: none; margin-top: 0; font-size: 12px; line-height: 14px;
+    background-color: #fff; padding: 4px 8px; color: #0000FF; font-family: 'Proxima Nova'; box-shadow: none; border: 1px solid #0000FF; border-radius: 4px; cursor: pointer;">Подробный отчет</a>
+    <button data-id="${polygonId}" style="float: right; margin-top: 0; font-size: 12px; line-height: 14px;
+            background-color: #fff; padding: 4px 8px; color: #cc2223; font-family: 'Proxima Nova'; box-shadow: none; border: 1px solid #cc2223; border-radius: 4px; cursor: pointer;">Удалить полигон</button></p>
     `
   )
 }

@@ -1,5 +1,7 @@
-const drawPolygon = (collection, button) => {
-    const polygon = new window.ymaps.Polygon([], {}, {
+const createPolygon = (idx, coords = []) => {
+    return new window.ymaps.Polygon(coords, {
+        id: idx || new Date().getTime(),
+    }, {
         editorDrawingCursor: "crosshair",
         editorMaxPoints: 15,
         fillColor: 'rgba(14,14,14,0.2)',
@@ -7,8 +9,11 @@ const drawPolygon = (collection, button) => {
         strokeWidth: 5
     });
 
-    collection.add(polygon)
-
+}
+const drawPolygon = (collection, button) => {
+    const userPolygons = JSON.parse(localStorage.getItem('userPolygons')) || [];
+    const polygon = createPolygon();
+    collection.add(polygon);
 
     var stateMonitor = new window.ymaps.Monitor(polygon.editor.state);
     stateMonitor.add("drawing", function (newValue) {
@@ -17,29 +22,31 @@ const drawPolygon = (collection, button) => {
 
     polygon.editor.startDrawing();
     polygon.editor.events.add("drawingstop", function (e) {
-        // console.log(button.state);
-        button.deselect();
+        const idx = new Date().getTime();
+
+        polygon.properties.set('id', idx);
         polygon.editor.stopDrawing();
-        // getCoords(mapInstance, polygon, polygon.geometry.getCoordinates());
+
+        userPolygons.push({
+            idx: idx,
+            coords: polygon.geometry.getCoordinates()
+        });
+
+        localStorage.setItem('userPolygons', JSON.stringify(userPolygons));
+
+        button.deselect();
     });
 
-    polygon.events.add('contextmenu', () => {
-        console.log(12);
-        // removePolygon(collection, polygon)
-    });
-
-    // return polygon;
-};
-
-const getCoords = (mapInstance, polygon, coordsArr) => {
-    console.log(coordsArr);
-    var stateMonitor = new window.ymaps.Monitor(polygon.editor.state);
-    if (!stateMonitor.drawing) drawPolygon(mapInstance);
-};
+    return polygon;
+}
 
 const removePolygon = (collection, polygon) => {
+    const userPolygons = JSON.parse(localStorage.getItem('userPolygons')) || [];
+    const idx = polygon.properties.get('id');
+    const newUserPolygons = userPolygons.filter(item => Number(item.idx) !== Number(idx));
+    localStorage.setItem('userPolygons', JSON.stringify(newUserPolygons));
     collection.remove(polygon);
 };
 
-export { drawPolygon, removePolygon };
-export default {}
+export { createPolygon, drawPolygon, removePolygon };
+export default {};
