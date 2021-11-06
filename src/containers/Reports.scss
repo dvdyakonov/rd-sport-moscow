@@ -1,6 +1,7 @@
 @import '../styles/variables';
 
 .reports {
+  padding-bottom: 32px;
   &__heading {
     margin: 24px 0 0;
     display: flex;
@@ -37,6 +38,16 @@
     @media(max-width: 991px) {
       max-width: 100%;
       padding: 0 16px;
+    }
+  }
+  &__filters {
+    &-title {
+      font-size: 16px;
+      line-height: 18px;
+      letter-spacing: 0.5px;
+      font-weight: bold;
+      font-family: "Proxima Nova", sans-serif;
+      margin-bottom: 12px;
     }
   }
   &__table {

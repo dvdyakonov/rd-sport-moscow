@@ -109,6 +109,21 @@
     }
   }
 
+  &--secondary {
+    background: $bgColor;
+    color: $fontColor;
+    border: 1px solid $fontColor;
+    width: auto;
+    height: auto;
+    box-shadow: none;
+    &:hover,
+    &:focus {
+      background-color: $fontColor;
+      color: $bgColor;
+      text-decoration: none;
+    }
+  }
+
   &--guest {
     display: inline-block;
     background: transparent;

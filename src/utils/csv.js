@@ -8,7 +8,6 @@ export function prepareCSV ({ stats }) {
     'Плотность населения на 1 км²',
     'Количество спортивных зон',
     'Количество спортивных зон на 1 человека',
-    'Виды спорта',
     'Площадь спортивных зон',
     'Площадь спортивных зон на 1 человека',
   ];
@@ -23,7 +22,6 @@ export function prepareCSV ({ stats }) {
       item.populationDensity,
       item.areas,
       item.areasPerHuman,
-      item.kindOfSports,
       item.areaSquare,
       item.areaSquarePerHuman,
     );

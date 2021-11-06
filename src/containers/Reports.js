@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { useHistory } from "react-router-dom";
 import { useTable } from 'react-table'
 import Button from 'components/Button';
+import DashboardFilter from 'components/Dashboard/DashboardFilters';
 import { exportToCsv, prepareCSVName, prepareCSV } from 'utils/csv';
 
 import './Reports.scss';
@@ -62,19 +63,15 @@ const Reports = () => {
        accessor: 'col5',
      },
      {
-       Header: 'Кол-во спортзон на 1 человека',
+       Header: 'Кол-во спортзон на 1 чел.',
        accessor: 'col6',
-     },
-     {
-       Header: 'Виды спорта',
-       accessor: 'col7',
      },
      {
        Header: 'Площадь спортзон',
        accessor: 'col8',
      },
      {
-       Header: 'Площадь спортзон на 1 человека',
+       Header: 'Площадь спортзон на 1 чел.',
        accessor: 'col9',
      },
      {
@@ -102,6 +99,11 @@ const Reports = () => {
             <Button className="reports__heading-action" onClick={saveFile}>Экспорт</Button>
           </div>
           <div className="reports__subtitle">Ниже представлен список сохраненных полигонов с информацией о спортивных зонах на его территории</div>
+
+          <div className="reports__filters">
+            <div className="reports__filters-title">Фильтры</div>
+            <DashboardFilter />
+          </div>
 
           <div className="reports__table-wrapper">
             <table {...getTableProps()} className="reports__table">
