@@ -10,7 +10,7 @@ import './Reports.scss';
 
 const Reports = () => {
   const history = useHistory();
-  const goToPolygon = (id) => history.push(`/polygon/${id}`);
+  const goToPolygon = (id) => history.push(`/polygons/${id}`);
   const dataConverter = (array) => {
     return array.map(item => {
       const polygonSquare = ((item.data.polygonSquare / 1e6).toFixed(3));
