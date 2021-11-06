@@ -5,7 +5,7 @@ import {
 } from 'services/points/pointsSlice';
 import populationPoints from 'config/population.json';
 import districtsPolygons from 'config/districts.json';
-import { drawCircle, setPolygonClickEvent, getPopulation, getPolygonInfo, setPolygonColor, sportPointsConversion, populationPointsConversion } from './helpers';
+import { drawCircle, drawPolygon,removePolygon, setPolygonClickEvent, getPopulation, getPolygonInfo, setPolygonColor, sportPointsConversion, populationPointsConversion, createPolygon } from './helpers';
 import './Map.scss';
 
 const update = ({ sportFeatures, sportObjManager }) => {
@@ -13,8 +13,9 @@ const update = ({ sportFeatures, sportObjManager }) => {
   sportObjManager.add(sportFeatures);
 }
 
-const init = ({ sportFeatures, populationFeatures, map, sportObjManager, setSportObjManager, setPoly, polygonToggle }) => {
+const init = ({ sportFeatures, populationFeatures, map, sportObjManager, setSportObjManager }) => {
   const ymaps = window.ymaps;
+  const userPolygons = JSON.parse(localStorage.getItem('userPolygons')) || [];
   // Инициализируем карту Москвы
   const myMap = new ymaps.Map(map.current, {
     center: [55.76, 37.64],
@@ -27,7 +28,7 @@ const init = ({ sportFeatures, populationFeatures, map, sportObjManager, setSpor
   const buttons = {
     polygon: new ymaps.control.Button({
       data: {
-        content: 'Создать полигон'
+        content: 'Создать полигон',
       },
       options: {
         selectOnClick: true,
@@ -35,6 +36,10 @@ const init = ({ sportFeatures, populationFeatures, map, sportObjManager, setSpor
       }
     })
   }
+
+  buttons.polygon.events.add('press', () => {
+    drawPolygon(userObjectCollection, buttons.polygon)
+  });
 
   // Создаем менеджер объектов для точек спортивных объектов
   const sportPointsObjectManager = new ymaps.ObjectManager({
@@ -50,23 +55,6 @@ const init = ({ sportFeatures, populationFeatures, map, sportObjManager, setSpor
     setSportObjManager(sportPointsObjectManager);
   };
 
-  // sportPointsObjectManager.objects.events.add('click', (e) => {
-  window.document.addEventListener('click', (e) => {
-    if (e.target.id.indexOf('balloon-btn-') !== -1) {
-      const objectId = Number(e.target.id.slice('balloon-btn-'.length));
-      const point = sportPointsObjectManager.objects.getById(objectId);
-      const circle = drawCircle(point.geometry.coordinates, point.properties.radius);
-      myMap.geoObjects.add(circle);
-
-      const results = ymaps.geoQuery(populationFeatures).searchInside(circle);
-      const sportObjects = ymaps.geoQuery(sportPointsObjectManager.objects).searchInside(circle);
-      const population = getPopulation(results);
-      const data = getPolygonInfo(sportObjects);
-      setPolygonColor(circle, data.square);
-
-      circle.properties.set('hintContent', `<p>Проживает: ${population} человек,</p><p>Площадь спортивных зон: ${data.square}</p>`)
-    }
-  })
 
   // Создаем менеджер объектов для плотности населения
   const populationPointsObjectManager = new ymaps.ObjectManager({
@@ -75,45 +63,32 @@ const init = ({ sportFeatures, populationFeatures, map, sportObjManager, setSpor
     clusterDisableClickZoom: true
   });
 
-  populationPointsObjectManager.add(populationFeatures);
-
-  // Создаем многоугольник без вершин.
-  var myPolygon = new ymaps.Polygon([], {}, {
-    editorDrawingCursor: "crosshair",
-    editorMaxPoints: 15,
-    fillColor: 'rgba(14,14,14,0.2)',
-    strokeColor: '#0000FF',
-    strokeWidth: 5
-  });
-
-  // userPolygonsObjectManager.add(myPolygon);
-
-
-
   // Создаем менеджер объектов для плотности населения
   const districtsPolygonsObjectManager = new ymaps.ObjectManager();
 
+  populationPointsObjectManager.add(populationFeatures);
   districtsPolygonsObjectManager.add(districtsPolygons);
 
+  // Создаем коллекцию пользовательских объектов
 
-  // Добавляем менеджеры объектов на карту
+
+  const userObjectCollection = new ymaps.GeoObjectCollection();
+
+  userPolygons.forEach(item => userObjectCollection.add(createPolygon(item.idx, item.coords)))
+
+  userObjectCollection.events.add('click', (e) => {
+    const polygon = e.get('target');
+    setPolygonClickEvent(polygon, populationFeatures, sportPointsObjectManager.objects)
+  })
+
+
+  // Добавляем менеджеры объектов и коллекции объектов на карту
   myMap.geoObjects.add(sportPointsObjectManager);
-  myMap.geoObjects.add(myPolygon);
+  myMap.geoObjects.add(userObjectCollection);
 
-  // В режиме добавления новых вершин меняем цвет обводки многоугольника.
-  var stateMonitor = new ymaps.Monitor(myPolygon.editor.state);
-  stateMonitor.add("drawing", function (newValue) {
-    myPolygon.options.set("strokeColor", newValue ? '#FF0000' : '#0000FF');
-  });
+  myMap.controls.add(buttons.polygon);
 
-  setPolygonClickEvent(myPolygon, populationFeatures, sportPointsObjectManager.objects);
-
-  setPoly(myPolygon);
-
-  buttons.polygon.events.add('press', () => polygonToggle(myPolygon));
-  myMap.controls.add(buttons['polygon']);
-
-  const Heatmap = window.ymaps.Heatmap;
+  const Heatmap = ymaps.Heatmap;
 
   var heatmapSport = new Heatmap(sportFeatures, {
     gradient: {
@@ -178,6 +153,7 @@ const init = ({ sportFeatures, populationFeatures, map, sportObjManager, setSpor
       new ymaps.control.ListBoxItem({ data: { content: 'Тепловая карта спортивных объектов' } }),
       new ymaps.control.ListBoxItem({ data: { content: 'Тепловая карта плотности населения' } }),
       new ymaps.control.ListBoxItem({ data: { content: 'Границы районов' } }),
+      new ymaps.control.ListBoxItem({ data: { content: 'Пользовательские полигоны' }, state: { selected: true } }),
     ]
   });
 
@@ -227,26 +203,52 @@ const init = ({ sportFeatures, populationFeatures, map, sportObjManager, setSpor
     typeList.collapse();
   });
 
+  typeList.get(4).events.add('click', function (e) {
+    const item = e.get('target');
+    const itemSelected = item.state.get('selected');
+    if (itemSelected) {
+      myMap.geoObjects.remove(userObjectCollection);
+    } else {
+      myMap.geoObjects.add(userObjectCollection);
+    }
+    // Закрываем список.
+    typeList.collapse();
+  });
+
+
   myMap.controls.add(typeList, { floatIndex: 0 });
+
+
+  // sportPointsObjectManager.objects.events.add('click', (e) => {
+  window.document.addEventListener('click', (e) => {
+    if (e.target.id.indexOf('balloon-btn-') !== -1) {
+      const objectId = Number(e.target.id.slice('balloon-btn-'.length));
+      const point = sportPointsObjectManager.objects.getById(objectId);
+      const circle = drawCircle(point.geometry.coordinates, point.properties.radius);
+      myMap.geoObjects.add(circle);
+
+      const results = ymaps.geoQuery(populationFeatures).searchInside(circle);
+      const sportObjects = ymaps.geoQuery(sportPointsObjectManager.objects).searchInside(circle);
+      const population = getPopulation(results);
+      const data = getPolygonInfo(sportObjects);
+      setPolygonColor(circle, data.square);
+
+      circle.properties.set('hintContent', `<p>Проживает: ${population} человек,</p><p>Площадь спортивных зон: ${data.square}</p>`)
+    }
+
+    if (e.target.dataset.id) {
+      userObjectCollection.each(item => {
+        if (item.properties.get('id') === Number(e.target.dataset.id)) {
+          removePolygon(userObjectCollection, item);
+        }
+      })
+    }
+  })
 };
 
 const Map = () => {
   const points = useSelector(selectPoints);
   const [sportObjManager, setSportObjManager] = useState(null);
-  const [draw, setDraw] = useState(false);
-  const [poly, setPoly] = useState(null);
-
-  const polygonToggle = (statePoly) => {
-    const p = statePoly || poly;
-    if (draw) {
-      p.editor.stopDrawing();
-      setDraw(false);
-    } else {
-      p.editor.startDrawing();
-      setDraw(true);
-    }
-  }
-
   const [sportFeatures, setSportFeatures] = useState(() => sportPointsConversion(points));
   const [populationFeatures, setpopulationFeatures] = useState(() => populationPointsConversion(populationPoints));
   const mapRef = useRef(null);
@@ -274,8 +276,6 @@ const Map = () => {
       map: mapRef,
       sportObjManager,
       setSportObjManager,
-      setPoly,
-      polygonToggle,
     }));
   }, []);
 

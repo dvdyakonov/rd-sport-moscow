@@ -15,6 +15,7 @@ import Loader from 'components/Loader';
 import Home from "containers/Home";
 import Reports from "containers/Reports";
 import TrackActivity from 'containers/TrackActivity';
+import PolygonReport from 'containers/PolygonReport';
 
 import "firebase/compat/analytics";
 import "firebase/compat/database";
@@ -59,6 +60,9 @@ const App = () => {
               </Route>
               <Route path="/points/:id" exact>
                 <TrackActivity user={user} showAuthPopup={showAuthPopup} />
+              </Route>
+              <Route path="/polygons/:id" exact>
+                <PolygonReport />
               </Route>
               {!user.email && (
                 <Modal
