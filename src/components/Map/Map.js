@@ -38,7 +38,7 @@ const init = ({ sportFeatures, populationFeatures, map, sportObjManager, setSpor
   }
 
   buttons.polygon.events.add('press', () => {
-    drawPolygon(userObjectCollection, buttons.polygon)
+    drawPolygon(userObjectCollection, buttons.polygon, populationFeatures, sportPointsObjectManager.objects)
   });
 
   // Создаем менеджер объектов для точек спортивных объектов
@@ -55,6 +55,13 @@ const init = ({ sportFeatures, populationFeatures, map, sportObjManager, setSpor
     setSportObjManager(sportPointsObjectManager);
   };
 
+  myMap.geoObjects.add(sportPointsObjectManager);
+
+  // Создаем коллекцию пользовательских объектов
+  const userObjectCollection = new ymaps.GeoObjectCollection();
+
+  // Добавляем менеджеры объектов и коллекции объектов на карту
+  myMap.geoObjects.add(userObjectCollection);
 
   // Создаем менеджер объектов для плотности населения
   const populationPointsObjectManager = new ymaps.ObjectManager({
@@ -69,22 +76,18 @@ const init = ({ sportFeatures, populationFeatures, map, sportObjManager, setSpor
   populationPointsObjectManager.add(populationFeatures);
   districtsPolygonsObjectManager.add(districtsPolygons);
 
-  // Создаем коллекцию пользовательских объектов
 
-
-  const userObjectCollection = new ymaps.GeoObjectCollection();
-
-  userPolygons.forEach(item => userObjectCollection.add(createPolygon(item.idx, item.coords)))
-
-  userObjectCollection.events.add('click', (e) => {
-    const polygon = e.get('target');
-    setPolygonClickEvent(polygon, populationFeatures, sportPointsObjectManager.objects)
+  userPolygons.forEach(item => {
+    const polygon = createPolygon(item.idx, item.coords);
+    userObjectCollection.add(polygon);
+    setPolygonClickEvent(polygon, populationFeatures, sportPointsObjectManager.objects);
   })
 
+  // userObjectCollection.events.add('click', (e) => {
+  //   const polygon = e.get('target');
+  //   setPolygonClickEvent(polygon, populationFeatures, sportPointsObjectManager.objects)
+  // })
 
-  // Добавляем менеджеры объектов и коллекции объектов на карту
-  myMap.geoObjects.add(sportPointsObjectManager);
-  myMap.geoObjects.add(userObjectCollection);
 
   myMap.controls.add(buttons.polygon);
 

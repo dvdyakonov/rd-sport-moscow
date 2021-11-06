@@ -5,8 +5,6 @@ import './Header.scss';
 
 import firebase from "firebase/compat/app";
 
-
-
 const Header = ({user, showAuthPopup}) => {
   const menuRef = useRef(null);
 
@@ -20,10 +18,8 @@ const Header = ({user, showAuthPopup}) => {
           }
       }
 
-      // Bind the event listener
       document.addEventListener("mousedown", handleClickOutside);
       return () => {
-          // Unbind the event listener on clean up
           document.removeEventListener("mousedown", handleClickOutside);
       };
   }, [menuRef]);

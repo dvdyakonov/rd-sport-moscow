@@ -1,3 +1,5 @@
+import setPolygonClickEvent from './setPolygonClickEvent';
+
 const createPolygon = (idx, coords = []) => {
     return new window.ymaps.Polygon(coords, {
         id: idx || new Date().getTime(),
@@ -10,7 +12,7 @@ const createPolygon = (idx, coords = []) => {
     });
 
 }
-const drawPolygon = (collection, button) => {
+const drawPolygon = (collection, button, populationFeatures, sportPointsObjectManagerObjects) => {
     const userPolygons = JSON.parse(localStorage.getItem('userPolygons')) || [];
     const polygon = createPolygon();
     collection.add(polygon);
@@ -32,6 +34,8 @@ const drawPolygon = (collection, button) => {
             center: polygon.geometry.getBounds()[0],
             coords: polygon.geometry.getCoordinates()
         });
+
+        setPolygonClickEvent(polygon, populationFeatures, sportPointsObjectManagerObjects);
 
         localStorage.setItem('userPolygons', JSON.stringify(userPolygons));
 
