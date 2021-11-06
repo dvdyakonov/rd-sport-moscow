@@ -96,6 +96,19 @@
     }
   }
 
+  &--primary {
+    background: transparent;
+    color: $fontColor;
+    width: auto;
+    height: auto;
+    box-shadow: none;
+    &:hover,
+    &:focus {
+      background-color: transparent;
+      text-decoration: none;
+    }
+  }
+
   &--guest {
     display: inline-block;
     background: transparent;

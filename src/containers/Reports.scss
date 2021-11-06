@@ -41,6 +41,27 @@
   }
   &__table {
     width: 100%;
+    &-head {
+      &-th {
+        font-size: 14px;
+        line-height: 16px;
+        letter-spacing: 0.5px;
+        font-weight: bold;
+        font-family: "Proxima Nova", sans-serif;
+        padding: 8px 4px;
+        text-align: left;
+      }
+    }
+    &-body {
+      &-td {
+        font-size: 14px;
+        line-height: 16px;
+        letter-spacing: 0.5px;
+        font-weight: 400;
+        font-family: "Proxima Nova", sans-serif;
+        padding: 8px 4px;
+      }
+    }
     &-wrapper {
       width: 100%;
       overflow-x: scroll;
