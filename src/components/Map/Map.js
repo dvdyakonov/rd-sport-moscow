@@ -5,7 +5,7 @@ import {
 } from 'services/points/pointsSlice';
 import populationPoints from 'config/population.json';
 import districtsPolygons from 'config/districts.json';
-import { drawCircle, setPolygonClickEvent, getPopulation, getPolygonInfo, setPolygonColor, sportPointsConversion, populationPointsConversion } from './helpers';
+import { drawCircle, drawPolygon, setPolygonClickEvent, getPopulation, getPolygonInfo, setPolygonColor, sportPointsConversion, populationPointsConversion } from './helpers';
 import './Map.scss';
 
 const update = ({ sportFeatures, sportObjManager }) => {
@@ -13,7 +13,7 @@ const update = ({ sportFeatures, sportObjManager }) => {
   sportObjManager.add(sportFeatures);
 }
 
-const init = ({ sportFeatures, populationFeatures, map, sportObjManager, setSportObjManager, setPoly, polygonToggle }) => {
+const init = ({ sportFeatures, populationFeatures, map, sportObjManager, setSportObjManager }) => {
   const ymaps = window.ymaps;
   // Инициализируем карту Москвы
   const myMap = new ymaps.Map(map.current, {
@@ -27,7 +27,7 @@ const init = ({ sportFeatures, populationFeatures, map, sportObjManager, setSpor
   const buttons = {
     polygon: new ymaps.control.Button({
       data: {
-        content: 'Создать полигон'
+        content: 'Создать полигон',
       },
       options: {
         selectOnClick: true,
@@ -35,6 +35,10 @@ const init = ({ sportFeatures, populationFeatures, map, sportObjManager, setSpor
       }
     })
   }
+
+  buttons.polygon.events.add('press', () => {
+    drawPolygon(userObjectCollection, buttons.polygon)
+  });
 
   // Создаем менеджер объектов для точек спортивных объектов
   const sportPointsObjectManager = new ymaps.ObjectManager({
@@ -75,45 +79,35 @@ const init = ({ sportFeatures, populationFeatures, map, sportObjManager, setSpor
     clusterDisableClickZoom: true
   });
 
-  populationPointsObjectManager.add(populationFeatures);
-
-  // Создаем многоугольник без вершин.
-  var myPolygon = new ymaps.Polygon([], {}, {
-    editorDrawingCursor: "crosshair",
-    editorMaxPoints: 15,
-    fillColor: 'rgba(14,14,14,0.2)',
-    strokeColor: '#0000FF',
-    strokeWidth: 5
-  });
-
-  // userPolygonsObjectManager.add(myPolygon);
-
-
-
   // Создаем менеджер объектов для плотности населения
   const districtsPolygonsObjectManager = new ymaps.ObjectManager();
 
+  populationPointsObjectManager.add(populationFeatures);
   districtsPolygonsObjectManager.add(districtsPolygons);
 
+  // Создаем коллекцию пользовательских объектов
 
-  // Добавляем менеджеры объектов на карту
+
+  const userObjectCollection = new ymaps.GeoObjectCollection();
+
+  userObjectCollection.events.add('click', (e) => {
+    const polygon = e.get('target');
+
+    setPolygonClickEvent(polygon,populationFeatures, sportPointsObjectManager.objects)
+  })
+
+
+  // Добавляем менеджеры объектов и коллекции объектов на карту
   myMap.geoObjects.add(sportPointsObjectManager);
-  myMap.geoObjects.add(myPolygon);
+  myMap.geoObjects.add(userObjectCollection);
+  
 
-  // В режиме добавления новых вершин меняем цвет обводки многоугольника.
-  var stateMonitor = new ymaps.Monitor(myPolygon.editor.state);
-  stateMonitor.add("drawing", function (newValue) {
-    myPolygon.options.set("strokeColor", newValue ? '#FF0000' : '#0000FF');
-  });
 
-  setPolygonClickEvent(myPolygon, populationFeatures, sportPointsObjectManager.objects);
 
-  setPoly(myPolygon);
 
-  buttons.polygon.events.add('press', () => polygonToggle(myPolygon));
-  myMap.controls.add(buttons['polygon']);
+  myMap.controls.add(buttons.polygon);
 
-  const Heatmap = window.ymaps.Heatmap;
+  const Heatmap = ymaps.Heatmap;
 
   var heatmapSport = new Heatmap(sportFeatures, {
     gradient: {
@@ -178,6 +172,7 @@ const init = ({ sportFeatures, populationFeatures, map, sportObjManager, setSpor
       new ymaps.control.ListBoxItem({ data: { content: 'Тепловая карта спортивных объектов' } }),
       new ymaps.control.ListBoxItem({ data: { content: 'Тепловая карта плотности населения' } }),
       new ymaps.control.ListBoxItem({ data: { content: 'Границы районов' } }),
+      new ymaps.control.ListBoxItem({ data: { content: 'Пользовательские полигоны' }, state: { selected: true } }),
     ]
   });
 
@@ -227,26 +222,25 @@ const init = ({ sportFeatures, populationFeatures, map, sportObjManager, setSpor
     typeList.collapse();
   });
 
+  typeList.get(4).events.add('click', function (e) {
+    const item = e.get('target');
+    const itemSelected = item.state.get('selected');
+    if (itemSelected) {
+      myMap.geoObjects.remove(userObjectCollection);
+    } else {
+      myMap.geoObjects.add(userObjectCollection);
+    }
+    // Закрываем список.
+    typeList.collapse();
+  });
+
+
   myMap.controls.add(typeList, { floatIndex: 0 });
 };
 
 const Map = () => {
   const points = useSelector(selectPoints);
   const [sportObjManager, setSportObjManager] = useState(null);
-  const [draw, setDraw] = useState(false);
-  const [poly, setPoly] = useState(null);
-
-  const polygonToggle = (statePoly) => {
-    const p = statePoly || poly;
-    if (draw) {
-      p.editor.stopDrawing();
-      setDraw(false);
-    } else {
-      p.editor.startDrawing();
-      setDraw(true);
-    }
-  }
-
   const [sportFeatures, setSportFeatures] = useState(() => sportPointsConversion(points));
   const [populationFeatures, setpopulationFeatures] = useState(() => populationPointsConversion(populationPoints));
   const mapRef = useRef(null);
@@ -274,8 +268,6 @@ const Map = () => {
       map: mapRef,
       sportObjManager,
       setSportObjManager,
-      setPoly,
-      polygonToggle,
     }));
   }, []);
 
