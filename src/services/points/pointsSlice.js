@@ -5,6 +5,7 @@ import areas from 'config/areas.json';
 
 const initialState = {
   data: [...objects],
+  polygons: window.localStorage.getItem('userPolygons') ? JSON.parse(window.localStorage.getItem('userPolygons')) : [],
   filters: {
     objectName: '',
     depart: '',
@@ -25,6 +26,9 @@ export const pointsSlice = createSlice({
         ...state.filters,
         [param]: value
       };
+    },
+    setPolygons: (state, action) => {
+      state.polygons = [...action.payload];
     },
     filterData: (state, action) => {
       const filters = action.payload;
@@ -106,9 +110,10 @@ export const pointsSlice = createSlice({
   },
 });
 
-export const { setFilter, filterData } = pointsSlice.actions;
+export const { setFilter, filterData, setPolygons } = pointsSlice.actions;
 
 export const selectFilters = (state) => state.points.filters;
+export const selectPolygons = (state) => state.points.polygons;
 export const selectPoints = (state) => state.points.data;
 export const selectActivePoint = (state) => state.points.active;
 

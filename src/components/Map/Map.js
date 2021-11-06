@@ -1,19 +1,33 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   selectPoints,
+  selectPolygons,
+  setPolygons
 } from 'services/points/pointsSlice';
 import populationPoints from 'config/population.json';
 import districtsPolygons from 'config/districts.json';
 import { drawCircle, drawPolygon,removePolygon, setPolygonClickEvent, getPopulation, getPolygonInfo, setPolygonColor, sportPointsConversion, populationPointsConversion, createPolygon } from './helpers';
 import './Map.scss';
 
-const update = ({ sportFeatures, sportObjManager }) => {
+const update = ({ sportFeatures, populationFeatures, sportObjManager, polygonList, polygonCollection, setPolygonList, setPolygonCollection }) => {
   sportObjManager.removeAll();
   sportObjManager.add(sportFeatures);
+
+  polygonCollection.removeAll();
+
+  polygonList.forEach(item => {
+    const polygon = createPolygon(item.idx, item.coords);
+    polygonCollection.add(polygon);
+    setPolygonClickEvent(polygon, populationFeatures, sportObjManager.objects);
+  });
+
+  const updatedPolygons = JSON.parse(localStorage.getItem('userPolygons')) || [];
+  setPolygonList(updatedPolygons);
+  setPolygonCollection(polygonCollection);
 }
 
-const init = ({ sportFeatures, populationFeatures, map, sportObjManager, setSportObjManager }) => {
+const init = ({ sportFeatures, populationFeatures, map, sportObjManager, setSportObjManager, setPolygonList, setPolygonCollection }) => {
   const ymaps = window.ymaps;
   const userPolygons = JSON.parse(localStorage.getItem('userPolygons')) || [];
   // Инициализируем карту Москвы
@@ -76,18 +90,15 @@ const init = ({ sportFeatures, populationFeatures, map, sportObjManager, setSpor
   populationPointsObjectManager.add(populationFeatures);
   districtsPolygonsObjectManager.add(districtsPolygons);
 
-
   userPolygons.forEach(item => {
     const polygon = createPolygon(item.idx, item.coords);
     userObjectCollection.add(polygon);
     setPolygonClickEvent(polygon, populationFeatures, sportPointsObjectManager.objects);
   })
 
-  // userObjectCollection.events.add('click', (e) => {
-  //   const polygon = e.get('target');
-  //   setPolygonClickEvent(polygon, populationFeatures, sportPointsObjectManager.objects)
-  // })
-
+  const updatedPolygons = JSON.parse(localStorage.getItem('userPolygons')) || [];
+  setPolygonList(updatedPolygons);
+  setPolygonCollection(userObjectCollection);
 
   myMap.controls.add(buttons.polygon);
 
@@ -251,6 +262,10 @@ const init = ({ sportFeatures, populationFeatures, map, sportObjManager, setSpor
 
 const Map = () => {
   const points = useSelector(selectPoints);
+  const polygonList = useSelector(selectPolygons);
+  const dispatch = useDispatch();
+  const setPolygonList = (arr) => dispatch(setPolygons(arr));
+  const [polygonCollection, setPolygonCollection] = useState(null);
   const [sportObjManager, setSportObjManager] = useState(null);
   const [sportFeatures, setSportFeatures] = useState(() => sportPointsConversion(points));
   const [populationFeatures, setpopulationFeatures] = useState(() => populationPointsConversion(populationPoints));
@@ -267,7 +282,11 @@ const Map = () => {
       update({
         sportFeatures,
         populationFeatures,
-        sportObjManager
+        sportObjManager,
+        polygonCollection,
+        polygonList,
+        setPolygonList,
+        setPolygonCollection
       });
     }
   }, [sportFeatures, populationFeatures, ymaps]);
@@ -279,6 +298,7 @@ const Map = () => {
       map: mapRef,
       sportObjManager,
       setSportObjManager,
+      setPolygonList,
     }));
   }, []);
 

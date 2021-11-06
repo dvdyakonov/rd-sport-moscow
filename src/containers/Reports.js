@@ -1,14 +1,18 @@
 import React, {useMemo, useState} from 'react';
 import {useHistory} from "react-router-dom";
 import { useTable, useSortBy } from 'react-table'
+import { useSelector } from 'react-redux';
+import {
+  selectPolygons
+} from 'services/points/pointsSlice';
 import Button from 'components/Button';
 import DashboardFilter from 'components/Dashboard/DashboardFilters';
 import {exportToCsv, prepareCSVName, prepareCSV} from 'utils/csv';
 
 import './Reports.scss';
 
-
 const Reports = () => {
+  const polygonList = useSelector(selectPolygons);
   const history = useHistory();
   const goToPolygon = (id) => history.push(`/polygons/${id}`);
   const dataConverter = (array) => {
@@ -34,14 +38,9 @@ const Reports = () => {
     })
   }
 
-  const [polygonsData, setPolygonsData] = useState(() => {
-    const polygons = window.localStorage.getItem('userPolygons') ? JSON.parse(window.localStorage.getItem('userPolygons')) : [];
-    return dataConverter(polygons);
-  });
+  const saveFile = () => exportToCsv(prepareCSVName, prepareCSV(dataConverter(polygonList)));
 
-  const saveFile = () => exportToCsv(prepareCSVName, prepareCSV(polygonsData));
-
-  const data = useMemo(() => [...polygonsData], []);
+  const data = useMemo(() => [...dataConverter(polygonList)], []);
 
   const columns = useMemo(() => [
     {
@@ -87,7 +86,7 @@ const Reports = () => {
 
         <div className="reports__filters">
           <div className="reports__filters-title">Фильтры</div>
-          <DashboardFilter/>
+          <DashboardFilter />
         </div>
 
         <div className="reports__table-wrapper">
