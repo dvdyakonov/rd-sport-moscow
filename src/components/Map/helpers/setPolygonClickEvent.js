@@ -40,7 +40,12 @@ const setPolygonClickEvent = (polygon, populationFeatures, sportFeatures) => {
           <tr><td>Площадь спортивных зон на 1 человека: </td><td style="text-align: right;">${(dataSquare.value / data.population).toFixed(5)}</td></tr>
         `
       )}
-    </table>`
+    </table>
+    <p><button id="balloon-btn-x" style="font-size: 14px; line-height: 16px;
+            background-color: #fff; padding: 6px 12px; color: #cc2223; font-family: 'Proxima Nova'; box-shadow: none; border: 1px solid #cc2223; border-radius: 4px; cursor: pointer;">Подробный отчет</button>
+    <button id="balloon-btn-x" style="float: right; margin-top: 0; font-size: 14px; line-height: 16px;
+            background-color: #fff; padding: 6px 12px; color: #cc2223; font-family: 'Proxima Nova'; box-shadow: none; border: 1px solid #cc2223; border-radius: 4px; cursor: pointer;">Удалить полигон</button></p>
+    `
   )
 }
 
