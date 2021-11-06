@@ -43,11 +43,11 @@ const init = ({polygonData, sportFeatures, populationFeatures, map}) => {
   userObjectCollection.add(polygon)
 
   // Добавляем менеджеры объектов и коллекции объектов на карту
-  myMap.geoObjects.add(sportPointsObjectManager);
+  // myMap.geoObjects.add(sportPointsObjectManager);
   myMap.geoObjects.add(userObjectCollection);
 
   // const populationObjects = window.ymaps.geoQuery(populationFeatures).searchInside(polygon);
-  // const sportObjects = window.ymaps.geoQuery(sportFeatures).searchInside(polygon);
+  const sportObjects = window.ymaps.geoQuery(sportFeatures).searchInside(polygon).addToMap(myMap);
 };
 
 const Map = ({ polygonData }) => {

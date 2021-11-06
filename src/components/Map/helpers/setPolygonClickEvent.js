@@ -9,8 +9,6 @@ const convertSquare = (square) => {
 }
 
 const setPolygonClickEvent = (polygon, populationFeatures, sportFeatures) => {
-  const userPolygons = JSON.parse(localStorage.getItem('userPolygons')) || [];
-
   const results = window.ymaps.geoQuery(populationFeatures).searchInside(polygon);
   const sportObjects = window.ymaps.geoQuery(sportFeatures).searchInside(polygon);
 
@@ -22,15 +20,6 @@ const setPolygonClickEvent = (polygon, populationFeatures, sportFeatures) => {
 
   const dataSquare = convertSquare(data.square);
   const polygonId = polygon.properties.get('id');
-
-  const newUserPolygons = userPolygons.map(item => {
-    if (Number(item.idx) === Number(polygonId)) {
-      item.data = data;
-    }
-    return item;
-  })
-
-  localStorage.setItem('userPolygons', JSON.stringify(newUserPolygons));
 
   polygon.properties.set('balloonContentHeader', '<b style="margin-bottom: 12px;">Информация по выделенной области</b>');
 

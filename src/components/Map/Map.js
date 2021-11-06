@@ -7,6 +7,7 @@ import populationPoints from 'config/population.json';
 import districtsPolygons from 'config/districts.json';
 import { drawCircle, drawPolygon,removePolygon, setPolygonClickEvent, getPopulation, getPolygonInfo, setPolygonColor, sportPointsConversion, populationPointsConversion, createPolygon } from './helpers';
 import './Map.scss';
+import shopBaloon from './helpers/polygon';
 
 const update = ({ sportFeatures, sportObjManager }) => {
   sportObjManager.removeAll();
@@ -78,15 +79,13 @@ const init = ({ sportFeatures, populationFeatures, map, sportObjManager, setSpor
 
 
   userPolygons.forEach(item => {
-    const polygon = createPolygon(item.idx, item.coords);
-    userObjectCollection.add(polygon);
-    setPolygonClickEvent(polygon, populationFeatures, sportPointsObjectManager.objects);
+    userObjectCollection.add(createPolygon(item.idx, item.coords));
   })
 
-  // userObjectCollection.events.add('click', (e) => {
-  //   const polygon = e.get('target');
-  //   setPolygonClickEvent(polygon, populationFeatures, sportPointsObjectManager.objects)
-  // })
+  userObjectCollection.events.add('click', (e) => {
+    const polygon = e.get('target');
+    shopBaloon(polygon);
+  })
 
 
   myMap.controls.add(buttons.polygon);
