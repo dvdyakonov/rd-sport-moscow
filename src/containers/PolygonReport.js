@@ -47,7 +47,8 @@ const PolygonReport = () => {
     }, {
       Header: 'Площадь спортзон на 1 чел. (м²)',
       accessor: 'areasSquarePerHuman',
-      desc: true,
+      isSortedDesc: true,
+      isSortedDesc: true,
     }, 
   ], []);
 

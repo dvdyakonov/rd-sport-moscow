@@ -23,6 +23,7 @@ const setPolygonData = (polygon, populationObjects, sportObjects) => {
   const data = {
     idx: polygon.properties.get('id'),
     coords: polygon.geometry.getCoordinates(),
+    center: polygon.geometry.getBounds()[0],
     // Площадь полигона
     square: window.ymaps.util.calculateArea(polygon),
     // Кол-во жителей
@@ -48,8 +49,18 @@ const setPolygonData = (polygon, populationObjects, sportObjects) => {
     }
   }
   const userPolygons = JSON.parse(localStorage.getItem('userPolygons')) || [];
-  userPolygons.push(data);
-  localStorage.setItem('userPolygons', JSON.stringify(userPolygons));
+  const newUserPolygons = userPolygons.map(item => {
+    if (Number(item.idx) === Number(polygon.properties.get('id'))) {
+      return data;
+    } 
+    return item;
+  });
+
+  if (newUserPolygons.length === 0) {
+    newUserPolygons.push(data);
+  }
+  
+  localStorage.setItem('userPolygons', JSON.stringify(newUserPolygons));
 
   return data;
 }

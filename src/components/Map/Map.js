@@ -7,9 +7,9 @@ import {
 } from 'services/points/pointsSlice';
 import populationPoints from 'config/population.json';
 import districtsPolygons from 'config/districts.json';
-import { drawCircle, drawPolygon,removePolygon, getPopulation, getPolygonInfo, setPolygonColor, sportPointsConversion, populationPointsConversion, createPolygon } from './helpers';
+import { drawCircle, drawPolygon,removePolygon, setPolygonColor, sportPointsConversion, populationPointsConversion, createPolygon } from './helpers';
 import './Map.scss';
-import { showBalloon, getPolygonData } from './helpers/polygon';
+import { showBalloon, getPolygonData, setPolygonData } from './helpers/polygon';
 
 const update = ({ sportFeatures, populationFeatures, sportObjManager, polygonList, polygonCollection, setPolygonList, setPolygonCollection, heatmapInstance, layers }) => {
   sportObjManager.removeAll();
@@ -23,7 +23,7 @@ const update = ({ sportFeatures, populationFeatures, sportObjManager, polygonLis
     polygonList.forEach(item => {
       const polygon = createPolygon(item.idx, item.coords);
       polygonCollection.add(polygon);
-      getPolygonData(polygon, populationFeatures, sportObjManager.objects);
+      setPolygonData(polygon, populationFeatures, sportObjManager.objects);
     });
 
     const updatedPolygons = JSON.parse(localStorage.getItem('userPolygons')) || [];
@@ -121,7 +121,7 @@ const init = ({ sportFeatures, populationFeatures, map, sportObjManager, setSpor
       1: "rgba(162, 36, 25, 0.8)"
     },
     radius: 15,
-    intensityOfMidpoint: .01,
+    intensityOfMidpoint: .05,
   });
 
   setHeatmapInstance(heatmapSport);
@@ -142,12 +142,15 @@ const init = ({ sportFeatures, populationFeatures, map, sportObjManager, setSpor
   myMap.events.add("actionend", (function () {
     switch (myMap.action.getCurrentState().zoom) {
       case 11:
+        heatmapSport.options.set("intensityOfMidpoint", .1);
         heatmapPopulation.options.set("intensityOfMidpoint", .015);
         break;
       case 12:
+        heatmapSport.options.set("intensityOfMidpoint", .2);
         heatmapPopulation.options.set("intensityOfMidpoint", .03);
         break;
       case 13:
+        heatmapSport.options.set("intensityOfMidpoint", .4);
         heatmapPopulation.options.set("intensityOfMidpoint", .06);
         break;
       case 14:
@@ -160,6 +163,7 @@ const init = ({ sportFeatures, populationFeatures, map, sportObjManager, setSpor
         heatmapPopulation.options.set("intensityOfMidpoint", .5);
         break;
       default:
+        heatmapSport.options.set("intensityOfMidpoint", .05);
         heatmapPopulation.options.set("intensityOfMidpoint", .005);
         break;
     }

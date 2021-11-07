@@ -12,8 +12,8 @@ const init = ({polygonData, sportFeatures, populationFeatures, map}) => {
   
   // Инициализируем карту Москвы
   const myMap = new ymaps.Map(map.current, {
-    center: [55.76, 37.64],
-    zoom: 11,
+    center: polygonData.center,
+    zoom: 12,
   }, {});
 
   // Создаем менеджер объектов для точек спортивных объектов
