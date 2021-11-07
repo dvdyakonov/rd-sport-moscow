@@ -37,6 +37,12 @@ const sportPointsConversion = (points) => ({
         "clusterCaption": `<strong>${point.label}</strong>`,
         "radius": point.radius,
         "areas": point.areasItems.length,
+        "kindOfSports": point.areasItems.reduce((res, cur) => {
+          cur.kindIds.forEach((item) => {
+            res.push({id: item, square: cur.square})
+          })
+          return res;
+        }, []),
         "square": point.areasItems.reduce((res, cur) => {
           res += cur.square;
           return res;

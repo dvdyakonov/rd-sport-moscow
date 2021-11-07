@@ -3,7 +3,6 @@ import getPopulation from './getPopulation';
 import setPolygonColor from './setPolygonColor';
 import populationPointsConversion from './populationPointsConversion';
 import sportPointsConversion from './sportPointsConversion';
-import setPolygonClickEvent from './setPolygonClickEvent';
 import getPolygonInfo from './getPolygonInfo';
 import { createPolygon, drawPolygon, removePolygon } from './drawPolygon';
 import { getPolygonData, setPolygonData, showBalloon } from './polygon';
@@ -11,7 +10,6 @@ import { getPolygonData, setPolygonData, showBalloon } from './polygon';
 export {
     drawCircle,
     getPopulation,
-    setPolygonClickEvent,
     setPolygonColor,
     sportPointsConversion,
     populationPointsConversion,

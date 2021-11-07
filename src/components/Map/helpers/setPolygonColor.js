@@ -67,7 +67,7 @@ const setPolygonColor = (polygon, square) => {
         }
     ];
 
-    const currentColor = colors.find(item => square >= item.min && square <= item.max).color;
+    const currentColor = colors.find(item => Number(square) >= item.min && Number(square) <= item.max).color;
 
     polygon.options.set("strokeColor", currentColor);
     polygon.options.set("fillColor", currentColor);

@@ -7,9 +7,9 @@ import {
 } from 'services/points/pointsSlice';
 import populationPoints from 'config/population.json';
 import districtsPolygons from 'config/districts.json';
-import { drawCircle, drawPolygon,removePolygon, setPolygonClickEvent, getPopulation, getPolygonInfo, setPolygonColor, sportPointsConversion, populationPointsConversion, createPolygon } from './helpers';
+import { drawCircle, drawPolygon,removePolygon, getPopulation, getPolygonInfo, setPolygonColor, sportPointsConversion, populationPointsConversion, createPolygon } from './helpers';
 import './Map.scss';
-import { showBalloon } from './helpers/polygon';
+import { showBalloon, getPolygonData } from './helpers/polygon';
 
 const update = ({ sportFeatures, populationFeatures, sportObjManager, polygonList, polygonCollection, setPolygonList, setPolygonCollection }) => {
   sportObjManager.removeAll();
@@ -20,7 +20,6 @@ const update = ({ sportFeatures, populationFeatures, sportObjManager, polygonLis
   polygonList.forEach(item => {
     const polygon = createPolygon(item.idx, item.coords);
     polygonCollection.add(polygon);
-    setPolygonClickEvent(polygon, populationFeatures, sportObjManager.objects);
   });
 
   const updatedPolygons = JSON.parse(localStorage.getItem('userPolygons')) || [];
@@ -235,7 +234,6 @@ const init = ({ sportFeatures, populationFeatures, map, sportObjManager, setSpor
 
   myMap.controls.add(typeList, { floatIndex: 0 });
 
-
   // sportPointsObjectManager.objects.events.add('click', (e) => {
   window.document.addEventListener('click', (e) => {
     if (e.target.id.indexOf('balloon-btn-') !== -1) {
@@ -244,13 +242,10 @@ const init = ({ sportFeatures, populationFeatures, map, sportObjManager, setSpor
       const circle = drawCircle(point.geometry.coordinates, point.properties.radius);
       myMap.geoObjects.add(circle);
 
-      const results = ymaps.geoQuery(populationFeatures).searchInside(circle);
-      const sportObjects = ymaps.geoQuery(sportPointsObjectManager.objects).searchInside(circle);
-      const population = getPopulation(results);
-      const data = getPolygonInfo(sportObjects);
-      setPolygonColor(circle, data.square);
+      const data = getPolygonData(circle, populationFeatures, sportPointsObjectManager.objects);
+      setPolygonColor(circle, data.sportObjects.square);
 
-      circle.properties.set('hintContent', `<p>Проживает: ${population} человек,</p><p>Площадь спортивных зон: ${data.square}</p>`)
+      circle.properties.set('hintContent', `<p>Проживает: ${data.population} человек,</p><p>Площадь спортивных зон: ${data.sportObjects.square}</p>`)
     }
 
     if (e.target.dataset.id) {
