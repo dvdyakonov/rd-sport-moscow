@@ -1,4 +1,4 @@
-import setPolygonClickEvent from './setPolygonClickEvent';
+import { setPolygonData } from './polygon';
 
 const createPolygon = (idx, coords = []) => {
     return new window.ymaps.Polygon(coords, {
@@ -12,8 +12,7 @@ const createPolygon = (idx, coords = []) => {
     });
 
 }
-const drawPolygon = (collection, button, populationFeatures, sportPointsObjectManagerObjects) => {
-    const userPolygons = JSON.parse(localStorage.getItem('userPolygons')) || [];
+const drawPolygon = (collection, button, populationFeatures, sportPointsObjectManagerObjects, setPolygonList) => {
     const polygon = createPolygon();
     collection.add(polygon);
 
@@ -24,33 +23,23 @@ const drawPolygon = (collection, button, populationFeatures, sportPointsObjectMa
 
     polygon.editor.startDrawing();
     polygon.editor.events.add("drawingstop", function (e) {
-        const idx = new Date().getTime();
-
-        polygon.properties.set('id', idx);
         polygon.editor.stopDrawing();
-
-        userPolygons.push({
-            idx: idx,
-            center: polygon.geometry.getBounds()[0],
-            coords: polygon.geometry.getCoordinates()
-        });
-
-        setPolygonClickEvent(polygon, populationFeatures, sportPointsObjectManagerObjects);
-
-        localStorage.setItem('userPolygons', JSON.stringify(userPolygons));
-
+        setPolygonData(polygon, populationFeatures, sportPointsObjectManagerObjects);
+        const userPolygons = JSON.parse(localStorage.getItem('userPolygons')) || [];
+        setPolygonList(userPolygons);
         button.deselect();
     });
 
     return polygon;
 }
 
-const removePolygon = (collection, polygon) => {
+const removePolygon = (collection, polygon, setPolygonList) => {
     const userPolygons = JSON.parse(localStorage.getItem('userPolygons')) || [];
     const idx = polygon.properties.get('id');
     const newUserPolygons = userPolygons.filter(item => Number(item.idx) !== Number(idx));
     localStorage.setItem('userPolygons', JSON.stringify(newUserPolygons));
     collection.remove(polygon);
+    setPolygonList(newUserPolygons);
 };
 
 export { createPolygon, drawPolygon, removePolygon };

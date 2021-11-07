@@ -19,21 +19,21 @@ const Reports = () => {
   const goToPolygon = (id) => history.push(`/polygons/${id}`);
   const dataConverter = (array) => {
     return array.map(item => {
-      const polygonSquare = ((item.data.polygonSquare / 1e6).toFixed(3));
+      const polygonSquare = ((item.square / 1e6).toFixed(3));
       return {
         id: item.idx,
         square: `${polygonSquare} км²`,
-        population: item.data.population,
-        populationDensity: (item.data.population / polygonSquare).toFixed(3),
-        areas: item.data.areas,
+        population: item.population,
+        populationDensity: (item.population / polygonSquare).toFixed(3),
+        areas: item.sportObjects.areas,
         areasPerHuman: (
-          item.data.population
-          ? (item.data.areas / item.data.population)
+          item.population
+          ? (item.sportObjects.areas / item.population)
           : 0).toFixed(3),
-        areasSquare: (item.data.square).toFixed(3),
+        areasSquare: (item.sportObjects.square).toFixed(3),
         areasSquarePerHuman: (
-          item.data.population
-          ? (item.data.square / item.data.population)
+          item.population
+          ? (item.sportObjects.square / item.population)
           : 0).toFixed(3),
         actions: <Button className="reports__table-btn" size="s" kind="primary" onClick={() => goToPolygon(item.idx)}>Инфо</Button>
       }

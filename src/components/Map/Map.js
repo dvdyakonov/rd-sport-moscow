@@ -9,6 +9,7 @@ import populationPoints from 'config/population.json';
 import districtsPolygons from 'config/districts.json';
 import { drawCircle, drawPolygon,removePolygon, setPolygonClickEvent, getPopulation, getPolygonInfo, setPolygonColor, sportPointsConversion, populationPointsConversion, createPolygon } from './helpers';
 import './Map.scss';
+import { showBalloon } from './helpers/polygon';
 
 const update = ({ sportFeatures, populationFeatures, sportObjManager, polygonList, polygonCollection, setPolygonList, setPolygonCollection }) => {
   sportObjManager.removeAll();
@@ -52,7 +53,7 @@ const init = ({ sportFeatures, populationFeatures, map, sportObjManager, setSpor
   }
 
   buttons.polygon.events.add('press', () => {
-    drawPolygon(userObjectCollection, buttons.polygon, populationFeatures, sportPointsObjectManager.objects)
+    drawPolygon(userObjectCollection, buttons.polygon, populationFeatures, sportPointsObjectManager.objects, setPolygonList)
   });
 
   // Создаем менеджер объектов для точек спортивных объектов
@@ -91,14 +92,16 @@ const init = ({ sportFeatures, populationFeatures, map, sportObjManager, setSpor
   districtsPolygonsObjectManager.add(districtsPolygons);
 
   userPolygons.forEach(item => {
-    const polygon = createPolygon(item.idx, item.coords);
-    userObjectCollection.add(polygon);
-    setPolygonClickEvent(polygon, populationFeatures, sportPointsObjectManager.objects);
+    userObjectCollection.add(createPolygon(item.idx, item.coords));
   })
 
   const updatedPolygons = JSON.parse(localStorage.getItem('userPolygons')) || [];
   setPolygonList(updatedPolygons);
   setPolygonCollection(userObjectCollection);
+  userObjectCollection.events.add('click', (e) => {
+    const polygon = e.get('target');
+    showBalloon(polygon);
+  })
 
   myMap.controls.add(buttons.polygon);
 
@@ -253,7 +256,7 @@ const init = ({ sportFeatures, populationFeatures, map, sportObjManager, setSpor
     if (e.target.dataset.id) {
       userObjectCollection.each(item => {
         if (item.properties.get('id') === Number(e.target.dataset.id)) {
-          removePolygon(userObjectCollection, item);
+          removePolygon(userObjectCollection, item, setPolygonList);
         }
       })
     }
