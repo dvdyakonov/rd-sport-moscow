@@ -2,6 +2,7 @@ import React from 'react';
 // import { useLocation } from "react-router-dom";
 import Aside from 'components/Aside';
 import Map from 'components/Map';
+import Reports from 'components/Reports';
 
 const Home = () => {
 
@@ -27,6 +28,7 @@ const Home = () => {
     <main className="main">
       <Aside />
       <Map />
+      <Reports />
     </main>
   )
 }

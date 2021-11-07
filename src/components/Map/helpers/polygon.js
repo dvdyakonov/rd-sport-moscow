@@ -52,9 +52,9 @@ const convertSquare = (square) => {
     };
   }
 
-const showBaloon = (polygon) => {
+const showBalloon = (polygon) => {
     const data = getPolygonData(polygon);
-    const dataSquare = convertSquare(data.square);
+    const dataSquare = convertSquare(data.sportObjects.square);
     const polygonId = polygon.properties.get('id');
 
     polygon.properties.set('balloonContentHeader', '<b style="margin-bottom: 12px;">Информация по выделенной области</b>');
@@ -62,21 +62,21 @@ const showBaloon = (polygon) => {
     polygon.properties.set(
       'balloonContentBody',
       `<table style="width: 100%; margin-bottom: 12px;">
-        <tr><td>Площадь выделенной области: </td><td style="text-align: right;">${convertSquare(Math.round(data.polygonSquare)).value} ${convertSquare(Math.round(data.polygonSquare)).postfix}</td></tr>
-        ${data.objects && (
+        <tr><td>Площадь выделенной области: </td><td style="text-align: right;">${convertSquare(Math.round(data.square)).value} ${convertSquare(Math.round(data.square)).postfix}</td></tr>
+        ${data.sportObjects.length ? (
           `
-          <tr><td>Число спортивных объектов: </td><td style="text-align: right;">${data.objects}</td></tr>
+          <tr><td>Число спортивных объектов: </td><td style="text-align: right;">${data.sportObjects.length}</td></tr>
           <tr><td>Общая площадь спортивных объектов: </td><td style="text-align: right;">${dataSquare.value} ${dataSquare.postfix}</td></tr>
           `
-        )}
-        ${data.population && (
+        ) : ''}
+        ${data.population ? (
           `
             <tr><td>Примерное кол-во жителей: </td><td style="text-align: right;">${data.population}</td></tr>
-          <tr><td>Плотность населения на 1 км²: </td><td style="text-align: right;">${(data.population/ ((data.polygonSquare / 1e6).toFixed(3))).toFixed(5)}</td></tr>
-            <tr><td>Количество спортивных зон на 1 человека: </td><td style="text-align: right;">${(data.areas / data.population).toFixed(5)}</td></tr>
+          <tr><td>Плотность населения на 1 км²: </td><td style="text-align: right;">${(data.population/ ((data.square / 1e6).toFixed(3))).toFixed(5)}</td></tr>
+        <tr><td>Количество спортивных зон на 1 человека: </td><td style="text-align: right;">${(data.sportObjects.areas / data.population).toFixed(5)}</td></tr>
             <tr><td>Площадь спортивных зон на 1 человека: </td><td style="text-align: right;">${(dataSquare.value / data.population).toFixed(5)}</td></tr>
           `
-        )}
+        ) : ''}
       </table>
       <p><a href="/polygons/${polygonId}" style="float: left; text-decoration: none; margin-top: 0; font-size: 12px; line-height: 14px;
       background-color: #fff; padding: 4px 8px; color: #0000FF; font-family: 'Proxima Nova'; box-shadow: none; border: 1px solid #0000FF; border-radius: 4px; cursor: pointer;">Подробный отчет</a>
@@ -86,5 +86,5 @@ const showBaloon = (polygon) => {
     )
 }
 
-export { setPolygonData, getPolygonData, showBaloon }
+export { setPolygonData, getPolygonData, showBalloon }
 export default {}

@@ -1,7 +1,17 @@
-@import '../styles/variables';
+@import 'styles/variables';
 
 .reports {
   padding-bottom: 32px;
+  position: fixed;
+  left: 100%;
+  top: 64px;
+  bottom: 0;
+  overflow: scroll;
+  width: calc(100% - 320px);
+  background-color: $bgColor;
+  &--visible {
+    left: 320px;
+  }
   &__heading {
     margin: 24px 0 0;
     display: flex;

@@ -1,11 +1,16 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from "react-router-dom";
+import { useDispatch } from 'react-redux';
+import {
+  setShowReports,
+} from 'services/points/pointsSlice';
 import Button from 'components/Button';
 import './Header.scss';
 
 import firebase from "firebase/compat/app";
 
 const Header = ({user, showAuthPopup}) => {
+  const dispatch = useDispatch();
   const menuRef = useRef(null);
 
   useEffect(() => {
@@ -40,8 +45,8 @@ const Header = ({user, showAuthPopup}) => {
             </Button>
             {
               open && <div className="header__nav-menu" ref={menuRef}>
-                <Link to="/" className="header__nav-menu-link">Карта</Link>
-                <Link to="/reports" className="header__nav-menu-link">Отчеты</Link>
+                <Button className="header__nav-menu-link" onClick={() => dispatch(setShowReports(false))}>Карта</Button>
+                <Button className="header__nav-menu-link" onClick={() => dispatch(setShowReports(true))}>Отчеты</Button>
                 <Button className="header__nav-menu-link" onClick={() => firebase.auth().signOut()}>Выход</Button>
               </div>
             }
