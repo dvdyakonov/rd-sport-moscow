@@ -24,7 +24,7 @@ const drawPolygon = (collection, button, populationFeatures, sportPointsObjectMa
     polygon.editor.startDrawing();
     polygon.editor.events.add("drawingstop", function (e) {
         polygon.editor.stopDrawing();
-        setPolygonData(polygon, populationFeatures, sportPointsObjectManagerObjects);
+        setPolygonData(polygon, populationFeatures, sportPointsObjectManagerObjects, 'userPolygons');
         const userPolygons = JSON.parse(localStorage.getItem('userPolygons')) || [];
         setPolygonList(userPolygons);
         button.deselect();

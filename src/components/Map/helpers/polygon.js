@@ -49,6 +49,8 @@ const setPolygonData = (polygon, populationObjects, sportObjects) => {
     }
   }
   const userPolygons = JSON.parse(localStorage.getItem('userPolygons')) || [];
+  const polygonDataFromLocalStorage = userPolygons.find(item => Number(item.idx) === Number(polygon.properties.get('id')));
+  
   const newUserPolygons = userPolygons.map(item => {
     if (Number(item.idx) === Number(polygon.properties.get('id'))) {
       return data;
@@ -56,10 +58,10 @@ const setPolygonData = (polygon, populationObjects, sportObjects) => {
     return item;
   });
 
-  if (newUserPolygons.length === 0) {
+  if (typeof polygonDataFromLocalStorage === 'undefined') {
     newUserPolygons.push(data);
   }
-  
+
   localStorage.setItem('userPolygons', JSON.stringify(newUserPolygons));
 
   return data;
