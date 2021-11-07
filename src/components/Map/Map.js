@@ -11,24 +11,28 @@ import { drawCircle, drawPolygon,removePolygon, setPolygonClickEvent, getPopulat
 import './Map.scss';
 import { showBalloon } from './helpers/polygon';
 
-const update = ({ sportFeatures, populationFeatures, sportObjManager, polygonList, polygonCollection, setPolygonList, setPolygonCollection }) => {
+const update = ({ sportFeatures, populationFeatures, sportObjManager, polygonList, polygonCollection, setPolygonList, setPolygonCollection, heatmapInstance, layers }) => {
   sportObjManager.removeAll();
   sportObjManager.add(sportFeatures);
 
-  polygonCollection.removeAll();
+  heatmapInstance.setData(sportFeatures);
 
-  polygonList.forEach(item => {
-    const polygon = createPolygon(item.idx, item.coords);
-    polygonCollection.add(polygon);
-    setPolygonClickEvent(polygon, populationFeatures, sportObjManager.objects);
-  });
+  if (layers[4]) {
+    polygonCollection.removeAll();
 
-  const updatedPolygons = JSON.parse(localStorage.getItem('userPolygons')) || [];
-  setPolygonList(updatedPolygons);
-  setPolygonCollection(polygonCollection);
+    polygonList.forEach(item => {
+      const polygon = createPolygon(item.idx, item.coords);
+      polygonCollection.add(polygon);
+      setPolygonClickEvent(polygon, populationFeatures, sportObjManager.objects);
+    });
+
+    const updatedPolygons = JSON.parse(localStorage.getItem('userPolygons')) || [];
+    setPolygonList(updatedPolygons);
+    setPolygonCollection(polygonCollection);
+  }
 }
 
-const init = ({ sportFeatures, populationFeatures, map, sportObjManager, setSportObjManager, setPolygonList, setPolygonCollection }) => {
+const init = ({ sportFeatures, populationFeatures, map, sportObjManager, setSportObjManager, setPolygonList, setPolygonCollection, setHeatmapInstance, layers, setLayers }) => {
   const ymaps = window.ymaps;
   const userPolygons = JSON.parse(localStorage.getItem('userPolygons')) || [];
   // Инициализируем карту Москвы
@@ -120,6 +124,8 @@ const init = ({ sportFeatures, populationFeatures, map, sportObjManager, setSpor
     intensityOfMidpoint: .01,
   });
 
+  setHeatmapInstance(heatmapSport);
+
   var heatmapPopulation = new Heatmap(populationFeatures, {
     radius: 15,
     intensityOfMidpoint: .01,
@@ -166,11 +172,11 @@ const init = ({ sportFeatures, populationFeatures, map, sportObjManager, setSpor
       content: 'Слои'
     },
     items: [
-      new ymaps.control.ListBoxItem({ data: { content: 'Точки спортивных объектов' }, state: { selected: true } }),
-      new ymaps.control.ListBoxItem({ data: { content: 'Тепловая карта спортивных объектов' } }),
-      new ymaps.control.ListBoxItem({ data: { content: 'Тепловая карта плотности населения' } }),
-      new ymaps.control.ListBoxItem({ data: { content: 'Границы районов' } }),
-      new ymaps.control.ListBoxItem({ data: { content: 'Пользовательские полигоны' }, state: { selected: true } }),
+      new ymaps.control.ListBoxItem({ data: { content: 'Точки спортивных объектов' }, state: { selected: layers[0] } }),
+      new ymaps.control.ListBoxItem({ data: { content: 'Тепловая карта спортивных объектов' }, state: { selected: layers[1] } }),
+      new ymaps.control.ListBoxItem({ data: { content: 'Тепловая карта плотности населения' }, state: { selected: layers[2] } }),
+      new ymaps.control.ListBoxItem({ data: { content: 'Границы районов' }, state: { selected: layers[3] } }),
+      new ymaps.control.ListBoxItem({ data: { content: 'Пользовательские полигоны' }, state: { selected: layers[4] } }),
     ]
   });
 
@@ -179,8 +185,18 @@ const init = ({ sportFeatures, populationFeatures, map, sportObjManager, setSpor
     const itemSelected = item.state.get('selected');
     if (itemSelected) {
       myMap.geoObjects.remove(sportPointsObjectManager);
+      const newLayers = layers.map((item, index) => {
+        if(index === 0) item = false;
+        return item;
+      })
+      setLayers(newLayers);
     } else {
       myMap.geoObjects.add(sportPointsObjectManager);
+      const newLayers = layers.map((item, index) => {
+        if(index === 0) item = true;
+        return item;
+      })
+      setLayers(newLayers);
     }
     // Закрываем список.
     typeList.collapse();
@@ -193,6 +209,20 @@ const init = ({ sportFeatures, populationFeatures, map, sportObjManager, setSpor
     heatmapSport.setMap(
       itemSelected ? null : myMap
     );
+
+    if (itemSelected) {
+      const newLayers = layers.map((item, index) => {
+        if(index === 1) item = false;
+        return item;
+      })
+      setLayers(newLayers);
+    } else {
+      const newLayers = layers.map((item, index) => {
+        if(index === 1) item = true;
+        return item;
+      })
+      setLayers(newLayers);
+    }
     // Закрываем список.
     typeList.collapse();
   });
@@ -204,6 +234,20 @@ const init = ({ sportFeatures, populationFeatures, map, sportObjManager, setSpor
     heatmapPopulation.setMap(
       itemSelected ? null : myMap
     );
+
+    if (itemSelected) {
+      const newLayers = layers.map((item, index) => {
+        if(index === 2) item = false;
+        return item;
+      })
+      setLayers(newLayers);
+    } else {
+      const newLayers = layers.map((item, index) => {
+        if(index === 2) item = true;
+        return item;
+      })
+      setLayers(newLayers);
+    }
     // Закрываем список.
     typeList.collapse();
   });
@@ -213,8 +257,18 @@ const init = ({ sportFeatures, populationFeatures, map, sportObjManager, setSpor
     const itemSelected = item.state.get('selected');
     if (itemSelected) {
       myMap.geoObjects.remove(districtsPolygonsObjectManager);
+      const newLayers = layers.map((item, index) => {
+        if(index === 3) item = false;
+        return item;
+      })
+      setLayers(newLayers);
     } else {
       myMap.geoObjects.add(districtsPolygonsObjectManager);
+      const newLayers = layers.map((item, index) => {
+        if(index === 3) item = true;
+        return item;
+      })
+      setLayers(newLayers);
     }
     // Закрываем список.
     typeList.collapse();
@@ -225,8 +279,18 @@ const init = ({ sportFeatures, populationFeatures, map, sportObjManager, setSpor
     const itemSelected = item.state.get('selected');
     if (itemSelected) {
       myMap.geoObjects.remove(userObjectCollection);
+      const newLayers = layers.map((item, index) => {
+        if(index === 4) item = false;
+        return item;
+      })
+      setLayers(newLayers);
     } else {
       myMap.geoObjects.add(userObjectCollection);
+      const newLayers = layers.map((item, index) => {
+        if(index === 4) item = true;
+        return item;
+      })
+      setLayers(newLayers);
     }
     // Закрываем список.
     typeList.collapse();
@@ -234,7 +298,6 @@ const init = ({ sportFeatures, populationFeatures, map, sportObjManager, setSpor
 
 
   myMap.controls.add(typeList, { floatIndex: 0 });
-
 
   // sportPointsObjectManager.objects.events.add('click', (e) => {
   window.document.addEventListener('click', (e) => {
@@ -269,6 +332,8 @@ const Map = () => {
   const dispatch = useDispatch();
   const setPolygonList = (arr) => dispatch(setPolygons(arr));
   const [polygonCollection, setPolygonCollection] = useState(null);
+  const [layers, setLayers] = useState([true, false, false, false, true]);
+  const [heatmapInstance, setHeatmapInstance] = useState(null);
   const [sportObjManager, setSportObjManager] = useState(null);
   const [sportFeatures, setSportFeatures] = useState(() => sportPointsConversion(points));
   const [populationFeatures, setpopulationFeatures] = useState(() => populationPointsConversion(populationPoints));
@@ -289,7 +354,9 @@ const Map = () => {
         polygonCollection,
         polygonList,
         setPolygonList,
-        setPolygonCollection
+        setPolygonCollection,
+        heatmapInstance,
+        layers
       });
     }
   }, [sportFeatures, populationFeatures, ymaps]);
@@ -302,7 +369,10 @@ const Map = () => {
       sportObjManager,
       setSportObjManager,
       setPolygonList,
-      setPolygonCollection
+      setPolygonCollection,
+      setHeatmapInstance,
+      layers,
+      setLayers
     }));
   }, []);
 
