@@ -9,7 +9,7 @@ const initialState = {
   polygons: window.localStorage.getItem('userPolygons') ? JSON.parse(window.localStorage.getItem('userPolygons')) : [],
   filters: {
     objectName: '',
-    depart: '',
+    depart: null,
     areaName: '',
     areaType: null,
     types: [],
