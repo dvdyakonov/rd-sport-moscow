@@ -34,7 +34,7 @@ const Header = ({user, showAuthPopup}) => {
 
   return (
     <header className="header">
-      <div className="header__logo">MOSSPORT</div>
+      <Link to="/" className="header__logo">MOSSPORT</Link>
       <nav className="header__nav">
       <ul className="header__nav-list">
         <li className="header__nav-item">
