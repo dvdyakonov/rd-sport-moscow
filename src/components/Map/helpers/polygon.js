@@ -1,4 +1,4 @@
-const setPolygonData = (polygon, populationObjects, sportObjects) => {
+const setPolygonData = (polygon, populationObjects, sportObjects, save = true) => {
   const sportObjectsInsidePolygon = window.ymaps.geoQuery(sportObjects).searchInside(polygon);
   const populationObjectsInsidePolygon = window.ymaps.geoQuery(populationObjects).searchInside(polygon);
 
@@ -48,21 +48,24 @@ const setPolygonData = (polygon, populationObjects, sportObjects) => {
       kindIds: kindIds,
     }
   }
-  const userPolygons = JSON.parse(localStorage.getItem('userPolygons')) || [];
-  const polygonDataFromLocalStorage = userPolygons.find(item => Number(item.idx) === Number(polygon.properties.get('id')));
+
+  if (save) {
+    const userPolygons = JSON.parse(localStorage.getItem('userPolygons')) || [];
+    const polygonDataFromLocalStorage = userPolygons.find(item => Number(item.idx) === Number(polygon.properties.get('id')));
+    
+    const newUserPolygons = userPolygons.map(item => {
+      if (Number(item.idx) === Number(polygon.properties.get('id'))) {
+        return data;
+      } 
+      return item;
+    });
   
-  const newUserPolygons = userPolygons.map(item => {
-    if (Number(item.idx) === Number(polygon.properties.get('id'))) {
-      return data;
-    } 
-    return item;
-  });
-
-  if (typeof polygonDataFromLocalStorage === 'undefined') {
-    newUserPolygons.push(data);
+    if (typeof polygonDataFromLocalStorage === 'undefined') {
+      newUserPolygons.push(data);
+    }
+  
+    localStorage.setItem('userPolygons', JSON.stringify(newUserPolygons)); 
   }
-
-  localStorage.setItem('userPolygons', JSON.stringify(newUserPolygons));
 
   return data;
 }

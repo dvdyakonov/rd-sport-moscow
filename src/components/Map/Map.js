@@ -311,7 +311,7 @@ const init = ({ sportFeatures, populationFeatures, map, sportObjManager, setSpor
       const circle = drawCircle(point.geometry.coordinates, point.properties.radius);
       myMap.geoObjects.add(circle);
 
-      const data = setPolygonData(circle, populationFeatures, sportPointsObjectManager.objects, 'customPolygons');
+      const data = setPolygonData(circle, populationFeatures, sportPointsObjectManager.objects, false);
       setPolygonColor(circle, data.sportObjects.square);
 
       circle.properties.set('hintContent', `<p>Проживает: ${data.population} человек,</p><p>Площадь спортивных зон: ${data.sportObjects.square}</p>`)
