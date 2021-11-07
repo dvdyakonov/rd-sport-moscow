@@ -29,12 +29,12 @@ const PolygonReport = () => {
   }
 
   const data = useMemo(() => [...dataConverter(currentPolygon.sportObjects.kindIds)], [currentPolygon.sportObjects.kindIds]);
-  console.log(data);
 
   const columns = useMemo(() => [
     {
       Header: 'Вид спорта',
-      accessor: 'label'
+      accessor: 'label',
+      align: 'left',
     }, {
       Header: 'Кол-во спортзон',
       accessor: 'areas'
@@ -43,10 +43,11 @@ const PolygonReport = () => {
       accessor: 'areasPerHuman'
     }, {
       Header: 'Площадь спортзон (м²)',
-      accessor: 'areasSquare'
+      accessor: 'areasSquare',
     }, {
       Header: 'Площадь спортзон на 1 чел. (м²)',
-      accessor: 'areasSquarePerHuman'
+      accessor: 'areasSquarePerHuman',
+      desc: true,
     }, 
   ], []);
 
@@ -57,6 +58,14 @@ const PolygonReport = () => {
       <div className="page page--report" style={{"padding": "20px"}}>
         <MapPreview polygonData={currentPolygon} />
         <h1>Отчет по полигону: {currentPolygon.idx}</h1>
+
+        <p>Площадь полигона: {(currentPolygon.square).toFixed(3)} м²</p>
+        <p>Население: {currentPolygon.population} чел.</p>
+        <p>Плотность населения: {(currentPolygon.population / currentPolygon.square).toFixed(3)}</p>
+        <p>Кол-во спортивных объектов: {currentPolygon.sportObjects.areas}</p>
+        <p>Кол-во спортивных объектов на 1 чел: {(currentPolygon.population ? (currentPolygon.sportObjects.areas / currentPolygon.population): 0).toFixed(3)} м²</p>
+        <p>Площадь спортивных объектов: {(currentPolygon.sportObjects.square).toFixed(3)}</p>
+        <p>Площадь спортивных объектов на 1 чел: {(currentPolygon.population ? (currentPolygon.sportObjects.square / currentPolygon.population): 0).toFixed(3)} м²</p>
 
         <table {...getTableProps()} className="reports__table">
           <thead>

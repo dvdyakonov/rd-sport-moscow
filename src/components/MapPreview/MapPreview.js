@@ -12,7 +12,7 @@ const init = ({polygonData, sportFeatures, populationFeatures, map}) => {
   
   // Инициализируем карту Москвы
   const myMap = new ymaps.Map(map.current, {
-    center: polygonData.center,
+    center: [55.76, 37.64],
     zoom: 11,
   }, {});
 
@@ -47,7 +47,7 @@ const init = ({polygonData, sportFeatures, populationFeatures, map}) => {
   myMap.geoObjects.add(userObjectCollection);
 
   // const populationObjects = window.ymaps.geoQuery(populationFeatures).searchInside(polygon);
-  const sportObjects = window.ymaps.geoQuery(sportFeatures).searchInside(polygon).addToMap(myMap);
+  // const sportObjects = window.ymaps.geoQuery(sportFeatures).searchInside(polygon).addToMap(myMap);
 };
 
 const Map = ({ polygonData }) => {
