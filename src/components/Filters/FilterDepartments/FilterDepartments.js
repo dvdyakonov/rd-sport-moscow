@@ -35,7 +35,7 @@ const FilterDepartments = () => {
       })}
       onInputChange={inputChange}
       onChange={handleOnChange}
-      value={objects.filter(el => el.value === depart.value)[0]}
+      value={depart ? objects.filter(el => el.value === depart.value)[0] : null}
     />
   </div>
 }
